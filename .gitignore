@@ -1,0 +1,8 @@
+.qmake.stash
+Makefile
+Makefile.Debug
+Makefile.Release
+debug/
+release/
+ui_aboutdialog.h
+ui_mainwindow.h
