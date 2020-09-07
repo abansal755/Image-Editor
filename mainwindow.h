@@ -22,10 +22,12 @@ private slots:
     void on_horizontalSlider_3_valueChanged(int value);
     void on_pushButton_2_clicked();
     void on_actionAbout_triggered();
+    void on_pushButton_3_clicked();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene*scene;
-    QImage image;
+    QImage image,copy;
     QString fileExtensions="Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.xbm *.xpm)";
 };
 #endif // MAINWINDOW_H
