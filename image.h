@@ -1,7 +1,7 @@
-#include<fstream>
-#include<QImage>
-#include<QDebug>
-#include<math.h>
+//#include<fstream>
+//#include<QImage>
+//#include<QDebug>
+//#include<math.h>
 using namespace std;
 
 void blur(QImage&img,int radius=1){
