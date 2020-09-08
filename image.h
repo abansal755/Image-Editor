@@ -1,6 +1,7 @@
-//#include<fstream>
-//#include<QImage>
-//#include<QDebug>
+#include<fstream>
+#include<QImage>
+#include<QDebug>
+#include<math.h>
 using namespace std;
 
 void blur(QImage&img,int radius=1){
@@ -41,6 +42,19 @@ void saturate(QImage&img,float x){
              else s*=1-abs(x);
              c.setHsvF(h,s,v);
              img.setPixelColor(j,i,c);
+        }
+    }
+}
+
+
+void gammaCorrect(QImage&image,float gamma){
+    for(int y=0;y<image.height();y++){
+        for(int x=0;x<image.width();x++){
+            QColor c=image.pixelColor(x,y);
+            c.setRed(255*pow((float)c.red()/255,1/gamma));
+            c.setGreen(255*pow((float)c.green()/255,1/gamma));
+            c.setBlue(255*pow((float)c.blue()/255,1/gamma));
+            image.setPixelColor(x,y,c);
         }
     }
 }

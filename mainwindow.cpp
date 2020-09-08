@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
+#include "math.h"
 #include "image.h"
 #include "aboutdialog.h"
 
@@ -25,9 +26,11 @@ void MainWindow::on_pushButton_clicked()
     //Apply
     int radius=ui->horizontalSlider->value();
     float saturate_v=(float)(ui->horizontalSlider_2->value())/100;
+    float gamma=(float)(ui->horizontalSlider_4->value())/100;
     image=copy;
     blur(image,radius);
     saturate(image,saturate_v);
+    gammaCorrect(image,gamma);
     scene->clear();
     scene->addPixmap(QPixmap::fromImage(image));
 }
@@ -47,8 +50,10 @@ void MainWindow::on_actionOpen_image_triggered()
         ui->pushButton_3->setEnabled(true);
         ui->horizontalSlider->setEnabled(true);
         ui->horizontalSlider_2->setEnabled(true);
+        ui->horizontalSlider_4->setEnabled(true);
         ui->horizontalSlider->setValue(0);
         ui->horizontalSlider_2->setValue(0);
+        ui->horizontalSlider_4->setValue(100);
         RESET_ZOOM;
     }else QMessageBox::critical(this,"Error","Unable to open image file");
 }
@@ -69,6 +74,7 @@ void MainWindow::on_actionClose_Image_triggered()
     ui->pushButton_3->setDisabled(true);
     ui->horizontalSlider->setDisabled(true);
     ui->horizontalSlider_2->setDisabled(true);
+    ui->horizontalSlider_4->setDisabled(true);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -103,6 +109,7 @@ void MainWindow::on_pushButton_3_clicked()
     //Reset
     ui->horizontalSlider->setValue(0);
     ui->horizontalSlider_2->setValue(0);
+    ui->horizontalSlider_4->setValue(100);
     image=copy;
     scene->clear();
     scene->addPixmap(QPixmap::fromImage(image));
