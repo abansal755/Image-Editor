@@ -113,3 +113,21 @@ void MainWindow::on_pushButton_3_clicked()
     scene->clear();
     scene->addPixmap(QPixmap::fromImage(image));
 }
+
+void MainWindow::on_horizontalSlider_valueChanged(int value)
+{
+    //Blur slider
+    ui->spinBox->setValue(value);
+}
+
+void MainWindow::on_horizontalSlider_2_valueChanged(int value)
+{
+    //Saturate slider
+    ui->doubleSpinBox->setValue((float)value/100);
+}
+
+void MainWindow::on_horizontalSlider_4_valueChanged(int value)
+{
+    //Gamma slider
+    ui->doubleSpinBox_2->setValue((float)value/100);
+}

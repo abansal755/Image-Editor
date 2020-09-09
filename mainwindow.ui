@@ -170,6 +170,19 @@
                  </property>
                 </widget>
                </item>
+               <item>
+                <widget class="QSpinBox" name="spinBox">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="maximum">
+                  <number>5</number>
+                 </property>
+                 <property name="value">
+                  <number>0</number>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </item>
              <item>
@@ -206,6 +219,22 @@
                  </property>
                 </widget>
                </item>
+               <item>
+                <widget class="QDoubleSpinBox" name="doubleSpinBox">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="minimum">
+                  <double>-1.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>1.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>0.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
               </layout>
              </item>
              <item>
@@ -239,6 +268,19 @@
                  </property>
                  <property name="tickInterval">
                   <number>30</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="maximum">
+                  <double>5.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>1.000000000000000</double>
                  </property>
                 </widget>
                </item>
