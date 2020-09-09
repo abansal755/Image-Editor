@@ -13,5 +13,6 @@ AboutDialog::~AboutDialog()
 
 void AboutDialog::on_buttonBox_accepted()
 {
+    //Ok
     this->accept();
 }

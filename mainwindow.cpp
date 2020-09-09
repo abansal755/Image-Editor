@@ -7,6 +7,7 @@
 #include "math.h"
 #include "image.h"
 #include "aboutdialog.h"
+#include "qualityfactordialog.h"
 
 #define RESET_ZOOM ui->horizontalSlider_3->setValue(500)
 
@@ -61,8 +62,13 @@ void MainWindow::on_actionSave_Image_triggered()
 {
     //Save Image
     QString fileName=QFileDialog::getSaveFileName(this,"Save Image","",fileExtensions);
-    bool res=image.save(fileName);
-    if(!res) QMessageBox::critical(this,"Error","Unable to save the image file");
+    if(fileName=="") QMessageBox::critical(this,"Error","Unable to save the image file");
+    else{
+        QualityFactorDialog d;
+        bool res=d.exec();
+        if(!res) QMessageBox::critical(this,"Error","Unable to save the image file");
+        else image.save(fileName,"",d.qualityFactor);
+    }
 }
 
 void MainWindow::on_actionClose_Image_triggered()

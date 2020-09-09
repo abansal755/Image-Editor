@@ -18,16 +18,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     aboutdialog.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    qualityfactordialog.cpp
 
 HEADERS += \
     aboutdialog.h \
     mainwindow.h \
-    image.h
+    image.h \
+    qualityfactordialog.h
 
 FORMS += \
     aboutdialog.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    qualityfactordialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
