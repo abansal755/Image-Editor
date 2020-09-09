@@ -27,7 +27,11 @@ void MainWindow::on_pushButton_clicked()
     int radius=ui->horizontalSlider->value();
     float saturate_v=(float)(ui->horizontalSlider_2->value())/100;
     float gamma=(float)(ui->horizontalSlider_4->value())/100;
+    float lift=(float)(ui->horizontalSlider_5->value())/100;
+    float gain=(float)(ui->horizontalSlider_6->value())/100;
+    float offset=(float)(ui->horizontalSlider_7->value())/100;
     image=copy;
+    grade(image,lift,gain,offset);
     blur(image,radius);
     saturate(image,saturate_v);
     gammaCorrect(image,gamma);
@@ -54,9 +58,15 @@ void MainWindow::on_actionOpen_image_triggered()
         ui->horizontalSlider->setEnabled(true);
         ui->horizontalSlider_2->setEnabled(true);
         ui->horizontalSlider_4->setEnabled(true);
+        ui->horizontalSlider_5->setEnabled(true);
+        ui->horizontalSlider_6->setEnabled(true);
+        ui->horizontalSlider_7->setEnabled(true);
         ui->horizontalSlider->setValue(0);
         ui->horizontalSlider_2->setValue(0);
         ui->horizontalSlider_4->setValue(100);
+        ui->horizontalSlider_5->setValue(0);
+        ui->horizontalSlider_6->setValue(100);
+        ui->horizontalSlider_7->setValue(0);
         RESET_ZOOM;
     }else QMessageBox::critical(this,"Error","Unable to open image file");
 }
@@ -86,6 +96,9 @@ void MainWindow::on_actionClose_Image_triggered()
     ui->horizontalSlider->setDisabled(true);
     ui->horizontalSlider_2->setDisabled(true);
     ui->horizontalSlider_4->setDisabled(true);
+    ui->horizontalSlider_5->setDisabled(true);
+    ui->horizontalSlider_6->setDisabled(true);
+    ui->horizontalSlider_7->setDisabled(true);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -121,6 +134,9 @@ void MainWindow::on_pushButton_3_clicked()
     ui->horizontalSlider->setValue(0);
     ui->horizontalSlider_2->setValue(0);
     ui->horizontalSlider_4->setValue(100);
+    ui->horizontalSlider_5->setValue(0);
+    ui->horizontalSlider_6->setValue(100);
+    ui->horizontalSlider_7->setValue(0);
     image=copy;
     scene->clear();
     scene->addPixmap(QPixmap::fromImage(image));
@@ -166,4 +182,22 @@ void MainWindow::on_pushButton_6_clicked()
     rotate180(image);
     scene->clear();
     scene->addPixmap(QPixmap::fromImage(image));
+}
+
+void MainWindow::on_horizontalSlider_5_valueChanged(int value)
+{
+    //Lift slider
+    ui->doubleSpinBox_3->setValue((float)value/100);
+}
+
+void MainWindow::on_horizontalSlider_6_valueChanged(int value)
+{
+    //Gain slider
+    ui->doubleSpinBox_4->setValue((float)value/100);
+}
+
+void MainWindow::on_horizontalSlider_7_valueChanged(int value)
+{
+    //Offset slider
+    ui->doubleSpinBox_5->setValue((float)value/100);
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>963</width>
-    <height>641</height>
+    <width>914</width>
+    <height>636</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -109,10 +109,10 @@
          <x>0</x>
          <y>0</y>
          <width>328</width>
-         <height>580</height>
+         <height>575</height>
         </rect>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <widget class="QGroupBox" name="groupBox_2">
           <property name="sizePolicy">
@@ -193,6 +193,208 @@
          </widget>
         </item>
         <item>
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="title">
+           <string>Grading:</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Lift:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="horizontalSlider_5">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="minimum">
+                <number>-500</number>
+               </property>
+               <property name="maximum">
+                <number>500</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::TicksBelow</enum>
+               </property>
+               <property name="tickInterval">
+                <number>50</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="minimum">
+                <double>-5.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>5.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <item>
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Gain:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="horizontalSlider_6">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="minimum">
+                <number>-500</number>
+               </property>
+               <property name="maximum">
+                <number>500</number>
+               </property>
+               <property name="value">
+                <number>100</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::TicksBelow</enum>
+               </property>
+               <property name="tickInterval">
+                <number>50</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_4">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="minimum">
+                <double>-5.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>5.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>1.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>Offset:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="horizontalSlider_7">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="minimum">
+                <number>-500</number>
+               </property>
+               <property name="maximum">
+                <number>500</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::TicksBelow</enum>
+               </property>
+               <property name="tickInterval">
+                <number>50</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_5">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="minimum">
+                <double>-5.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>5.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Gamma Correction:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="horizontalSlider_4">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximum">
+                <number>500</number>
+               </property>
+               <property name="value">
+                <number>100</number>
+               </property>
+               <property name="tracking">
+                <bool>true</bool>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="tickPosition">
+                <enum>QSlider::TicksBelow</enum>
+               </property>
+               <property name="tickInterval">
+                <number>30</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maximum">
+                <double>5.000000000000000</double>
+               </property>
+               <property name="value">
+                <double>1.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="QGroupBox" name="groupBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -219,7 +421,7 @@
            <bool>false</bool>
           </property>
           <property name="title">
-           <string>Image color corrections</string>
+           <string>Other:</string>
           </property>
           <property name="flat">
            <bool>false</bool>
@@ -326,55 +528,6 @@
              </item>
             </layout>
            </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>Gamma Correction:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSlider" name="horizontalSlider_4">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="maximum">
-                <number>500</number>
-               </property>
-               <property name="value">
-                <number>100</number>
-               </property>
-               <property name="tracking">
-                <bool>true</bool>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="tickPosition">
-                <enum>QSlider::TicksBelow</enum>
-               </property>
-               <property name="tickInterval">
-                <number>30</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="maximum">
-                <double>5.000000000000000</double>
-               </property>
-               <property name="value">
-                <double>1.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
           </layout>
          </widget>
         </item>
@@ -451,7 +604,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>963</width>
+     <width>914</width>
      <height>21</height>
     </rect>
    </property>
