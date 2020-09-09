@@ -58,3 +58,34 @@ void gammaCorrect(QImage&image,float gamma){
         }
     }
 }
+
+void rotateClockwise90(QImage&img) {
+    QImage img1(img.height(),img.width(),img.format());
+    for(int y=0;y<img.height();y++){
+        for(int x=0;x<img.width();x++){
+            img1.setPixelColor(img.height()-y-1,x,img.pixelColor(x,y));
+        }
+    }
+    img=img1;
+}
+
+void rotateAntiClockwise90(QImage&img){
+    QImage img1(img.height(),img.width(),img.format());
+    for(int y=0;y<img.height();y++){
+        for(int x=0;x<img.width();x++){
+            img1.setPixelColor(y,img.width()-x-1,img.pixelColor(x,y));
+        }
+    }
+    img=img1;
+}
+
+
+void rotate180(QImage&img){
+    QImage img1(img.width(),img.height(),img.format());
+    for(int y=0;y<img.height();y++){
+        for(int x=0;x<img.width();x++){
+            img1.setPixelColor(img.width()-1-x,img.height()-1-y,img.pixelColor(x,y));
+        }
+    }
+    img=img1;
+}

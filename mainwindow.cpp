@@ -48,6 +48,9 @@ void MainWindow::on_actionOpen_image_triggered()
         scene->addPixmap(QPixmap::fromImage(image));
         ui->pushButton->setEnabled(true);
         ui->pushButton_3->setEnabled(true);
+        ui->pushButton_4->setEnabled(true);
+        ui->pushButton_5->setEnabled(true);
+        ui->pushButton_6->setEnabled(true);
         ui->horizontalSlider->setEnabled(true);
         ui->horizontalSlider_2->setEnabled(true);
         ui->horizontalSlider_4->setEnabled(true);
@@ -77,6 +80,9 @@ void MainWindow::on_actionClose_Image_triggered()
     scene->clear();
     ui->pushButton->setDisabled(true);
     ui->pushButton_3->setDisabled(true);
+    ui->pushButton_4->setDisabled(true);
+    ui->pushButton_5->setDisabled(true);
+    ui->pushButton_6->setDisabled(true);
     ui->horizontalSlider->setDisabled(true);
     ui->horizontalSlider_2->setDisabled(true);
     ui->horizontalSlider_4->setDisabled(true);
@@ -136,4 +142,28 @@ void MainWindow::on_horizontalSlider_4_valueChanged(int value)
 {
     //Gamma slider
     ui->doubleSpinBox_2->setValue((float)value/100);
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    //RotateClockwise90
+    rotateClockwise90(image);
+    scene->clear();
+    scene->addPixmap(QPixmap::fromImage(image));
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    //RotateAntiClockwise90
+    rotateAntiClockwise90(image);
+    scene->clear();
+    scene->addPixmap(QPixmap::fromImage(image));
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    //Rotate180
+    rotate180(image);
+    scene->clear();
+    scene->addPixmap(QPixmap::fromImage(image));
 }
