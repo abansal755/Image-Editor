@@ -14,6 +14,7 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
     scene=new QGraphicsScene(this);
+    ui->actionSave_Image->setDisabled(true);
 }
 
 MainWindow::~MainWindow(){
@@ -61,6 +62,7 @@ void MainWindow::on_actionOpen_image_triggered()
         ui->horizontalSlider_5->setEnabled(true);
         ui->horizontalSlider_6->setEnabled(true);
         ui->horizontalSlider_7->setEnabled(true);
+        ui->actionSave_Image->setEnabled(true);
         ui->horizontalSlider->setValue(0);
         ui->horizontalSlider_2->setValue(0);
         ui->horizontalSlider_4->setValue(100);
@@ -99,6 +101,7 @@ void MainWindow::on_actionClose_Image_triggered()
     ui->horizontalSlider_5->setDisabled(true);
     ui->horizontalSlider_6->setDisabled(true);
     ui->horizontalSlider_7->setDisabled(true);
+    ui->actionSave_Image->setDisabled(true);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -201,3 +204,5 @@ void MainWindow::on_horizontalSlider_7_valueChanged(int value)
     //Offset slider
     ui->doubleSpinBox_5->setValue((float)value/100);
 }
+
+
