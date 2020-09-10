@@ -138,3 +138,22 @@ void rotate180(QImage&img){
     }
     img=img1;
 }
+
+void img_segmentation(QImage&img){
+    for(int y=0;y<img.height();y++){
+        for(int x=0;x<img.width();x++){
+            QColor c = img.pixelColor(x,y);
+            int greyvalue =  (c.red() * 11 + c.green() * 16 + c.blue() * 5)/32.0;
+            if(greyvalue > 100) {
+                c.setRed(255);
+                c.setGreen(255);
+                c.setBlue(255);
+                img.setPixelColor(x,y,c);
+            } else {
+                c.setRed(0), c.setGreen(0), c.setBlue(0);
+                img.setPixelColor(x,y,c);
+            }
+        }
+    }
+
+}
