@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
     scene=new QGraphicsScene(this);
     ui->actionSave_Image->setDisabled(true);
+    ui->pushButton_7->setDisabled(true);
+    ui->pushButton_8->setDisabled(true);
 }
 
 MainWindow::~MainWindow(){
@@ -66,6 +68,8 @@ void MainWindow::on_actionOpen_image_triggered()
         ui->horizontalSlider_7->setEnabled(true);
         ui->horizontalSlider_8->setEnabled(true);
         ui->actionSave_Image->setEnabled(true);
+        ui->pushButton_7->setEnabled(true);
+        ui->pushButton_8->setEnabled(true);
         ui->horizontalSlider->setValue(0);
         ui->horizontalSlider_2->setValue(0);
         ui->horizontalSlider_4->setValue(100);
@@ -100,6 +104,8 @@ void MainWindow::on_actionClose_Image_triggered()
     ui->pushButton_4->setDisabled(true);
     ui->pushButton_5->setDisabled(true);
     ui->pushButton_6->setDisabled(true);
+    ui->pushButton_7->setDisabled(true);
+    ui->pushButton_8->setDisabled(true);
     ui->horizontalSlider->setDisabled(true);
     ui->horizontalSlider_2->setDisabled(true);
     ui->horizontalSlider_4->setDisabled(true);
@@ -108,6 +114,7 @@ void MainWindow::on_actionClose_Image_triggered()
     ui->horizontalSlider_7->setDisabled(true);
     ui->horizontalSlider_8->setDisabled(true);
     ui->actionSave_Image->setDisabled(true);
+    ui->pushButton_7->setDisabled(true);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -217,4 +224,20 @@ void MainWindow::on_horizontalSlider_8_valueChanged(int value)
 {
     //Contrast slider
     ui->spinBox_2->setValue(value);
+}
+
+void MainWindow::on_pushButton_7_clicked()
+{
+    //mirrorimage horizontal
+    mirror_imgH(image);
+    scene->clear();
+    scene->addPixmap(QPixmap::fromImage(image));
+}
+
+void MainWindow::on_pushButton_8_clicked()
+{
+    //mirrorimage vertical
+    mirror_imgV(image);
+    scene->clear();
+    scene->addPixmap(QPixmap::fromImage(image));
 }
