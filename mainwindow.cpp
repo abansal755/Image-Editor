@@ -31,11 +31,13 @@ void MainWindow::on_pushButton_clicked()
     float lift=(float)(ui->horizontalSlider_5->value())/100;
     float gain=(float)(ui->horizontalSlider_6->value())/100;
     float offset=(float)(ui->horizontalSlider_7->value())/100;
+    float contrast_v=ui->horizontalSlider_8->value();
     image=copy;
     grade(image,lift,gain,offset);
     blur(image,radius);
     saturate(image,saturate_v);
     gammaCorrect(image,gamma);
+    contrast(image,contrast_v);
     scene->clear();
     scene->addPixmap(QPixmap::fromImage(image));
 }
@@ -62,6 +64,7 @@ void MainWindow::on_actionOpen_image_triggered()
         ui->horizontalSlider_5->setEnabled(true);
         ui->horizontalSlider_6->setEnabled(true);
         ui->horizontalSlider_7->setEnabled(true);
+        ui->horizontalSlider_8->setEnabled(true);
         ui->actionSave_Image->setEnabled(true);
         ui->horizontalSlider->setValue(0);
         ui->horizontalSlider_2->setValue(0);
@@ -69,6 +72,7 @@ void MainWindow::on_actionOpen_image_triggered()
         ui->horizontalSlider_5->setValue(0);
         ui->horizontalSlider_6->setValue(100);
         ui->horizontalSlider_7->setValue(0);
+        ui->horizontalSlider_8->setValue(0);
         RESET_ZOOM;
     }else QMessageBox::critical(this,"Error","Unable to open image file");
 }
@@ -102,6 +106,7 @@ void MainWindow::on_actionClose_Image_triggered()
     ui->horizontalSlider_5->setDisabled(true);
     ui->horizontalSlider_6->setDisabled(true);
     ui->horizontalSlider_7->setDisabled(true);
+    ui->horizontalSlider_8->setDisabled(true);
     ui->actionSave_Image->setDisabled(true);
 }
 
@@ -117,6 +122,7 @@ void MainWindow::on_horizontalSlider_3_valueChanged(int value)
     float scale=(float)value/500;
     ui->graphicsView->resetMatrix();
     ui->graphicsView->scale(scale,scale);
+    ui->doubleSpinBox_6->setValue(scale);
 }
 
 void MainWindow::on_pushButton_2_clicked()
@@ -141,6 +147,7 @@ void MainWindow::on_pushButton_3_clicked()
     ui->horizontalSlider_5->setValue(0);
     ui->horizontalSlider_6->setValue(100);
     ui->horizontalSlider_7->setValue(0);
+    ui->horizontalSlider_8->setValue(0);
     image=copy;
     scene->clear();
     scene->addPixmap(QPixmap::fromImage(image));
@@ -204,4 +211,10 @@ void MainWindow::on_horizontalSlider_7_valueChanged(int value)
 {
     //Offset slider
     ui->doubleSpinBox_5->setValue((float)value/100);
+}
+
+void MainWindow::on_horizontalSlider_8_valueChanged(int value)
+{
+    //Contrast slider
+    ui->spinBox_2->setValue(value);
 }
