@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>879</width>
-    <height>610</height>
+    <width>862</width>
+    <height>546</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -109,7 +109,7 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>330</width>
+        <width>460</width>
         <height>0</height>
        </size>
       </property>
@@ -121,8 +121,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>328</width>
-         <height>549</height>
+         <width>444</width>
+         <height>487</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -141,22 +141,25 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
-              <widget class="QPushButton" name="pushButton_6">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="text">
-                <string>Rotate 180 deg</string>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QPushButton" name="pushButton_4">
                <property name="enabled">
                 <bool>false</bool>
                </property>
                <property name="text">
                 <string>Rotate 90 deg Clockwise</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_5">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Rotate 90 deg Anti-Clockwise</string>
+               </property>
+               <property name="autoDefault">
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -178,12 +181,29 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
-              <widget class="QPushButton" name="pushButton_5">
+              <widget class="QPushButton" name="pushButton_6">
                <property name="enabled">
                 <bool>false</bool>
                </property>
                <property name="text">
-                <string>Rotate 90 deg Anti-Clockwise</string>
+                <string>Rotate 180 deg</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_7">
+               <property name="text">
+                <string>MirrorH</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButton_8">
+               <property name="text">
+                <string>MirrorV</string>
+               </property>
+               <property name="autoRepeatInterval">
+                <number>300</number>
                </property>
               </widget>
              </item>
@@ -666,8 +686,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>879</width>
-     <height>21</height>
+     <width>862</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

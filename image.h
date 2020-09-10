@@ -157,3 +157,23 @@ void img_segmentation(QImage&img){
     }
 
 }
+void mirror_imgH(QImage&img) {
+    QImage temp(img.width(),img.height(),img.format());
+    for(int y = 0; y < img.height(); y++) {
+        for(int x = 0; x < img.width(); x++) {
+            QColor c = img.pixelColor(x,y);
+            temp.setPixelColor(img.width() - 1 - x, y, c);
+        }
+    }
+    img = temp;
+}
+void mirror_imgV(QImage&img) {
+    QImage temp(img.width(),img.height(),img.format());
+    for(int y = 0; y < img.height(); y++) {
+        for(int x = 0; x < img.width(); x++) {
+            QColor c = img.pixelColor(x,y);
+            temp.setPixelColor(x, img.height()- 1 - y, c);
+        }
+    }
+    img = temp;
+}
