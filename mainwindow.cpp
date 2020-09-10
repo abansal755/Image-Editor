@@ -77,7 +77,8 @@ void MainWindow::on_actionSave_Image_triggered()
 {
     //Save Image
     QString fileName=QFileDialog::getSaveFileName(this,"Save Image","",fileExtensions);
-    if(fileName=="") QMessageBox::critical(this,"Error","Unable to save the image file");
+    QFileInfo fi(fileName);
+    if(fi.suffix()=="") QMessageBox::critical(this,"Error","Unable to save the image file");
     else{
         QualityFactorDialog d;
         bool res=d.exec();
@@ -204,5 +205,3 @@ void MainWindow::on_horizontalSlider_7_valueChanged(int value)
     //Offset slider
     ui->doubleSpinBox_5->setValue((float)value/100);
 }
-
-
