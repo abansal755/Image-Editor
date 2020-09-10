@@ -1,3 +1,4 @@
+#include <vector>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <fstream>
@@ -11,12 +12,36 @@
 
 #define RESET_ZOOM ui->horizontalSlider_3->setValue(500)
 
+void MainWindow::setDisabled(){
+    for(int i=0;i<statusChanging.size();i++) statusChanging[i]->setDisabled(true);
+}
+
+void MainWindow::setEnabled(){
+    for(int i=0;i<statusChanging.size();i++) statusChanging[i]->setEnabled(true);
+}
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
     scene=new QGraphicsScene(this);
+
+    //push_back all objects which are to be disabled if no image is opened and enabled if an image is opened
+    statusChanging.push_back(ui->pushButton);
+    statusChanging.push_back(ui->pushButton_3);
+    statusChanging.push_back(ui->pushButton_4);
+    statusChanging.push_back(ui->pushButton_5);
+    statusChanging.push_back(ui->pushButton_6);
+    statusChanging.push_back(ui->pushButton_7);
+    statusChanging.push_back(ui->pushButton_8);
+    statusChanging.push_back(ui->horizontalSlider);
+    statusChanging.push_back(ui->horizontalSlider_2);
+    statusChanging.push_back(ui->horizontalSlider_4);
+    statusChanging.push_back(ui->horizontalSlider_5);
+    statusChanging.push_back(ui->horizontalSlider_6);
+    statusChanging.push_back(ui->horizontalSlider_7);
+    statusChanging.push_back(ui->horizontalSlider_8);
+
     ui->actionSave_Image->setDisabled(true);
-    ui->pushButton_7->setDisabled(true);
-    ui->pushButton_8->setDisabled(true);
+    setDisabled();
 }
 
 MainWindow::~MainWindow(){
@@ -55,21 +80,8 @@ void MainWindow::on_actionOpen_image_triggered()
         scene=new QGraphicsScene(this);
         ui->graphicsView->setScene(scene);
         scene->addPixmap(QPixmap::fromImage(image));
-        ui->pushButton->setEnabled(true);
-        ui->pushButton_3->setEnabled(true);
-        ui->pushButton_4->setEnabled(true);
-        ui->pushButton_5->setEnabled(true);
-        ui->pushButton_6->setEnabled(true);
-        ui->horizontalSlider->setEnabled(true);
-        ui->horizontalSlider_2->setEnabled(true);
-        ui->horizontalSlider_4->setEnabled(true);
-        ui->horizontalSlider_5->setEnabled(true);
-        ui->horizontalSlider_6->setEnabled(true);
-        ui->horizontalSlider_7->setEnabled(true);
-        ui->horizontalSlider_8->setEnabled(true);
         ui->actionSave_Image->setEnabled(true);
-        ui->pushButton_7->setEnabled(true);
-        ui->pushButton_8->setEnabled(true);
+        setEnabled();
         ui->horizontalSlider->setValue(0);
         ui->horizontalSlider_2->setValue(0);
         ui->horizontalSlider_4->setValue(100);
@@ -99,22 +111,8 @@ void MainWindow::on_actionClose_Image_triggered()
 {
     //Close Image
     scene->clear();
-    ui->pushButton->setDisabled(true);
-    ui->pushButton_3->setDisabled(true);
-    ui->pushButton_4->setDisabled(true);
-    ui->pushButton_5->setDisabled(true);
-    ui->pushButton_6->setDisabled(true);
-    ui->pushButton_7->setDisabled(true);
-    ui->pushButton_8->setDisabled(true);
-    ui->horizontalSlider->setDisabled(true);
-    ui->horizontalSlider_2->setDisabled(true);
-    ui->horizontalSlider_4->setDisabled(true);
-    ui->horizontalSlider_5->setDisabled(true);
-    ui->horizontalSlider_6->setDisabled(true);
-    ui->horizontalSlider_7->setDisabled(true);
-    ui->horizontalSlider_8->setDisabled(true);
+    setDisabled();
     ui->actionSave_Image->setDisabled(true);
-    ui->pushButton_7->setDisabled(true);
 }
 
 void MainWindow::on_actionExit_triggered()

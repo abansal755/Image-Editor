@@ -8,6 +8,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+using namespace std;
+
 class MainWindow : public QMainWindow{
     Q_OBJECT
 public:
@@ -49,5 +51,8 @@ private:
     QGraphicsScene*scene;
     QImage image,copy;
     QString fileExtensions="Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.xbm *.xpm)";
+    vector<QWidget*> statusChanging;
+    void setDisabled();
+    void setEnabled();
 };
 #endif // MAINWINDOW_H
