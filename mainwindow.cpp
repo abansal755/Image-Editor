@@ -41,7 +41,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     statusChanging.push_back(ui->horizontalSlider_8);
 
     ui->actionSave_Image->setDisabled(true);
+    ui->actionGraph->setDisabled(true);
     setDisabled();
+
+    gw=new GraphWindow(this);
+    gw->image=&image;
+    gw->copy=&copy;
 }
 
 MainWindow::~MainWindow(){
@@ -81,6 +86,7 @@ void MainWindow::on_actionOpen_image_triggered()
         ui->graphicsView->setScene(scene);
         scene->addPixmap(QPixmap::fromImage(image));
         ui->actionSave_Image->setEnabled(true);
+        ui->actionGraph->setEnabled(true);
         setEnabled();
         ui->horizontalSlider->setValue(0);
         ui->horizontalSlider_2->setValue(0);
@@ -113,6 +119,7 @@ void MainWindow::on_actionClose_Image_triggered()
     scene->clear();
     setDisabled();
     ui->actionSave_Image->setDisabled(true);
+    ui->actionGraph->setDisabled(true);
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -134,13 +141,6 @@ void MainWindow::on_pushButton_2_clicked()
 {
     //Reset zoom
     RESET_ZOOM;
-}
-
-void MainWindow::on_actionAbout_triggered()
-{
-    //About
-    AboutDialog d;
-    d.exec();
 }
 
 void MainWindow::on_pushButton_3_clicked()
@@ -238,4 +238,17 @@ void MainWindow::on_pushButton_8_clicked()
     mirror_imgV(image);
     scene->clear();
     scene->addPixmap(QPixmap::fromImage(image));
+}
+
+void MainWindow::on_actionGraph_triggered()
+{
+    //Graph
+    gw->show();
+}
+
+void MainWindow::on_actionAbout_2_triggered()
+{
+    //About
+    AboutDialog d;
+    d.exec();
 }

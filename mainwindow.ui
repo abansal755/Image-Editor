@@ -699,14 +699,15 @@
     <addaction name="actionClose_Image"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuHelp">
+   <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Help</string>
+     <string>Window</string>
     </property>
-    <addaction name="actionAbout"/>
+    <addaction name="actionGraph"/>
+    <addaction name="actionAbout_2"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuHelp"/>
+   <addaction name="menuEdit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen_image">
@@ -729,7 +730,12 @@
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionAbout">
+  <action name="actionGraph">
+   <property name="text">
+    <string>Graph</string>
+   </property>
+  </action>
+  <action name="actionAbout_2">
    <property name="text">
     <string>About</string>
    </property>

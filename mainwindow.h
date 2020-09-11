@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include "graphwindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,7 +24,6 @@ private slots:
     void on_actionExit_triggered();
     void on_horizontalSlider_3_valueChanged(int value);
     void on_pushButton_2_clicked();
-    void on_actionAbout_triggered();
     void on_pushButton_3_clicked();
     void on_horizontalSlider_valueChanged(int value);
     void on_horizontalSlider_2_valueChanged(int value);
@@ -46,6 +46,10 @@ private slots:
 
     void on_pushButton_8_clicked();
 
+    void on_actionGraph_triggered();
+
+    void on_actionAbout_2_triggered();
+
 private:
     Ui::MainWindow *ui;
     QGraphicsScene*scene;
@@ -54,5 +58,6 @@ private:
     vector<QWidget*> statusChanging;
     void setDisabled();
     void setEnabled();
+    GraphWindow*gw;
 };
 #endif // MAINWINDOW_H

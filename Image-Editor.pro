@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,18 +17,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     aboutdialog.cpp \
+    graphwindow.cpp \
     main.cpp \
     mainwindow.cpp \
     qualityfactordialog.cpp
 
 HEADERS += \
     aboutdialog.h \
+    graphwindow.h \
     mainwindow.h \
     image.h \
     qualityfactordialog.h
 
 FORMS += \
     aboutdialog.ui \
+    graphwindow.ui \
     mainwindow.ui \
     qualityfactordialog.ui
 

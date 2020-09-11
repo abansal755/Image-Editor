@@ -7,4 +7,5 @@ release/
 ui_aboutdialog.h
 ui_mainwindow.h
 ui_qualityfactordialog.h
+ui_graphwindow.h
 Image-Editor.pro.user
