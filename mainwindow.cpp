@@ -23,6 +23,7 @@ void MainWindow::setEnabled(){
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
     scene=new QGraphicsScene(this);
+    ui->graphicsView->setDragMode(QGraphicsView:: ScrollHandDrag);
 
     //push_back all objects which are to be disabled if no image is opened and enabled if an image is opened
     statusChanging.push_back(ui->pushButton);
@@ -66,10 +67,18 @@ void MainWindow::on_pushButton_clicked()
     float contrast_v=ui->horizontalSlider_8->value();
     image=copy;
     grade(image,lift,gain,offset);
-    blur(image,radius);
-    saturate(image,saturate_v);
     gammaCorrect(image,gamma);
+    saturate(image,saturate_v);
     contrast(image,contrast_v);
+    blur(image,radius);
+    for(int y=0;y<image.height();y++){
+        for(int x=0;x<image.width();x++){
+            QColor ci=image.pixelColor(x,y);
+            QColor cc=copy.pixelColor(x,y);
+            ci.setAlpha(cc.alpha());
+            image.setPixelColor(x,y,ci);
+        }
+    }
     scene->clear();
     scene->addPixmap(QPixmap::fromImage(image));
 }

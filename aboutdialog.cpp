@@ -3,7 +3,7 @@
 
 AboutDialog::AboutDialog(QWidget *parent) :QDialog(parent),ui(new Ui::AboutDialog){
     ui->setupUi(this);
-    setFixedSize(235,114);
+    this->setWindowFlags(Qt::WindowTitleHint|Qt::WindowCloseButtonHint);
 }
 
 AboutDialog::~AboutDialog()

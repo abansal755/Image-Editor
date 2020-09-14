@@ -8,6 +8,7 @@ GraphWindow::GraphWindow(QWidget *parent) :
     ui->setupUi(this);
     chart=new QChart;
     ui->graphicsView->setChart(chart);
+    ui->graphicsView->setRenderHints(QPainter::Antialiasing);
     chart->legend()->hide();
 
     axisX=new QValueAxis(this);
