@@ -13,6 +13,12 @@
   <property name="windowTitle">
    <string>Graph</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">GraphWindow {
+	background : rgb(0, 0, 0);
+}
+</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -125,7 +131,7 @@
      <x>0</x>
      <y>0</y>
      <width>542</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

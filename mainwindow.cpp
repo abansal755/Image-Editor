@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     //push_back all objects which are to be disabled if no image is opened and enabled if an image is opened
     statusChanging.push_back(ui->pushButton);
+    statusChanging.push_back(ui->pushButton_2);
     statusChanging.push_back(ui->pushButton_3);
     statusChanging.push_back(ui->pushButton_4);
     statusChanging.push_back(ui->pushButton_5);
@@ -35,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     statusChanging.push_back(ui->pushButton_8);
     statusChanging.push_back(ui->horizontalSlider);
     statusChanging.push_back(ui->horizontalSlider_2);
+    statusChanging.push_back(ui->horizontalSlider_3);
     statusChanging.push_back(ui->horizontalSlider_4);
     statusChanging.push_back(ui->horizontalSlider_5);
     statusChanging.push_back(ui->horizontalSlider_6);
