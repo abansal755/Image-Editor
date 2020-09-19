@@ -1,5 +1,4 @@
-QT       += core gui charts
-RC_ICONS = icon.ico
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,24 +16,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    aboutdialog.cpp \
-    graphwindow.cpp \
     main.cpp \
-    mainwindow.cpp \
-    qualityfactordialog.cpp
+    mainwindow.cpp
 
 HEADERS += \
-    aboutdialog.h \
-    graphwindow.h \
     mainwindow.h \
-    image.h \
-    qualityfactordialog.h
+    node.h
 
 FORMS += \
-    aboutdialog.ui \
-    graphwindow.ui \
-    mainwindow.ui \
-    qualityfactordialog.ui
+    mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
