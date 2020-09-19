@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <vector>
 #include "node.h"
+#include "canvas.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,10 +20,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private slots:
-    void on_pushButton_clicked();
 private:
     Ui::MainWindow *ui;
     QGraphicsScene*scene;
     vector<node*> destruc;
+    canvas*canv;
 };
 #endif // MAINWINDOW_H

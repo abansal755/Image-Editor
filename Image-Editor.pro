@@ -20,6 +20,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    canvas.h \
     mainwindow.h \
     node.h
 

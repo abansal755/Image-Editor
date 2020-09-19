@@ -1,3 +1,4 @@
+#pragma once
 #include<QGraphicsItem>
 #include<QGraphicsScene>
 #include<QPainter>
