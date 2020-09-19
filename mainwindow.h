@@ -6,6 +6,7 @@
 #include <vector>
 #include "node.h"
 #include "canvas.h"
+#include "graphicsview.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

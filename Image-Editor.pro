@@ -21,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
     canvas.h \
+    graphicsview.h \
     mainwindow.h \
     node.h
 
