@@ -8,15 +8,23 @@
 
 using namespace std;
 
+class PropertiesWindow:public QWidget{
+public:
+    PropertiesWindow(QString title,QWidget*parent=NULL):QWidget(parent){
+        setWindowTitle(title);
+    }
+};
+
 class node:public QGraphicsItem{
-private:
+protected:
     QString name;
     int width,height;
     node*input,*output;
     QGraphicsLineItem*inputLine,*outputLine;
     QGraphicsScene*scene;
     bool pressed;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+    PropertiesWindow*propW;
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
         QRectF rect=boundingRect();
         QLinearGradient grad(0,0,0,height);
         grad.setColorAt(0,QColor(184,15,10));
@@ -79,6 +87,7 @@ private:
         QAction*disconnectOutput=menu.addAction("Disconnect Output");
         QAction*disconnectInput=menu.addAction("Disconnect Input");
         QAction*deleteNode=menu.addAction("Delete Node");
+        QAction*properties=menu.addAction("Properties");
         QAction*current=menu.exec(event->screenPos());
         if(current==connectOutput){
             if(inputScene!=NULL && inputScene!=this){
@@ -115,11 +124,15 @@ private:
             inputScene=NULL;
             outputScene=NULL;
         }
+        if(current==properties){
+            propW->show();
+        }
         delete connectInput;
         delete connectOutput;
         delete  disconnectInput;
         delete disconnectOutput;
         delete deleteNode;
+        delete properties;
     };
 public:
     node(QGraphicsScene*scene,vector<node*>&destruc,QString name="node",int width=200,int height=75)
@@ -129,6 +142,7 @@ public:
         destruc.push_back(this);
         setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsScenePositionChanges);
         pressed=false;
+        propW=new PropertiesWindow(name);
     }
     ~node(){
         if(inputLine!=NULL){
@@ -139,6 +153,7 @@ public:
             output->inputLine=NULL;
             delete outputLine;
         }
+        delete propW;
     }
     QRectF boundingRect() const{
         return QRectF(0,0,width,height);
