@@ -147,9 +147,11 @@ protected:
             scene->removeItem(this);
             inputScene=NULL;
             outputScene=NULL;
+            propW->hide();
         }
         if(current==properties){
-            propW->show();
+            if(!(propW->isVisible())) propW->show();
+            else propW->activateWindow();
         }
         delete connectInput;
         delete connectOutput;
@@ -283,9 +285,11 @@ protected:
                 scene->removeItem(this);
                 inputScene=NULL;
                 outputScene=NULL;
+                propW->hide();
             }
             if(current==properties){
-                propW->show();
+                if(!(propW->isVisible())) propW->show();
+                else propW->activateWindow();
             }
             delete connectOutput;
             delete disconnectOutput;
