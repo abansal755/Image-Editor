@@ -5,13 +5,37 @@
 #include<QDebug>
 #include<QMenu>
 #include<QGraphicsSceneContextMenuEvent>
+#include<QPushButton>
+#include<QFileDialog>
+#include<QMessageBox>
 
 using namespace std;
 
 class PropertiesWindow:public QWidget{
+protected:
+    static QString fileExtensions;
 public:
     PropertiesWindow(QString title,QWidget*parent=NULL):QWidget(parent){
         setWindowTitle(title);
+    }
+};
+
+class ReadNodePropertiesWindow:public PropertiesWindow{
+private:
+    Q_OBJECT
+    QString fileName;
+    QPushButton*pushButton1;
+public:
+    ReadNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        setMinimumSize(400,300);
+        pushButton1=new QPushButton("Read Image File",this);
+        connect(pushButton1,SIGNAL(clicked()),this,SLOT(pushButton1Clicked()));
+    }
+private slots:
+    void pushButton1Clicked(){
+        fileName=QFileDialog::getOpenFileName(this,"Read Image File","",fileExtensions);
+        QFileInfo info(fileName);
+        if(info.suffix()=="") QMessageBox::critical(this,"Error","Invalid File");
     }
 };
 
@@ -80,7 +104,7 @@ protected:
         update();
         return QGraphicsItem::mouseReleaseEvent(event);
     };
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
         QAction*connectOutput=menu.addAction("Connect Output");
         QAction*connectInput=menu.addAction("Connect Input");
@@ -135,14 +159,13 @@ protected:
         delete properties;
     };
 public:
-    node(QGraphicsScene*scene,vector<node*>&destruc,QString name="node",int width=200,int height=75)
+    node(QGraphicsScene*scene,vector<node*>&destruc,QString name="node"+QString::number(lastIndex++),int width=200,int height=75)
         :scene(scene),name(name),width(width),height(height),
         input(NULL),output(NULL),inputLine(NULL),outputLine(NULL)
     {
         destruc.push_back(this);
         setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsScenePositionChanges);
         pressed=false;
-        propW=new PropertiesWindow(name);
     }
     ~node(){
         if(inputLine!=NULL){
@@ -206,4 +229,72 @@ public:
     }
     static int lastIndex;
     static node*inputScene,*outputScene;
+};
+
+class readNode:public node{
+protected:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+            QRectF rect=boundingRect();
+            QLinearGradient grad(0,0,0,height);
+            grad.setColorAt(0,QColor(184,15,10));
+            grad.setColorAt(0.5,QColor(225,36,0));
+            grad.setColorAt(1,QColor(184,15,10));
+            painter->fillRect(rect,grad);
+            QPen pen;
+            pen.setWidth(2);
+            painter->setPen(pen);
+            painter->drawRect(rect);
+            QFont font;
+            font.setPixelSize(40);
+            painter->setFont(font);
+            if(!pressed) pen.setColor(Qt::black);
+            else pen.setColor(QColor(246,228,134));
+            painter->setPen(pen);
+            painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
+            font.setPixelSize(10);
+            painter->setFont(font);
+            painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
+
+        };
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
+            QMenu menu;
+            QAction*connectOutput=menu.addAction("Connect Output");
+            QAction*disconnectOutput=menu.addAction("Disconnect Output");
+            QAction*deleteNode=menu.addAction("Delete Node");
+            QAction*properties=menu.addAction("Properties");
+            QAction*current=menu.exec(event->screenPos());
+            if(current==connectOutput){
+                if(inputScene!=NULL && inputScene!=this){
+                    if(output!=NULL) removeOutput();
+                    if(inputScene->getInput()!=NULL) inputScene->removeInput();
+                    setOutput(inputScene);
+                    inputScene=NULL;
+                }
+                else outputScene=this;
+            }
+            if(current==disconnectOutput){
+                if(output!=NULL) removeOutput();
+                inputScene=NULL;
+                outputScene=NULL;
+            }
+            if(current==deleteNode){
+                if(input!=NULL) removeInput();
+                if(output!=NULL) removeOutput();
+                scene->removeItem(this);
+                inputScene=NULL;
+                outputScene=NULL;
+            }
+            if(current==properties){
+                propW->show();
+            }
+            delete connectOutput;
+            delete disconnectOutput;
+            delete deleteNode;
+            delete properties;
+        };
+public:
+    readNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="readNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        propW=new ReadNodePropertiesWindow(name);
+    }
+    static int lastIndex;
 };
