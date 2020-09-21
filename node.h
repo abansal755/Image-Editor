@@ -256,7 +256,6 @@ protected:
             font.setPixelSize(10);
             painter->setFont(font);
             painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
-
         };
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
             QMenu menu;
@@ -301,4 +300,56 @@ public:
         propW=new ReadNodePropertiesWindow(name);
     }
     static int lastIndex;
+};
+
+class viewerNode:public node{
+protected:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+        QRectF rect=boundingRect();
+        QLinearGradient grad(0,0,0,height);
+        grad.setColorAt(0,QColor(184,15,10));
+        grad.setColorAt(0.5,QColor(225,36,0));
+        grad.setColorAt(1,QColor(184,15,10));
+        painter->fillRect(rect,grad);
+        QPen pen;
+        pen.setWidth(2);
+        painter->setPen(pen);
+        painter->drawRect(rect);
+        QFont font;
+        font.setPixelSize(35);
+        painter->setFont(font);
+        if(!pressed) pen.setColor(Qt::black);
+        else pen.setColor(QColor(246,228,134));
+        painter->setPen(pen);
+        painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
+        font.setPixelSize(10);
+        painter->setFont(font);
+        painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");
+    };
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
+            QMenu menu;
+            QAction*connectInput=menu.addAction("Connect Input");
+            QAction*disconnectInput=menu.addAction("Disconnect Input");
+            QAction*current=menu.exec(event->screenPos());
+            if(current==connectInput){
+                if(outputScene!=NULL && outputScene!=NULL){
+                    if(input!=NULL) removeInput();
+                    if(outputScene->getOutput()!=NULL) outputScene->removeOutput();
+                    setInput(outputScene);
+                    outputScene=NULL;
+                }
+                else inputScene=this;
+            }
+            if(current==disconnectInput){
+                if(input!=NULL) removeInput();
+                inputScene=NULL;
+                outputScene=NULL;
+            }
+            delete connectInput;
+            delete  disconnectInput;
+        };
+public:
+    viewerNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="viewerNode"):node(scene,destruc,name){
+        propW=NULL;
+    }
 };

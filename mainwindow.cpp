@@ -21,6 +21,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent),ui(new Ui::MainWind
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
     ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
     ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+    viewerNode*n=new viewerNode(scene,destruc);
+    scene->addItem(n);
+    n->setPos(-100,-37.5);
 }
 
 MainWindow::~MainWindow()
