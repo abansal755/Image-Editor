@@ -17,5 +17,7 @@ public:
         horizontalScrollBar()->hide();
         verticalScrollBar()->hide();
         setDragMode(QGraphicsView::ScrollHandDrag);
+        setRenderHint(QPainter::Antialiasing);
+        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     }
 };

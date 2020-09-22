@@ -17,8 +17,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent),ui(new Ui::MainWind
     canv=new canvas(ui->graphicsView,scene,&destruc);
     scene->setSceneRect(canv->boundingRect());
     scene->addItem(canv);
-    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
-    ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     ui->graphicsView->setScene(scene);
 
     viewNode=new viewerNode(scene,destruc);

@@ -20,7 +20,9 @@ void ImageViewer::on_pushButton_clicked()
     scene->clear();
     if(viewNode->getInput()==NULL) return;
     if(viewNode->getInput()->imageCalculate(image)){
-        scene->addPixmap(QPixmap::fromImage(image));
+        QGraphicsPixmapItem*pix=scene->addPixmap(QPixmap::fromImage(image));
+        pix->setPos(-(float)image.width()/2,-(float)image.height()/2);
+        graphicsView->setSceneRect(-(float)image.width()/2,-(float)image.height()/2,image.width(),image.height());
         graphicsView->centerOn(0,0);
     }
 }
