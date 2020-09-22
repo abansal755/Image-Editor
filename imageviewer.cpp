@@ -17,9 +17,9 @@ ImageViewer::~ImageViewer()
 void ImageViewer::on_pushButton_clicked()
 {
     //Refresh Button
+    scene->clear();
     if(viewNode->getInput()==NULL) return;
     if(viewNode->getInput()->imageCalculate(image)){
-        scene->clear();
         scene->addPixmap(QPixmap::fromImage(image));
         graphicsView->centerOn(0,0);
     }
