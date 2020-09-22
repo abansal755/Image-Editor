@@ -7,6 +7,7 @@ sliderFloat::sliderFloat(QWidget *parent) :
 {
     ui->setupUi(this);
     divisor=1;
+    defaultValue=0;
 }
 
 sliderFloat::~sliderFloat()
@@ -28,12 +29,18 @@ float sliderFloat::getValue(){
     return (float)(ui->horizontalSlider->value())/divisor;
 }
 
-void sliderFloat::setValue(float value){
+void sliderFloat::setDefaultValue(float value){
     ui->horizontalSlider->setValue(value*divisor);
     ui->doubleSpinBox->setValue(value);
+    defaultValue=value;
 }
 
 void sliderFloat::on_horizontalSlider_valueChanged(int value)
 {
     ui->doubleSpinBox->setValue((float)value/divisor);
+}
+
+void sliderFloat::on_pushButton_clicked()
+{
+    setDefaultValue(defaultValue);
 }

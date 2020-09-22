@@ -17,12 +17,14 @@ public:
     void setText(QString text);
     void setRange(int min,int max);
     int getValue();
-    void setValue(int value);
+    void setDefaultValue(int value);
 private slots:
     void on_horizontalSlider_valueChanged(int value);
+    void on_pushButton_clicked();
 
 private:
     Ui::sliderInt *ui;
+    int defaultValue;
 };
 
 #endif // SLIDERINT_H

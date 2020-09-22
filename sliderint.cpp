@@ -6,6 +6,7 @@ sliderInt::sliderInt(QWidget *parent) :
     ui(new Ui::sliderInt)
 {
     ui->setupUi(this);
+    defaultValue=0;
 }
 
 sliderInt::~sliderInt()
@@ -26,12 +27,18 @@ int sliderInt::getValue(){
     return ui->horizontalSlider->value();
 }
 
-void sliderInt::setValue(int value){
+void sliderInt::setDefaultValue(int value){
     ui->horizontalSlider->setValue(value);
     ui->spinBox->setValue(value);
+    defaultValue=value;
 }
 
 void sliderInt::on_horizontalSlider_valueChanged(int value)
 {
     ui->spinBox->setValue(value);
+}
+
+void sliderInt::on_pushButton_clicked()
+{
+    setDefaultValue(defaultValue);
 }
