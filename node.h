@@ -8,8 +8,13 @@
 #include<QPushButton>
 #include<QFileDialog>
 #include<QMessageBox>
+#include<QTextEdit>
 #include"sliderint.h"
 #include"sliderfloat.h"
+#include<QHBoxLayout>
+#include<QVBoxLayout>
+#include<QSpacerItem>
+#include<QLabel>
 
 using namespace std;
 
@@ -29,18 +34,54 @@ public:
 class ReadNodePropertiesWindow:public PropertiesWindow{
 private:
     Q_OBJECT
+    QHBoxLayout*hBoxLayout1;
+    QHBoxLayout*hBoxLayout2;
+    QVBoxLayout*vBoxLayout1;
     QPushButton*pushButton1;
+    QTextEdit*textEdit1;
+    QTextEdit*textEdit2;
+    QLabel*label1;
 public:
     ReadNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
-        setMinimumSize(400,300);
-        pushButton1=new QPushButton("Read Image File",this);
+        hBoxLayout1=new QHBoxLayout;
+        hBoxLayout2=new QHBoxLayout;
+        vBoxLayout1=new QVBoxLayout;
+        textEdit1=new QTextEdit;
+        textEdit2=new QTextEdit;
+        pushButton1=new QPushButton("Read Image File");
+        label1=new QLabel("File Size(in bytes):");
+
+        textEdit1->setFixedHeight(23);
+        textEdit1->setDisabled(true);
+        textEdit2->setFixedHeight(23);
+        textEdit2->setDisabled(true);
+
+        hBoxLayout1->addWidget(textEdit1);
+        hBoxLayout1->addWidget(pushButton1);
+
+        hBoxLayout2->addWidget(label1);
+        hBoxLayout2->addWidget(textEdit2);
+
+        vBoxLayout1->addLayout(hBoxLayout1);
+        vBoxLayout1->addLayout(hBoxLayout2);
+        vBoxLayout1->insertStretch(2);
+        setLayout(vBoxLayout1);
+
         connect(pushButton1,SIGNAL(clicked()),this,SLOT(pushButton1Clicked()));
     }
 private slots:
     void pushButton1Clicked(){
         fileName=QFileDialog::getOpenFileName(this,"Read Image File","",fileExtensions);
         QFileInfo info(fileName);
-        if(info.suffix()=="") QMessageBox::critical(this,"Error","Invalid File");
+        if(info.suffix()==""){
+            QMessageBox::critical(this,"Error","Invalid File");
+            fileName="";
+            textEdit1->setText("");
+            textEdit2->setText("");
+        }else{
+            textEdit1->setText(fileName);
+            textEdit2->setText(QString::number(info.size()));
+        }
     }
 };
 
@@ -78,7 +119,7 @@ private:
 public:
     ContrastNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
         slider=new sliderInt(this);
-        slider->setText("COntrast:");
+        slider->setText("Contrast:");
         slider->setRange(-255,255);
     }
     float getValue(){
@@ -285,6 +326,16 @@ public:
         if(getIsReadNode()) return image.load(propW->getFileName());
         if(getInput()==NULL) return false;
         return getInput()->imageCalculate(image);
+    }
+    float clampF(float i){
+        if(i>1) return 1;
+        else if(i<0) return 0;
+        else return i;
+    }
+    int clamp(int i){
+        if(i>255) return 255;
+        else if(i<0) return 0;
+        else return i;
     }
     static int lastIndex;
     static node*inputScene,*outputScene;
@@ -534,16 +585,6 @@ private:
             painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
 
         };
-    float clampF(float i){
-        if(i>1) return 1;
-        else if(i<0) return 0;
-        else return i;
-    }
-    int clamp(int i){
-        if(i>255) return 255;
-        else if(i<0) return 0;
-        else return i;
-    }
     void contrast(QImage&img,int c){
         float f=(259*((float)c+255))/(255*(259-(float)c));
         for(int y=0;y<img.height();y++){
