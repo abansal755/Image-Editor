@@ -72,6 +72,20 @@ public:
     }
 };
 
+class ContrastNodePropertiesWindow:public PropertiesWindow{
+private:
+    sliderInt*slider;
+public:
+    ContrastNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        slider=new sliderInt(this);
+        slider->setText("COntrast:");
+        slider->setRange(-255,255);
+    }
+    float getValue(){
+        return slider->getValue();
+    }
+};
+
 class node:public QGraphicsItem{
 protected:
     QString name;
@@ -489,6 +503,77 @@ public:
             bool ans=getInput()->imageCalculate(image);
             if(!ans) return false;
             saturate(image,win->getValue());
+            return true;
+    }
+    static int lastIndex;
+};
+
+class contrastNode:public node{
+private:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+            QRectF rect=boundingRect();
+            QLinearGradient grad(0,0,0,height);
+            grad.setColorAt(0,QColor(184,15,10));
+            grad.setColorAt(0.5,QColor(225,36,0));
+            grad.setColorAt(1,QColor(184,15,10));
+            painter->fillRect(rect,grad);
+            QPen pen;
+            pen.setWidth(2);
+            painter->setPen(pen);
+            painter->drawRect(rect);
+            QFont font;
+            font.setPixelSize(30);
+            painter->setFont(font);
+            if(!pressed) pen.setColor(Qt::black);
+            else pen.setColor(QColor(246,228,134));
+            painter->setPen(pen);
+            painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
+            font.setPixelSize(10);
+            painter->setFont(font);
+            painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");
+            painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
+
+        };
+    float clampF(float i){
+        if(i>1) return 1;
+        else if(i<0) return 0;
+        else return i;
+    }
+    int clamp(int i){
+        if(i>255) return 255;
+        else if(i<0) return 0;
+        else return i;
+    }
+    void contrast(QImage&img,int c){
+        float f=(259*((float)c+255))/(255*(259-(float)c));
+        for(int y=0;y<img.height();y++){
+            for(int x=0;x<img.width();x++){
+                QColor c=img.pixelColor(x,y);
+                int r=c.red();
+                int g=c.green();
+                int b=c.blue();
+                r=clamp(f*(r-128)+128);
+                g=clamp(f*(g-128)+128);
+                b=clamp(f*(b-128)+128);
+                c.setRed(r);
+                c.setGreen(g);
+                c.setBlue(b);
+                img.setPixelColor(x,y,c);
+            }
+        }
+    }
+    ContrastNodePropertiesWindow*win;
+public:
+    contrastNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="contrastNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        win=new ContrastNodePropertiesWindow(getName());
+        propW=win;
+    }
+    bool imageCalculate(QImage&image){
+            if(getIsReadNode()) return image.load(propW->getFileName());
+            if(getInput()==NULL) return false;
+            bool ans=getInput()->imageCalculate(image);
+            if(!ans) return false;
+            contrast(image,win->getValue());
             return true;
     }
     static int lastIndex;

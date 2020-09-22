@@ -17,6 +17,7 @@ private:
         QAction*newReadNode=newNode->addAction("Read Node");
         QAction*newBlurNode=newNode->addAction("Blur Node");
         QAction*newSaturateNode=newNode->addAction("Saturate Node");
+        QAction*newContrastNode=newNode->addAction("Contrast Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -32,6 +33,11 @@ private:
         }
         if(current==newSaturateNode){
             saturateNode*n=new saturateNode(scene,*destruc);
+            scene->addItem(n);
+            n->setPos(event->scenePos());
+        }
+        if(current==newContrastNode){
+            contrastNode*n=new contrastNode(scene,*destruc);
             scene->addItem(n);
             n->setPos(event->scenePos());
         }
