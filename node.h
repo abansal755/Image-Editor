@@ -9,6 +9,7 @@
 #include<QFileDialog>
 #include<QMessageBox>
 #include"sliderint.h"
+#include"sliderfloat.h"
 
 using namespace std;
 
@@ -53,6 +54,20 @@ public:
         slider->setRange(0,5);
     }
     int getValue(){
+        return slider->getValue();
+    }
+};
+
+class SaturateNodePropertiesWindow:public PropertiesWindow{
+private:
+    sliderFloat*slider;
+public:
+    SaturateNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        slider=new sliderFloat(this);
+        slider->setText("Saturate:");
+        slider->setRange(-100,100,100);
+    }
+    float getValue(){
         return slider->getValue();
     }
 };
@@ -423,12 +438,69 @@ public:
         win=new BlurNodePropertiesWindow(getName());
         propW=win;
     }
-    virtual bool imageCalculate(QImage&image){
+    bool imageCalculate(QImage&image){
             if(getIsReadNode()) return image.load(propW->getFileName());
             if(getInput()==NULL) return false;
             bool ans=getInput()->imageCalculate(image);
             if(!ans) return false;
             blur(image,win->getValue());
+            return true;
+    }
+    static int lastIndex;
+};
+
+class saturateNode:public node{
+private:
+    void saturate(QImage&img,float x){
+        for(int i=0;i<img.height();i++){
+            for(int j=0;j<img.width();j++){
+                 QColor c=img.pixelColor(j,i);
+                 float h=c.hueF();
+                 float s=c.saturationF();
+                 float v=c.valueF();
+                 if(x>=0) s+=(1-s)*x;
+                 else s*=1-abs(x);
+                 c.setHsvF(h,s,v);
+                 img.setPixelColor(j,i,c);
+            }
+        }
+    }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+            QRectF rect=boundingRect();
+            QLinearGradient grad(0,0,0,height);
+            grad.setColorAt(0,QColor(184,15,10));
+            grad.setColorAt(0.5,QColor(225,36,0));
+            grad.setColorAt(1,QColor(184,15,10));
+            painter->fillRect(rect,grad);
+            QPen pen;
+            pen.setWidth(2);
+            painter->setPen(pen);
+            painter->drawRect(rect);
+            QFont font;
+            font.setPixelSize(30);
+            painter->setFont(font);
+            if(!pressed) pen.setColor(Qt::black);
+            else pen.setColor(QColor(246,228,134));
+            painter->setPen(pen);
+            painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
+            font.setPixelSize(10);
+            painter->setFont(font);
+            painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");
+            painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
+
+        };
+    SaturateNodePropertiesWindow*win;
+public:
+    saturateNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="saturateNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        win=new SaturateNodePropertiesWindow(getName());
+        propW=win;
+    }
+    bool imageCalculate(QImage&image){
+            if(getIsReadNode()) return image.load(propW->getFileName());
+            if(getInput()==NULL) return false;
+            bool ans=getInput()->imageCalculate(image);
+            if(!ans) return false;
+            saturate(image,win->getValue());
             return true;
     }
     static int lastIndex;

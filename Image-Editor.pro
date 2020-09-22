@@ -19,7 +19,8 @@ SOURCES += \
     imageviewer.cpp \
     main.cpp \
     mainwindow.cpp \
-    sliderint.cpp
+    sliderint.cpp \
+    sliderfloat.cpp
 
 HEADERS += \
     canvas.h \
@@ -27,12 +28,14 @@ HEADERS += \
     imageviewer.h \
     mainwindow.h \
     node.h \
-    sliderint.h
+    sliderint.h \
+    sliderfloat.h
 
 FORMS += \
     imageviewer.ui \
     mainwindow.ui \
-    sliderint.ui
+    sliderint.ui \
+    sliderfloat.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

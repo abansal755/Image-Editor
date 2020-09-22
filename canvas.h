@@ -15,6 +15,7 @@ private:
         QMenu menu;
         QAction*newReadNode=menu.addAction("New Read Node");
         QAction*newBlurNode=menu.addAction("New Blur Node");
+        QAction*newSaturateNode=menu.addAction("New Saturate Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -28,6 +29,11 @@ private:
             scene->addItem(n);
             n->setPos(event->scenePos());
         }
+        if(current==newSaturateNode){
+            saturateNode*n=new saturateNode(scene,*destruc);
+            scene->addItem(n);
+            n->setPos(event->scenePos());
+        }
         if(current==centerView){
             gw->centerOn(0,0);
         }
@@ -36,6 +42,7 @@ private:
         }
         delete newReadNode;
         delete newBlurNode;
+        delete newSaturateNode;
         delete centerView;
         delete resetZoom;
     }
