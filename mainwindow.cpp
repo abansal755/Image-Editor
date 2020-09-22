@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent),ui(new Ui::MainWind
     scene->addItem(viewNode);
     viewNode->setPos(-(float)viewNode->getWidth()/2,-(float)viewNode->getHeight()/2);
 
-    imageViewer=new ImageViewer;
+    imageViewer=new ImageViewer(viewNode);
 }
 
 MainWindow::~MainWindow()

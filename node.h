@@ -14,16 +14,19 @@ using namespace std;
 class PropertiesWindow:public QWidget{
 protected:
     static QString fileExtensions;
+    QString fileName;
 public:
     PropertiesWindow(QString title,QWidget*parent=NULL):QWidget(parent){
         setWindowTitle(title);
+    }
+    QString getFileName(){
+        return fileName;
     }
 };
 
 class ReadNodePropertiesWindow:public PropertiesWindow{
 private:
     Q_OBJECT
-    QString fileName;
     QPushButton*pushButton1;
 public:
     ReadNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
@@ -48,6 +51,7 @@ protected:
     QGraphicsScene*scene;
     bool pressed;
     PropertiesWindow*propW;
+    bool isReadNode;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
         QRectF rect=boundingRect();
         QLinearGradient grad(0,0,0,height);
@@ -168,6 +172,7 @@ public:
         destruc.push_back(this);
         setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsScenePositionChanges);
         pressed=false;
+        isReadNode=false;
     }
     ~node(){
         if(inputLine!=NULL){
@@ -234,6 +239,14 @@ public:
     }
     int getHeight(){
         return height;
+    }
+    bool getIsReadNode(){
+        return isReadNode;
+    }
+    virtual bool imageCalculate(QImage&image){
+        if(getIsReadNode()) return image.load(propW->getFileName());
+        if(getInput()==NULL) return false;
+        return getInput()->imageCalculate(image);
     }
     static int lastIndex;
     static node*inputScene,*outputScene;
@@ -304,6 +317,7 @@ protected:
 public:
     readNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="readNode"+QString::number(lastIndex++)):node(scene,destruc,name){
         propW=new ReadNodePropertiesWindow(name);
+        isReadNode=true;
     }
     static int lastIndex;
 };
