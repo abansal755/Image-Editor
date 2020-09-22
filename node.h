@@ -187,12 +187,6 @@ protected:
             if(!(propW->isVisible())) propW->show();
             else propW->activateWindow();
         }
-        delete connectInput;
-        delete connectOutput;
-        delete  disconnectInput;
-        delete disconnectOutput;
-        delete deleteNode;
-        delete properties;
     };
 public:
     node(QGraphicsScene*scene,vector<node*>&destruc,QString name="node"+QString::number(lastIndex++),int width=200,int height=75)
@@ -339,10 +333,6 @@ protected:
                 if(!(propW->isVisible())) propW->show();
                 else propW->activateWindow();
             }
-            delete connectOutput;
-            delete disconnectOutput;
-            delete deleteNode;
-            delete properties;
         };
 public:
     readNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="readNode"+QString::number(lastIndex++)):node(scene,destruc,name){
@@ -395,8 +385,6 @@ protected:
                 inputScene=NULL;
                 outputScene=NULL;
             }
-            delete connectInput;
-            delete  disconnectInput;
         };
 public:
     viewerNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="viewerNode"):node(scene,destruc,name){

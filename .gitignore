@@ -12,3 +12,5 @@ Image-Editor.pro.user
 ui_imageviewer.h
 ui_sliderint.h
 ui_sliderfloat.h
+object_script.Image-Editor.Debug
+object_script.Image-Editor.Release

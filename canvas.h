@@ -13,9 +13,10 @@ private:
     GraphicsView*gw;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
-        QAction*newReadNode=menu.addAction("New Read Node");
-        QAction*newBlurNode=menu.addAction("New Blur Node");
-        QAction*newSaturateNode=menu.addAction("New Saturate Node");
+        QMenu*newNode=menu.addMenu("New Node");
+        QAction*newReadNode=newNode->addAction("Read Node");
+        QAction*newBlurNode=newNode->addAction("Blur Node");
+        QAction*newSaturateNode=newNode->addAction("Saturate Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -40,11 +41,6 @@ private:
         if(current==resetZoom){
             gw->resetTransform();
         }
-        delete newReadNode;
-        delete newBlurNode;
-        delete newSaturateNode;
-        delete centerView;
-        delete resetZoom;
     }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){}
 public:
