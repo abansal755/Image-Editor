@@ -16,8 +16,6 @@ public:
     GraphicsView(QWidget*parent):QGraphicsView(parent){
         horizontalScrollBar()->hide();
         verticalScrollBar()->hide();
-        setRenderHint(QPainter::Antialiasing);
         setDragMode(QGraphicsView::ScrollHandDrag);
-        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     }
 };

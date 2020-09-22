@@ -229,6 +229,12 @@ public:
     node*getOutput(){
         return output;
     }
+    int getWidth(){
+        return width;
+    }
+    int getHeight(){
+        return height;
+    }
     static int lastIndex;
     static node*inputScene,*outputScene;
 };

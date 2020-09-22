@@ -11,14 +11,18 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent),ui(new Ui::MainWind
 {
     ui->setupUi(this);
     scene=new QGraphicsScene(this);
-    canv=new canvas(scene,&destruc);
+    canv=new canvas(ui->graphicsView,scene,&destruc);
     scene->setSceneRect(canv->boundingRect());
     scene->addItem(canv);
+    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
+    ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     ui->graphicsView->setScene(scene);
 
     viewNode=new viewerNode(scene,destruc);
     scene->addItem(viewNode);
-    viewNode->setPos(-100,-37.5);
+    viewNode->setPos(-(float)viewNode->getWidth()/2,-(float)viewNode->getHeight()/2);
+
+    imageViewer=new ImageViewer;
 }
 
 MainWindow::~MainWindow()
@@ -26,4 +30,18 @@ MainWindow::~MainWindow()
     delete ui;
     for(int i=0;i<destruc.size();i++) delete destruc[i];
     delete canv;
+    delete imageViewer;
+}
+
+void MainWindow::on_actionViewer_triggered()
+{
+    //View Menu Button
+    if(!imageViewer->isVisible()) imageViewer->show();
+    else imageViewer->activateWindow();
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    //Exit Menu Button
+    QApplication::quit();
 }
