@@ -4,9 +4,8 @@
 ImageViewer::ImageViewer(viewerNode*viewNode,QWidget *parent) :QMainWindow(parent),ui(new Ui::ImageViewer),viewNode(viewNode)
 {
     ui->setupUi(this);
-    graphicsView=ui->graphicsView;
-    scene=new QGraphicsScene(graphicsView);
-    graphicsView->setScene(scene);
+    scene=new QGraphicsScene(ui->graphicsView);
+    ui->graphicsView->setScene(scene);
 }
 
 ImageViewer::~ImageViewer()
@@ -22,7 +21,7 @@ void ImageViewer::on_pushButton_clicked()
     if(viewNode->getInput()->imageCalculate(image)){
         QGraphicsPixmapItem*pix=scene->addPixmap(QPixmap::fromImage(image));
         pix->setPos(-(float)image.width()/2,-(float)image.height()/2);
-        graphicsView->setSceneRect(-(float)image.width()/2,-(float)image.height()/2,image.width(),image.height());
-        graphicsView->centerOn(0,0);
+        ui->graphicsView->setSceneRect(-(float)image.width()/2,-(float)image.height()/2,image.width(),image.height());
+        ui->graphicsView->centerOn(0,0);
     }
 }

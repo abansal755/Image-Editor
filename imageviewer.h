@@ -47,7 +47,6 @@ public:
 private slots:
     void on_pushButton_clicked();
 private:
-    ImageGraphicsView*graphicsView;
     Ui::ImageViewer *ui;
     QGraphicsScene*scene;
     QImage image;
