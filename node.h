@@ -88,11 +88,17 @@ private slots:
 class BlurNodePropertiesWindow:public PropertiesWindow{
 private:
     sliderInt*slider;
+    QVBoxLayout*vBoxLayout1;
 public:
     BlurNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
-        slider=new sliderInt(this);
+        slider=new sliderInt;
         slider->setText("Blur Radius:");
         slider->setRange(0,5);
+
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addWidget(slider);
+        vBoxLayout1->insertStretch(1);
+        setLayout(vBoxLayout1);
     }
     int getValue(){
         return slider->getValue();
@@ -102,11 +108,17 @@ public:
 class SaturateNodePropertiesWindow:public PropertiesWindow{
 private:
     sliderFloat*slider;
+    QVBoxLayout*vBoxLayout1;
 public:
     SaturateNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
-        slider=new sliderFloat(this);
+        slider=new sliderFloat;
         slider->setText("Saturate:");
         slider->setRange(-100,100,100);
+
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addWidget(slider);
+        vBoxLayout1->insertStretch(1);
+        setLayout(vBoxLayout1);
     }
     float getValue(){
         return slider->getValue();
@@ -116,11 +128,17 @@ public:
 class ContrastNodePropertiesWindow:public PropertiesWindow{
 private:
     sliderInt*slider;
+    QVBoxLayout*vBoxLayout1;
 public:
     ContrastNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
-        slider=new sliderInt(this);
+        slider=new sliderInt;
         slider->setText("Contrast:");
         slider->setRange(-255,255);
+
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addWidget(slider);
+        vBoxLayout1->insertStretch(1);
+        setLayout(vBoxLayout1);
     }
     float getValue(){
         return slider->getValue();
