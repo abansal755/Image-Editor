@@ -230,7 +230,7 @@ protected:
             else outputScene=this;
         }
         if(current==connectInput){
-            if(outputScene!=NULL && outputScene!=NULL){
+            if(outputScene!=NULL && outputScene!=this){
                 if(input!=NULL) removeInput();
                 if(outputScene->output!=NULL) outputScene->removeOutput();
                 setInput(outputScene);
