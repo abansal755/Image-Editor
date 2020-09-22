@@ -14,11 +14,17 @@ private:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
         QAction*newReadNode=menu.addAction("New Read Node");
+        QAction*newBlurNode=menu.addAction("New Blur Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
         if(current==newReadNode){
             readNode*n=new readNode(scene,*destruc);
+            scene->addItem(n);
+            n->setPos(event->scenePos());
+        }
+        if(current==newBlurNode){
+            blurNode*n=new blurNode(scene,*destruc);
             scene->addItem(n);
             n->setPos(event->scenePos());
         }
@@ -29,6 +35,7 @@ private:
             gw->resetTransform();
         }
         delete newReadNode;
+        delete newBlurNode;
         delete centerView;
         delete resetZoom;
     }

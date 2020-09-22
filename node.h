@@ -151,7 +151,7 @@ protected:
             scene->removeItem(this);
             inputScene=NULL;
             outputScene=NULL;
-            propW->hide();
+            if(propW!=NULL) propW->hide();
         }
         if(current==properties){
             if(!(propW->isVisible())) propW->show();
@@ -183,7 +183,7 @@ public:
             output->inputLine=NULL;
             delete outputLine;
         }
-        delete propW;
+        if(propW!=NULL) delete propW;
     }
     QRectF boundingRect() const{
         return QRectF(0,0,width,height);
@@ -372,4 +372,47 @@ public:
     viewerNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="viewerNode"):node(scene,destruc,name){
         propW=NULL;
     }
+};
+
+class blurNode:public node{
+private:
+    void blur(QImage&img,int radius=1){
+        int width = img.width(), height = img.height();
+        QImage img1(width,height,img.format());
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int r = 0, g = 0, b = 0;
+                int num = 0;
+                for (int di = -radius; di <= radius; di++) {
+                    for (int dj = -radius; dj <= radius; dj++) {
+                        if (i + di < 0 || i + di >= height) continue;
+                        if (j + dj < 0 || j + dj >= width) continue;
+                        QColor c=img.pixelColor(j+dj,i+di);
+                        r += c.red();
+                        g += c.green();
+                        b += c.blue();
+                        num++;
+                    }
+                }
+                r /= num;
+                g /= num;
+                b /= num;
+                img1.setPixelColor(j,i,qRgb(r,g,b));
+            }
+        }
+        img=img1;
+    }
+public:
+    blurNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="blurNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        propW=new PropertiesWindow(getName());
+    }
+    virtual bool imageCalculate(QImage&image){
+            if(getIsReadNode()) return image.load(propW->getFileName());
+            if(getInput()==NULL) return false;
+            bool ans=getInput()->imageCalculate(image);
+            if(!ans) return false;
+            blur(image,2);
+            return true;
+    }
+    static int lastIndex;
 };
