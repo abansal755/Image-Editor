@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include<QScrollBar>
 
 int node::lastIndex=0;
 int readNode::lastIndex=0;
@@ -15,16 +14,11 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent),ui(new Ui::MainWind
     canv=new canvas(scene,&destruc);
     scene->setSceneRect(canv->boundingRect());
     scene->addItem(canv);
-    ui->graphicsView->horizontalScrollBar()->hide();
-    ui->graphicsView->verticalScrollBar()->hide();
     ui->graphicsView->setScene(scene);
-    ui->graphicsView->setRenderHint(QPainter::Antialiasing);
-    ui->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
-    ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 
-    viewerNode*n=new viewerNode(scene,destruc);
-    scene->addItem(n);
-    n->setPos(-100,-37.5);
+    viewNode=new viewerNode(scene,destruc);
+    scene->addItem(viewNode);
+    viewNode->setPos(-100,-37.5);
 }
 
 MainWindow::~MainWindow()

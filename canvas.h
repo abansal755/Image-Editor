@@ -11,20 +11,13 @@ private:
     vector<node*>*destruc;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
-//        QAction*newNode=menu.addAction("New Node");
         QAction*newReadNode=menu.addAction("New Read Node");
         QAction*current=menu.exec(event->screenPos());
-//        if(current==newNode){
-//            node*n=new node(scene,*destruc,"node"+QString::number(node::lastIndex++));
-//            scene->addItem(n);
-//            n->setPos(event->scenePos());
-//        }
         if(current==newReadNode){
             readNode*n=new readNode(scene,*destruc);
             scene->addItem(n);
             n->setPos(event->scenePos());
         }
-//        delete newNode;
         delete newReadNode;
     }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){}

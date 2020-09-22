@@ -2,6 +2,7 @@
 #include<QGraphicsView>
 #include<QDebug>
 #include<QWheelEvent>
+#include<QScrollBar>
 
 class GraphicsView:public QGraphicsView{
 private:
@@ -12,5 +13,11 @@ private:
         else scale(1/factor,1/factor);
     }
 public:
-    GraphicsView(QWidget*parent):QGraphicsView(parent){}
+    GraphicsView(QWidget*parent):QGraphicsView(parent){
+        horizontalScrollBar()->hide();
+        verticalScrollBar()->hide();
+        setRenderHint(QPainter::Antialiasing);
+        setDragMode(QGraphicsView::ScrollHandDrag);
+        setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    }
 };

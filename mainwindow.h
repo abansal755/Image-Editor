@@ -26,5 +26,6 @@ private:
     QGraphicsScene*scene;
     vector<node*> destruc;
     canvas*canv;
+    viewerNode*viewNode;
 };
 #endif // MAINWINDOW_H
