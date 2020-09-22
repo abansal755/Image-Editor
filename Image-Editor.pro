@@ -18,18 +18,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     imageviewer.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    sliderint.cpp
 
 HEADERS += \
     canvas.h \
     graphicsview.h \
     imageviewer.h \
     mainwindow.h \
-    node.h
+    node.h \
+    sliderint.h
 
 FORMS += \
     imageviewer.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    sliderint.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

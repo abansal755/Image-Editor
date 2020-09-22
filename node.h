@@ -8,6 +8,7 @@
 #include<QPushButton>
 #include<QFileDialog>
 #include<QMessageBox>
+#include"sliderint.h"
 
 using namespace std;
 
@@ -39,6 +40,20 @@ private slots:
         fileName=QFileDialog::getOpenFileName(this,"Read Image File","",fileExtensions);
         QFileInfo info(fileName);
         if(info.suffix()=="") QMessageBox::critical(this,"Error","Invalid File");
+    }
+};
+
+class BlurNodePropertiesWindow:public PropertiesWindow{
+private:
+    sliderInt*slider;
+public:
+    BlurNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        slider=new sliderInt(this);
+        slider->setText("Blur Radius:");
+        slider->setRange(0,5);
+    }
+    int getValue(){
+        return slider->getValue();
     }
 };
 
@@ -402,16 +417,18 @@ private:
         }
         img=img1;
     }
+    BlurNodePropertiesWindow*win;
 public:
     blurNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="blurNode"+QString::number(lastIndex++)):node(scene,destruc,name){
-        propW=new PropertiesWindow(getName());
+        win=new BlurNodePropertiesWindow(getName());
+        propW=win;
     }
     virtual bool imageCalculate(QImage&image){
             if(getIsReadNode()) return image.load(propW->getFileName());
             if(getInput()==NULL) return false;
             bool ans=getInput()->imageCalculate(image);
             if(!ans) return false;
-            blur(image,2);
+            blur(image,win->getValue());
             return true;
     }
     static int lastIndex;
