@@ -19,6 +19,51 @@
   <property name="windowTitle">
    <string>Image Editor</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget{
+ 	 background-color:#171717;
+	color : #FAF9F7;
+	font-family: system-ui;
+} 
+QMenu {
+    background-color: #616E7C; 
+    border: 1px solid black;
+}
+QMenu::item {
+    background-color:  627D98;
+}
+QMenu::item:selected { 
+    background-color: #102A43;
+}
+QMenuBar {
+    background-color: #102A43;
+    spacing: 3px; 
+}
+QMenu::item:hover{
+	color : red;	
+	background-color : white;
+}
+QPushButton {
+    background-color: #36D6C2;
+    border-width: 1px;
+    border-radius: 8px;
+    border-color: beige;
+    font: bold 10px;
+    min-width: 10em;
+    padding: 6px;
+}
+QPushButton:hover
+{
+   background-color:#373B41;
+	color :#CA17FF;
+}
+QSlider {
+    position: absolute; /* absolutely position 4px from the left and right of the widget. setting margins on the widget should work too... */
+    left: 4px; right: 4px;
+}
+
+</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -30,7 +75,11 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="QGraphicsView" name="graphicsView"/>
+       <widget class="QGraphicsView" name="graphicsView">
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+       </widget>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -60,6 +109,11 @@
             <width>150</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">
+QPushButton{qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 0, 0, 255), stop:0.339795 rgba(255, 0, 0, 255), stop:0.339799 rgba(255, 255, 255, 255), stop:0.662444 rgba(255, 255, 255, 255), stop:0.662469 rgba(0, 0, 255, 255), stop:1 rgba(0, 0, 255, 255));
+}</string>
           </property>
           <property name="minimum">
            <number>1</number>
@@ -121,8 +175,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>367</width>
-         <height>592</height>
+         <width>501</width>
+         <height>610</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -133,6 +187,11 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QGroupBox {
+	color : #FFE042;
+}</string>
           </property>
           <property name="title">
            <string>Image transformations:</string>
@@ -227,6 +286,11 @@
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_3">
+          <property name="styleSheet">
+           <string notr="true">QGroupBox{
+color : #FFE042;
+}</string>
+          </property>
           <property name="title">
            <string>Grading:</string>
           </property>
@@ -452,6 +516,11 @@
           </property>
           <property name="autoFillBackground">
            <bool>false</bool>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QGroupBox{
+color : #FFE042;
+}</string>
           </property>
           <property name="title">
            <string>Other:</string>
@@ -687,7 +756,7 @@
      <x>0</x>
      <y>0</y>
      <width>1084</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -709,7 +778,6 @@
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpen_image">
    <property name="text">
     <string>Open Image</string>
