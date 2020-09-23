@@ -10,7 +10,7 @@ private:
         int delta=event->angleDelta().y();
         float factor=1.1;
         if(delta>0) scale(factor,factor);
-        else scale(1/factor,1/factor);
+        if(delta<0)scale(1/factor,1/factor);
     }
 public:
     GraphicsView(QWidget*parent):QGraphicsView(parent){
