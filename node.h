@@ -15,6 +15,7 @@
 #include<QVBoxLayout>
 #include<QSpacerItem>
 #include<QLabel>
+#include<math.h>
 
 //x - font size, y - input, z- output
 #define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillRect(rect,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawRect(rect);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
@@ -183,6 +184,26 @@ public:
     }
     float getOffset(){
         return sliderOffset->getValue();
+    }
+};
+
+class GammaNodePropertiesWindow:public PropertiesWindow{
+private:
+    sliderFloat*slider1;
+    QVBoxLayout*vBoxLayout1;
+public:
+    GammaNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        slider1=new sliderFloat;
+        slider1->setText("Gamma:");
+        slider1->setRange(0,500,100);
+        slider1->setDefaultValue(1);
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addWidget(slider1);
+        vBoxLayout1->insertStretch(1);
+        setLayout(vBoxLayout1);
+    }
+    float getValue(){
+        return slider1->getValue();
     }
 };
 
@@ -605,5 +626,37 @@ public:
         grade(image,win->getLift(),win->getGain(),win->getOffset());
         return true;
     }
+    static int lastIndex;
+};
+
+class gammaNode:public node{
+private:
+    void gammaCorrect(QImage&image,float gamma){
+        for(int y=0;y<image.height();y++){
+            for(int x=0;x<image.width();x++){
+                QColor c=image.pixelColor(x,y);
+                c.setRed(255*pow((float)c.red()/255,1/gamma));
+                c.setGreen(255*pow((float)c.green()/255,1/gamma));
+                c.setBlue(255*pow((float)c.blue()/255,1/gamma));
+                image.setPixelColor(x,y,c);
+            }
+        }
+    }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+        PAINT_NODE(30,true,true);
+    };
+    GammaNodePropertiesWindow*win;
+public:
+    gammaNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="gammaNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        win=new GammaNodePropertiesWindow(getName());
+        propW=win;
+    }
+    bool imageCalculate(QImage &image){
+        if(getInput()==NULL) return false;
+        bool ans=getInput()->imageCalculate(image);
+        if(!ans) return false;
+        gammaCorrect(image,win->getValue());
+        return true;
+    };
     static int lastIndex;
 };
