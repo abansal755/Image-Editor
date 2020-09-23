@@ -4,6 +4,7 @@
 int node::lastIndex=0;
 int readNode::lastIndex=0;
 int blurNode::lastIndex=0;
+int gradeNode::lastIndex=0;
 int saturateNode::lastIndex=0;
 int contrastNode::lastIndex=0;
 node* node::inputScene=NULL;

@@ -16,6 +16,9 @@
 #include<QSpacerItem>
 #include<QLabel>
 
+//x - font size, y - input, z- output
+#define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillRect(rect,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawRect(rect);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
+
 using namespace std;
 
 class PropertiesWindow:public QWidget{
@@ -145,6 +148,44 @@ public:
     }
 };
 
+class GradeNodePropertiesWindow:public PropertiesWindow{
+private:
+    sliderFloat*sliderLift;
+    sliderFloat*sliderGain;
+    sliderFloat*sliderOffset;
+    QVBoxLayout*vBoxLayout1;
+public:
+    GradeNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        sliderLift=new sliderFloat;
+        sliderGain=new sliderFloat;
+        sliderOffset=new sliderFloat;
+
+        sliderLift->setText("Lift:");
+        sliderLift->setRange(-500,500,100);
+        sliderGain->setText("Gain:");
+        sliderGain->setRange(-500,500,100);
+        sliderGain->setDefaultValue(1);
+        sliderOffset->setText("Offset:");
+        sliderOffset->setRange(-500,500,100);
+
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addWidget(sliderLift);
+        vBoxLayout1->addWidget(sliderGain);
+        vBoxLayout1->addWidget(sliderOffset);
+        vBoxLayout1->insertStretch(3);
+        setLayout(vBoxLayout1);
+    }
+    float getLift(){
+        return sliderLift->getValue();
+    }
+    float getGain(){
+        return sliderGain->getValue();
+    }
+    float getOffset(){
+        return sliderOffset->getValue();
+    }
+};
+
 class node:public QGraphicsItem{
 protected:
     QString name;
@@ -156,28 +197,7 @@ protected:
     PropertiesWindow*propW;
     bool isReadNode;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        QRectF rect=boundingRect();
-        QLinearGradient grad(0,0,0,height);
-        grad.setColorAt(0,QColor(184,15,10));
-        grad.setColorAt(0.5,QColor(225,36,0));
-        grad.setColorAt(1,QColor(184,15,10));
-        painter->fillRect(rect,grad);
-        QPen pen;
-        pen.setWidth(2);
-        painter->setPen(pen);
-        painter->drawRect(rect);
-        QFont font;
-        font.setPixelSize(40);
-        painter->setFont(font);
-        if(!pressed) pen.setColor(Qt::black);
-        else pen.setColor(QColor(246,228,134));
-        painter->setPen(pen);
-        painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
-        font.setPixelSize(10);
-        painter->setFont(font);
-        painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");
-        painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
-
+        PAINT_NODE(40,true,true)
     };
     QVariant itemChange(GraphicsItemChange change, const QVariant &value){
         if(change==ItemPositionChange){
@@ -362,27 +382,8 @@ public:
 class readNode:public node{
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-            QRectF rect=boundingRect();
-            QLinearGradient grad(0,0,0,height);
-            grad.setColorAt(0,QColor(184,15,10));
-            grad.setColorAt(0.5,QColor(225,36,0));
-            grad.setColorAt(1,QColor(184,15,10));
-            painter->fillRect(rect,grad);
-            QPen pen;
-            pen.setWidth(2);
-            painter->setPen(pen);
-            painter->drawRect(rect);
-            QFont font;
-            font.setPixelSize(40);
-            painter->setFont(font);
-            if(!pressed) pen.setColor(Qt::black);
-            else pen.setColor(QColor(246,228,134));
-            painter->setPen(pen);
-            painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
-            font.setPixelSize(10);
-            painter->setFont(font);
-            painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
-        };
+            PAINT_NODE(40,false,true)
+    };
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
             QMenu menu;
             QAction*connectOutput=menu.addAction("Connect Output");
@@ -428,26 +429,7 @@ public:
 class viewerNode:public node{
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        QRectF rect=boundingRect();
-        QLinearGradient grad(0,0,0,height);
-        grad.setColorAt(0,QColor(184,15,10));
-        grad.setColorAt(0.5,QColor(225,36,0));
-        grad.setColorAt(1,QColor(184,15,10));
-        painter->fillRect(rect,grad);
-        QPen pen;
-        pen.setWidth(2);
-        painter->setPen(pen);
-        painter->drawRect(rect);
-        QFont font;
-        font.setPixelSize(35);
-        painter->setFont(font);
-        if(!pressed) pen.setColor(Qt::black);
-        else pen.setColor(QColor(246,228,134));
-        painter->setPen(pen);
-        painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
-        font.setPixelSize(10);
-        painter->setFont(font);
-        painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");
+        PAINT_NODE(35,true,false)
     };
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
             QMenu menu;
@@ -537,29 +519,8 @@ private:
         }
     }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-            QRectF rect=boundingRect();
-            QLinearGradient grad(0,0,0,height);
-            grad.setColorAt(0,QColor(184,15,10));
-            grad.setColorAt(0.5,QColor(225,36,0));
-            grad.setColorAt(1,QColor(184,15,10));
-            painter->fillRect(rect,grad);
-            QPen pen;
-            pen.setWidth(2);
-            painter->setPen(pen);
-            painter->drawRect(rect);
-            QFont font;
-            font.setPixelSize(30);
-            painter->setFont(font);
-            if(!pressed) pen.setColor(Qt::black);
-            else pen.setColor(QColor(246,228,134));
-            painter->setPen(pen);
-            painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
-            font.setPixelSize(10);
-            painter->setFont(font);
-            painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");
-            painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
-
-        };
+        PAINT_NODE(30,true,true)
+    };
     SaturateNodePropertiesWindow*win;
 public:
     saturateNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="saturateNode"+QString::number(lastIndex++)):node(scene,destruc,name){
@@ -580,29 +541,8 @@ public:
 class contrastNode:public node{
 private:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-            QRectF rect=boundingRect();
-            QLinearGradient grad(0,0,0,height);
-            grad.setColorAt(0,QColor(184,15,10));
-            grad.setColorAt(0.5,QColor(225,36,0));
-            grad.setColorAt(1,QColor(184,15,10));
-            painter->fillRect(rect,grad);
-            QPen pen;
-            pen.setWidth(2);
-            painter->setPen(pen);
-            painter->drawRect(rect);
-            QFont font;
-            font.setPixelSize(30);
-            painter->setFont(font);
-            if(!pressed) pen.setColor(Qt::black);
-            else pen.setColor(QColor(246,228,134));
-            painter->setPen(pen);
-            painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
-            font.setPixelSize(10);
-            painter->setFont(font);
-            painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");
-            painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
-
-        };
+        PAINT_NODE(30,true,true)
+    };
     void contrast(QImage&img,int c){
         float f=(259*((float)c+255))/(255*(259-(float)c));
         for(int y=0;y<img.height();y++){
@@ -633,6 +573,45 @@ public:
             bool ans=getInput()->imageCalculate(image);
             if(!ans) return false;
             contrast(image,win->getValue());
+            return true;
+    }
+    static int lastIndex;
+};
+
+class gradeNode:public node{
+private:
+    void grade(QImage&image, float lift,float gain,float offset){
+        for(int y=0;y<image.height();y++){
+            for(int x=0;x<image.width();x++){
+                QColor c=image.pixelColor(x,y);
+                float r=c.redF();
+                float g=c.greenF();
+                float b=c.blueF();
+                r=clampF((r*(gain-lift))+lift+offset);
+                g=clampF((g*(gain-lift))+lift+offset);
+                b=clampF((b*(gain-lift))+lift+offset);
+                c.setRedF(r);
+                c.setGreenF(g);
+                c.setBlueF(b);
+                image.setPixelColor(x,y,c);
+            }
+        }
+    }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+        PAINT_NODE(30,true,true)
+    };
+    GradeNodePropertiesWindow*win;
+public:
+    gradeNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="gradeNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        win=new GradeNodePropertiesWindow(getName());
+        propW=win;
+    }
+    bool imageCalculate(QImage&image){
+            if(getIsReadNode()) return image.load(propW->getFileName());
+            if(getInput()==NULL) return false;
+            bool ans=getInput()->imageCalculate(image);
+            if(!ans) return false;
+            grade(image,win->getLift(),win->getGain(),win->getOffset());
             return true;
     }
     static int lastIndex;
