@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    aboutdialog.cpp \
     imageviewer.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
     sliderfloat.cpp
 
 HEADERS += \
+    aboutdialog.h \
     canvas.h \
     graphicsview.h \
     imageviewer.h \
@@ -32,6 +34,7 @@ HEADERS += \
     sliderfloat.h
 
 FORMS += \
+    aboutdialog.ui \
     imageviewer.ui \
     mainwindow.ui \
     sliderint.ui \

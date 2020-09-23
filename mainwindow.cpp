@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "aboutdialog.h"
 
 int node::lastIndex=0;
 int readNode::lastIndex=0;
@@ -46,4 +47,11 @@ void MainWindow::on_actionExit_triggered()
 {
     //Exit Menu Button
     QApplication::quit();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    //About Menu Button
+    AboutDialog d;
+    d.exec();
 }
