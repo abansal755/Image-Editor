@@ -195,7 +195,6 @@ protected:
     QGraphicsScene*scene;
     bool pressed;
     PropertiesWindow*propW;
-    bool isReadNode;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
         PAINT_NODE(40,true,true)
     };
@@ -289,7 +288,6 @@ public:
         destruc.push_back(this);
         setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsScenePositionChanges);
         pressed=false;
-        isReadNode=false;
     }
     ~node(){
         if(inputLine!=NULL){
@@ -357,13 +355,8 @@ public:
     int getHeight(){
         return height;
     }
-    bool getIsReadNode(){
-        return isReadNode;
-    }
     virtual bool imageCalculate(QImage&image){
-        if(getIsReadNode()) return image.load(propW->getFileName());
-        if(getInput()==NULL) return false;
-        return getInput()->imageCalculate(image);
+        return false;
     }
     float clampF(float i){
         if(i>1) return 1;
@@ -385,43 +378,45 @@ protected:
             PAINT_NODE(40,false,true)
     };
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
-            QMenu menu;
-            QAction*connectOutput=menu.addAction("Connect Output");
-            QAction*disconnectOutput=menu.addAction("Disconnect Output");
-            QAction*deleteNode=menu.addAction("Delete Node");
-            QAction*properties=menu.addAction("Properties");
-            QAction*current=menu.exec(event->screenPos());
-            if(current==connectOutput){
-                if(inputScene!=NULL && inputScene!=this){
-                    if(output!=NULL) removeOutput();
-                    if(inputScene->getInput()!=NULL) inputScene->removeInput();
-                    setOutput(inputScene);
-                    inputScene=NULL;
-                }
-                else outputScene=this;
-            }
-            if(current==disconnectOutput){
+        QMenu menu;
+        QAction*connectOutput=menu.addAction("Connect Output");
+        QAction*disconnectOutput=menu.addAction("Disconnect Output");
+        QAction*deleteNode=menu.addAction("Delete Node");
+        QAction*properties=menu.addAction("Properties");
+        QAction*current=menu.exec(event->screenPos());
+        if(current==connectOutput){
+            if(inputScene!=NULL && inputScene!=this){
                 if(output!=NULL) removeOutput();
+                if(inputScene->getInput()!=NULL) inputScene->removeInput();
+                setOutput(inputScene);
                 inputScene=NULL;
-                outputScene=NULL;
             }
-            if(current==deleteNode){
-                if(input!=NULL) removeInput();
-                if(output!=NULL) removeOutput();
-                scene->removeItem(this);
-                inputScene=NULL;
-                outputScene=NULL;
-                propW->hide();
-            }
-            if(current==properties){
-                if(!(propW->isVisible())) propW->show();
-                else propW->activateWindow();
-            }
-        };
+            else outputScene=this;
+        }
+        if(current==disconnectOutput){
+            if(output!=NULL) removeOutput();
+            inputScene=NULL;
+            outputScene=NULL;
+        }
+        if(current==deleteNode){
+            if(input!=NULL) removeInput();
+            if(output!=NULL) removeOutput();
+            scene->removeItem(this);
+            inputScene=NULL;
+            outputScene=NULL;
+            propW->hide();
+        }
+        if(current==properties){
+            if(!(propW->isVisible())) propW->show();
+            else propW->activateWindow();
+        }
+    };
 public:
     readNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="readNode"+QString::number(lastIndex++)):node(scene,destruc,name){
         propW=new ReadNodePropertiesWindow(name);
-        isReadNode=true;
+    }
+    bool imageCalculate(QImage&image){
+        return image.load(propW->getFileName());
     }
     static int lastIndex;
 };
@@ -432,25 +427,25 @@ protected:
         PAINT_NODE(35,true,false)
     };
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
-            QMenu menu;
-            QAction*connectInput=menu.addAction("Connect Input");
-            QAction*disconnectInput=menu.addAction("Disconnect Input");
-            QAction*current=menu.exec(event->screenPos());
-            if(current==connectInput){
-                if(outputScene!=NULL && outputScene!=NULL){
-                    if(input!=NULL) removeInput();
-                    if(outputScene->getOutput()!=NULL) outputScene->removeOutput();
-                    setInput(outputScene);
-                    outputScene=NULL;
-                }
-                else inputScene=this;
-            }
-            if(current==disconnectInput){
+        QMenu menu;
+        QAction*connectInput=menu.addAction("Connect Input");
+        QAction*disconnectInput=menu.addAction("Disconnect Input");
+        QAction*current=menu.exec(event->screenPos());
+        if(current==connectInput){
+            if(outputScene!=NULL && outputScene!=NULL){
                 if(input!=NULL) removeInput();
-                inputScene=NULL;
+                if(outputScene->getOutput()!=NULL) outputScene->removeOutput();
+                setInput(outputScene);
                 outputScene=NULL;
             }
-        };
+            else inputScene=this;
+        }
+        if(current==disconnectInput){
+            if(input!=NULL) removeInput();
+            inputScene=NULL;
+            outputScene=NULL;
+        }
+    };
 public:
     viewerNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="viewerNode"):node(scene,destruc,name){
         propW=NULL;
@@ -480,7 +475,7 @@ private:
                 r /= num;
                 g /= num;
                 b /= num;
-                img1.setPixelColor(j,i,qRgb(r,g,b));
+                img1.setPixelColor(j,i,QColor(r,g,b,img.pixelColor(j,i).alpha()));
             }
         }
         img=img1;
@@ -492,12 +487,11 @@ public:
         propW=win;
     }
     bool imageCalculate(QImage&image){
-            if(getIsReadNode()) return image.load(propW->getFileName());
-            if(getInput()==NULL) return false;
-            bool ans=getInput()->imageCalculate(image);
-            if(!ans) return false;
-            blur(image,win->getValue());
-            return true;
+        if(getInput()==NULL) return false;
+        bool ans=getInput()->imageCalculate(image);
+        if(!ans) return false;
+        blur(image,win->getValue());
+        return true;
     }
     static int lastIndex;
 };
@@ -513,7 +507,7 @@ private:
                  float v=c.valueF();
                  if(x>=0) s+=(1-s)*x;
                  else s*=1-abs(x);
-                 c.setHsvF(h,s,v);
+                 c.setHsvF(h,s,v,c.alphaF());
                  img.setPixelColor(j,i,c);
             }
         }
@@ -528,12 +522,11 @@ public:
         propW=win;
     }
     bool imageCalculate(QImage&image){
-            if(getIsReadNode()) return image.load(propW->getFileName());
-            if(getInput()==NULL) return false;
-            bool ans=getInput()->imageCalculate(image);
-            if(!ans) return false;
-            saturate(image,win->getValue());
-            return true;
+        if(getInput()==NULL) return false;
+        bool ans=getInput()->imageCalculate(image);
+        if(!ans) return false;
+        saturate(image,win->getValue());
+        return true;
     }
     static int lastIndex;
 };
@@ -568,12 +561,11 @@ public:
         propW=win;
     }
     bool imageCalculate(QImage&image){
-            if(getIsReadNode()) return image.load(propW->getFileName());
-            if(getInput()==NULL) return false;
-            bool ans=getInput()->imageCalculate(image);
-            if(!ans) return false;
-            contrast(image,win->getValue());
-            return true;
+        if(getInput()==NULL) return false;
+        bool ans=getInput()->imageCalculate(image);
+        if(!ans) return false;
+        contrast(image,win->getValue());
+        return true;
     }
     static int lastIndex;
 };
@@ -607,12 +599,11 @@ public:
         propW=win;
     }
     bool imageCalculate(QImage&image){
-            if(getIsReadNode()) return image.load(propW->getFileName());
-            if(getInput()==NULL) return false;
-            bool ans=getInput()->imageCalculate(image);
-            if(!ans) return false;
-            grade(image,win->getLift(),win->getGain(),win->getOffset());
-            return true;
+        if(getInput()==NULL) return false;
+        bool ans=getInput()->imageCalculate(image);
+        if(!ans) return false;
+        grade(image,win->getLift(),win->getGain(),win->getOffset());
+        return true;
     }
     static int lastIndex;
 };
