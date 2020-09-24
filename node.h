@@ -17,6 +17,8 @@
 #include<QLabel>
 #include<math.h>
 #include<QCheckBox>
+#include<QButtonGroup>
+#include<QRadioButton>
 
 //x - font size, y - input, z- output
 #define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QPainterPath path;path.addRoundedRect(rect,15,15);QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillPath(path,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawPath(path);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
@@ -246,6 +248,39 @@ public:
     }
     bool mirrorV(){
         return checkBox2->isChecked();
+    }
+};
+
+class RotateNodePropertiesWindow:public PropertiesWindow{
+private:
+    QButtonGroup*buttonGroup1;
+    QRadioButton*radioButton1;
+    QRadioButton*radioButton2;
+    QRadioButton*radioButton3;
+    QRadioButton*radioButton4;
+    QVBoxLayout*vBoxLayout1;
+public:
+    RotateNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        buttonGroup1=new QButtonGroup(this);
+        radioButton1=new QRadioButton("Rotate 90 deg clockwise");
+        radioButton2=new QRadioButton("Rotate 90 deg anti-clockwise");
+        radioButton3=new QRadioButton("Rotate 180 deg");
+        radioButton4=new QRadioButton("None");
+        radioButton4->setChecked(true);
+        buttonGroup1->addButton(radioButton1,0);
+        buttonGroup1->addButton(radioButton2,1);
+        buttonGroup1->addButton(radioButton3,2);
+        buttonGroup1->addButton(radioButton4,3);
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addWidget(radioButton1);
+        vBoxLayout1->addWidget(radioButton2);
+        vBoxLayout1->addWidget(radioButton3);
+        vBoxLayout1->addWidget(radioButton4);
+        vBoxLayout1->insertStretch(4);
+        setLayout(vBoxLayout1);
+    }
+    int id(){
+        return buttonGroup1->checkedId();
     }
 };
 
@@ -727,6 +762,57 @@ public:
         if(!ans) return false;
         if(win->mirrorH()) mirror_imgH(image);
         if(win->mirrorV()) mirror_imgV(image);
+        return true;
+    };
+    static int lastIndex;
+};
+
+class rotateNode:public node{
+private:
+    void rotateClockwise90(QImage&img) {
+        QImage img1(img.height(),img.width(),img.format());
+        for(int y=0;y<img.height();y++){
+            for(int x=0;x<img.width();x++){
+                img1.setPixelColor(img.height()-y-1,x,img.pixelColor(x,y));
+            }
+        }
+        img=img1;
+    }
+
+    void rotateAntiClockwise90(QImage&img){
+        QImage img1(img.height(),img.width(),img.format());
+        for(int y=0;y<img.height();y++){
+            for(int x=0;x<img.width();x++){
+                img1.setPixelColor(y,img.width()-x-1,img.pixelColor(x,y));
+            }
+        }
+        img=img1;
+    }
+
+
+    void rotate180(QImage&img){
+        QImage img1(img.width(),img.height(),img.format());
+        for(int y=0;y<img.height();y++){
+            for(int x=0;x<img.width();x++){
+                img1.setPixelColor(img.width()-1-x,img.height()-1-y,img.pixelColor(x,y));
+            }
+        }
+        img=img1;
+    }
+    RotateNodePropertiesWindow*win;
+public:
+    rotateNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="rotateNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        win=new RotateNodePropertiesWindow(getName());
+        propW=win;
+    }
+    bool imageCalculate(QImage &image){
+        if(getInput()==NULL) return false;
+        bool ans=getInput()->imageCalculate(image);
+        if(!ans) return false;
+        int id=win->id();
+        if(id==0) rotateClockwise90(image);
+        else if(id==1) rotateAntiClockwise90(image);
+        else if(id==2) rotate180(image);
         return true;
     };
     static int lastIndex;
