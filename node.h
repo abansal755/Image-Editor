@@ -19,6 +19,7 @@
 #include<QCheckBox>
 #include<QButtonGroup>
 #include<QRadioButton>
+#include<QImageReader>
 
 //x - font size, y - input, z- output
 #define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QPainterPath path;path.addRoundedRect(rect,15,15);QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillPath(path,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawPath(path);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
@@ -44,25 +45,37 @@ private:
     QHBoxLayout*hBoxLayout1;
     QHBoxLayout*hBoxLayout2;
     QHBoxLayout*hBoxLayout3;
+    QHBoxLayout*hBoxLayout4;
+    QHBoxLayout*hBoxLayout5;
     QVBoxLayout*vBoxLayout1;
     QPushButton*pushButton1;
     QTextEdit*textEdit1;
     QTextEdit*textEdit2;
     QTextEdit*textEdit3;
+    QTextEdit*textEdit4;
+    QTextEdit*textEdit5;
     QLabel*label1;
     QLabel*label2;
+    QLabel*label3;
+    QLabel*label4;
 public:
     ReadNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
         hBoxLayout1=new QHBoxLayout;
         hBoxLayout2=new QHBoxLayout;
         hBoxLayout3=new QHBoxLayout;
+        hBoxLayout4=new QHBoxLayout;
+        hBoxLayout5=new QHBoxLayout;
         vBoxLayout1=new QVBoxLayout;
         textEdit1=new QTextEdit;
         textEdit2=new QTextEdit;
         textEdit3=new QTextEdit;
+        textEdit4=new QTextEdit;
+        textEdit5=new QTextEdit;
         pushButton1=new QPushButton("Read Image File");
         label1=new QLabel("File Size(in kB):");
         label2=new QLabel("File Extension:");
+        label3=new QLabel("Width(in px):");
+        label4=new QLabel("Height(in px):");
 
         textEdit1->setFixedHeight(23);
         textEdit1->setDisabled(true);
@@ -70,6 +83,10 @@ public:
         textEdit2->setDisabled(true);
         textEdit3->setFixedHeight(23);
         textEdit3->setDisabled(true);
+        textEdit4->setFixedHeight(23);
+        textEdit4->setDisabled(true);
+        textEdit5->setFixedHeight(23);
+        textEdit5->setDisabled(true);
 
         hBoxLayout1->addWidget(textEdit1);
         hBoxLayout1->addWidget(pushButton1);
@@ -80,10 +97,18 @@ public:
         hBoxLayout3->addWidget(label2);
         hBoxLayout3->addWidget(textEdit3);
 
+        hBoxLayout4->addWidget(label3);
+        hBoxLayout4->addWidget(textEdit4);
+
+        hBoxLayout5->addWidget(label4);
+        hBoxLayout5->addWidget(textEdit5);
+
         vBoxLayout1->addLayout(hBoxLayout1);
         vBoxLayout1->addLayout(hBoxLayout3);
         vBoxLayout1->addLayout(hBoxLayout2);
-        vBoxLayout1->insertStretch(3);
+        vBoxLayout1->addLayout(hBoxLayout4);
+        vBoxLayout1->addLayout(hBoxLayout5);
+        vBoxLayout1->insertStretch(5);
         setLayout(vBoxLayout1);
 
         connect(pushButton1,SIGNAL(clicked()),this,SLOT(pushButton1Clicked()));
@@ -92,16 +117,22 @@ private slots:
     void pushButton1Clicked(){
         fileName=QFileDialog::getOpenFileName(this,"Read Image File","",fileExtensions);
         QFileInfo info(fileName);
-        if(info.suffix()==""){
+        QImageReader info2(fileName);
+        if(!info2.canRead()){
             QMessageBox::critical(this,"Error","Invalid File");
             fileName="";
             textEdit1->setText("");
             textEdit2->setText("");
             textEdit3->setText("");
+            textEdit4->setText("");
+            textEdit5->setText("");
         }else{
             textEdit1->setText(fileName);
             textEdit2->setText(QString::number((float)info.size()/1000));
             textEdit3->setText(info.suffix());
+            QSize size=info2.size();
+            textEdit4->setText(QString::number(size.width()));
+            textEdit5->setText(QString::number(size.height()));
         }
     }
 };
