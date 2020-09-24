@@ -16,6 +16,7 @@
 #include<QSpacerItem>
 #include<QLabel>
 #include<math.h>
+#include<QCheckBox>
 
 //x - font size, y - input, z- output
 #define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QPainterPath path;path.addRoundedRect(rect,15,15);QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillPath(path,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawPath(path);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
@@ -218,6 +219,33 @@ public:
     }
     float getValue(){
         return slider1->getValue();
+    }
+};
+
+class MirrorNodePropertiesWindow:public PropertiesWindow{
+private:
+    QHBoxLayout*hBoxLayout1;
+    QVBoxLayout*vBoxLayout1;
+    QCheckBox*checkBox1;
+    QCheckBox*checkBox2;
+public:
+    MirrorNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        checkBox1=new QCheckBox("Mirror Horizontally");
+        checkBox2=new QCheckBox("Mirror Vertically");
+        hBoxLayout1=new QHBoxLayout;
+        vBoxLayout1=new QVBoxLayout;
+        hBoxLayout1->addWidget(checkBox1);
+        hBoxLayout1->addWidget(checkBox2);
+        hBoxLayout1->insertStretch(2);
+        vBoxLayout1->insertLayout(0,hBoxLayout1);
+        vBoxLayout1->insertStretch(1);
+        setLayout(vBoxLayout1);
+    }
+    bool mirrorH(){
+        return checkBox1->isChecked();
+    }
+    bool mirrorV(){
+        return checkBox2->isChecked();
     }
 };
 
@@ -660,6 +688,45 @@ public:
         bool ans=getInput()->imageCalculate(image);
         if(!ans) return false;
         gammaCorrect(image,win->getValue());
+        return true;
+    };
+    static int lastIndex;
+};
+
+class mirrorNode:public node{
+private:
+    void mirror_imgH(QImage&img) {
+        QImage temp(img.width(),img.height(),img.format());
+        for(int y = 0; y < img.height(); y++) {
+            for(int x = 0; x < img.width(); x++) {
+                QColor c = img.pixelColor(x,y);
+                temp.setPixelColor(img.width() - 1 - x, y, c);
+            }
+        }
+        img = temp;
+    }
+    void mirror_imgV(QImage&img) {
+        QImage temp(img.width(),img.height(),img.format());
+        for(int y = 0; y < img.height(); y++) {
+            for(int x = 0; x < img.width(); x++) {
+                QColor c = img.pixelColor(x,y);
+                temp.setPixelColor(x, img.height()- 1 - y, c);
+            }
+        }
+        img = temp;
+    }
+    MirrorNodePropertiesWindow*win;
+public:
+    mirrorNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="mirrorNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        win=new MirrorNodePropertiesWindow(getName());
+        propW=win;
+    }
+    bool imageCalculate(QImage &image){
+        if(getInput()==NULL) return false;
+        bool ans=getInput()->imageCalculate(image);
+        if(!ans) return false;
+        if(win->mirrorH()) mirror_imgH(image);
+        if(win->mirrorV()) mirror_imgV(image);
         return true;
     };
     static int lastIndex;

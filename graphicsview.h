@@ -10,12 +10,12 @@ private:
         int delta=event->angleDelta().y();
         float factor=1.1;
         if(delta>0) scale(factor,factor);
-        if(delta<0)scale(1/factor,1/factor);
+        if(delta<0 && transform().m11()>0.1)scale(1/factor,1/factor);
     }
 public:
     GraphicsView(QWidget*parent):QGraphicsView(parent){
-        horizontalScrollBar()->hide();
-        verticalScrollBar()->hide();
+        setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         setDragMode(QGraphicsView::ScrollHandDrag);
         setRenderHint(QPainter::Antialiasing);
         setViewportUpdateMode(QGraphicsView::FullViewportUpdate);

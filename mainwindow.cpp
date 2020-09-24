@@ -9,6 +9,7 @@ int gradeNode::lastIndex=0;
 int saturateNode::lastIndex=0;
 int contrastNode::lastIndex=0;
 int gammaNode::lastIndex=0;
+int mirrorNode::lastIndex=0;
 node* node::inputScene=NULL;
 node* node::outputScene=NULL;
 QString PropertiesWindow::fileExtensions="Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.xbm *.xpm)";
