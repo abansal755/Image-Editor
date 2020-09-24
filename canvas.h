@@ -60,7 +60,34 @@ private:
             gw->resetTransform();
         }
     }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){}
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+        painter->fillRect(boundingRect(),QColor(38,38,38));
+        QPen pen(QColor(52,52,52));
+        painter->setPen(pen);
+        for(int y=-10000;y<=10000;y+=25){
+            if(y%200==0){
+                pen.setColor(QColor(22,22,22));
+                painter->setPen(pen);
+            }
+            painter->drawLine(-10000,y,10000,y);
+            if(y%200==0){
+                pen.setColor(QColor(52,52,52));
+                painter->setPen(pen);
+            }
+        }
+        for(int x=-10000;x<=10000;x+=25){
+            if(x%200==0){
+                pen.setColor(QColor(22,22,22));
+                painter->setPen(pen);
+            }
+            painter->drawLine(x,-10000,x,10000);
+            if(x%200==0){
+                pen.setColor(QColor(52,52,52));
+                painter->setPen(pen);
+            }
+        }
+        setZValue(-2);
+    }
 public:
     canvas(GraphicsView*gw,QGraphicsScene*scene,vector<node*>*destruc):gw(gw),scene(scene),destruc(destruc){
         setCursor(Qt::ArrowCursor);

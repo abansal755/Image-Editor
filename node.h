@@ -18,7 +18,7 @@
 #include<math.h>
 
 //x - font size, y - input, z- output
-#define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillRect(rect,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawRect(rect);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
+#define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QPainterPath path;path.addRoundedRect(rect,15,15);QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillPath(path,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawPath(path);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
 
 using namespace std;
 
@@ -40,25 +40,33 @@ private:
     Q_OBJECT
     QHBoxLayout*hBoxLayout1;
     QHBoxLayout*hBoxLayout2;
+    QHBoxLayout*hBoxLayout3;
     QVBoxLayout*vBoxLayout1;
     QPushButton*pushButton1;
     QTextEdit*textEdit1;
     QTextEdit*textEdit2;
+    QTextEdit*textEdit3;
     QLabel*label1;
+    QLabel*label2;
 public:
     ReadNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
         hBoxLayout1=new QHBoxLayout;
         hBoxLayout2=new QHBoxLayout;
+        hBoxLayout3=new QHBoxLayout;
         vBoxLayout1=new QVBoxLayout;
         textEdit1=new QTextEdit;
         textEdit2=new QTextEdit;
+        textEdit3=new QTextEdit;
         pushButton1=new QPushButton("Read Image File");
-        label1=new QLabel("File Size(in bytes):");
+        label1=new QLabel("File Size(in kB):");
+        label2=new QLabel("File Extension:");
 
         textEdit1->setFixedHeight(23);
         textEdit1->setDisabled(true);
         textEdit2->setFixedHeight(23);
         textEdit2->setDisabled(true);
+        textEdit3->setFixedHeight(23);
+        textEdit3->setDisabled(true);
 
         hBoxLayout1->addWidget(textEdit1);
         hBoxLayout1->addWidget(pushButton1);
@@ -66,9 +74,13 @@ public:
         hBoxLayout2->addWidget(label1);
         hBoxLayout2->addWidget(textEdit2);
 
+        hBoxLayout3->addWidget(label2);
+        hBoxLayout3->addWidget(textEdit3);
+
         vBoxLayout1->addLayout(hBoxLayout1);
+        vBoxLayout1->addLayout(hBoxLayout3);
         vBoxLayout1->addLayout(hBoxLayout2);
-        vBoxLayout1->insertStretch(2);
+        vBoxLayout1->insertStretch(3);
         setLayout(vBoxLayout1);
 
         connect(pushButton1,SIGNAL(clicked()),this,SLOT(pushButton1Clicked()));
@@ -82,9 +94,11 @@ private slots:
             fileName="";
             textEdit1->setText("");
             textEdit2->setText("");
+            textEdit3->setText("");
         }else{
             textEdit1->setText(fileName);
-            textEdit2->setText(QString::number(info.size()));
+            textEdit2->setText(QString::number((float)info.size()/1000));
+            textEdit3->setText(info.suffix());
         }
     }
 };
@@ -217,7 +231,7 @@ protected:
     bool pressed;
     PropertiesWindow*propW;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        PAINT_NODE(40,true,true)
+        PAINT_NODE(30,true,true)
     };
     QVariant itemChange(GraphicsItemChange change, const QVariant &value){
         if(change==ItemPositionChange){
@@ -329,6 +343,7 @@ public:
         input->output=this;
         QPen pen;
         pen.setWidth(2);
+        pen.setColor(Qt::white);
         inputLine=scene->addLine(input->x()+input->width/2,input->y()+input->height,x()+width/2,y(),pen);
         inputLine->setZValue(-1);
         input->outputLine=inputLine;
@@ -346,6 +361,7 @@ public:
         output->input=this;
         QPen pen;
         pen.setWidth(2);
+        pen.setColor(Qt::white);
         outputLine=scene->addLine(x()+width/2,+y()+height,output->x()+output->width/2,output->y(),pen);
         outputLine->setZValue(-1);
         output->inputLine=outputLine;
@@ -379,12 +395,12 @@ public:
     virtual bool imageCalculate(QImage&image){
         return false;
     }
-    float clampF(float i){
+    static float clampF(float i){
         if(i>1) return 1;
         else if(i<0) return 0;
         else return i;
     }
-    int clamp(int i){
+    static int clamp(int i){
         if(i>255) return 255;
         else if(i<0) return 0;
         else return i;
@@ -396,7 +412,7 @@ public:
 class readNode:public node{
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-            PAINT_NODE(40,false,true)
+            PAINT_NODE(30,false,true)
     };
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
@@ -445,7 +461,7 @@ public:
 class viewerNode:public node{
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        PAINT_NODE(35,true,false)
+        PAINT_NODE(30,true,false);
     };
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
@@ -533,9 +549,6 @@ private:
             }
         }
     }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        PAINT_NODE(30,true,true)
-    };
     SaturateNodePropertiesWindow*win;
 public:
     saturateNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="saturateNode"+QString::number(lastIndex++)):node(scene,destruc,name){
@@ -554,9 +567,6 @@ public:
 
 class contrastNode:public node{
 private:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        PAINT_NODE(30,true,true)
-    };
     void contrast(QImage&img,int c){
         float f=(259*((float)c+255))/(255*(259-(float)c));
         for(int y=0;y<img.height();y++){
@@ -610,9 +620,6 @@ private:
             }
         }
     }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        PAINT_NODE(30,true,true)
-    };
     GradeNodePropertiesWindow*win;
 public:
     gradeNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="gradeNode"+QString::number(lastIndex++)):node(scene,destruc,name){
@@ -642,9 +649,6 @@ private:
             }
         }
     }
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        PAINT_NODE(30,true,true);
-    };
     GammaNodePropertiesWindow*win;
 public:
     gammaNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="gammaNode"+QString::number(lastIndex++)):node(scene,destruc,name){
