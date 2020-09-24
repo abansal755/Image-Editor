@@ -22,6 +22,7 @@ private:
         QAction*newBlurNode=newNode->addAction("Blur Node");
         QAction*newMirrorNode=newNode->addAction("Mirror Node");
         QAction*newRotateNode=newNode->addAction("Rotate Node");
+        QAction*newScaleNode=newNode->addAction("Scale Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -62,6 +63,11 @@ private:
         }
         if(current==newRotateNode){
             rotateNode*n=new rotateNode(scene,*destruc);
+            scene->addItem(n);
+            n->setPos(event->scenePos());
+        }
+        if(current==newScaleNode){
+            scaleNode*n=new scaleNode(scene,*destruc);
             scene->addItem(n);
             n->setPos(event->scenePos());
         }

@@ -21,6 +21,7 @@
 #include<QRadioButton>
 #include<QImageReader>
 #include<unordered_map>
+#include<QLineEdit>
 
 //x - font size, y - input, z- output
 #define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QPainterPath path;path.addRoundedRect(rect,15,15);QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillPath(path,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawPath(path);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
@@ -313,6 +314,80 @@ public:
     }
     int id(){
         return buttonGroup1->checkedId();
+    }
+};
+
+class ScaleNodePropertiesWindow:public PropertiesWindow{
+private:
+    QVBoxLayout*vBoxLayout1;
+    QHBoxLayout*hBoxLayout1;
+    QHBoxLayout*hBoxLayout2;
+    QHBoxLayout*hBoxLayout3;
+    QLabel*label1,*label2;
+    QLineEdit*lineEdit1,*lineEdit2;
+    QButtonGroup*buttonGroup1;
+    QButtonGroup*buttonGroup2;
+    QRadioButton*radioButton1,*radioButton2,*radioButton3;
+    QRadioButton*radioButton4,*radioButton5;
+public:
+    ScaleNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        label1=new QLabel("Width(in px):");
+        label2=new QLabel("Height(in px):");
+        lineEdit1=new QLineEdit;
+        lineEdit2=new QLineEdit;
+        hBoxLayout1=new QHBoxLayout;
+        hBoxLayout1->addWidget(label1);
+        hBoxLayout1->addWidget(lineEdit1);
+        hBoxLayout1->addWidget(label2);
+        hBoxLayout1->addWidget(lineEdit2);
+        hBoxLayout1->insertStretch(4);
+
+        hBoxLayout2=new QHBoxLayout;
+        buttonGroup1=new QButtonGroup(this);
+        radioButton1=new QRadioButton("Ignore Aspect Ratio");
+        radioButton1->setChecked(true);
+        radioButton2=new QRadioButton("Keep Aspect Ratio");
+        radioButton3=new QRadioButton("Keep Aspect Ratio By Expanding");
+        buttonGroup1->addButton(radioButton1,0);
+        buttonGroup1->addButton(radioButton2,1);
+        buttonGroup1->addButton(radioButton3,2);
+        hBoxLayout2->addWidget(radioButton1);
+        hBoxLayout2->addWidget(radioButton2);
+        hBoxLayout2->addWidget(radioButton3);
+        hBoxLayout2->insertStretch(3);
+
+        hBoxLayout3=new QHBoxLayout;
+        buttonGroup2=new QButtonGroup(this);
+        radioButton4=new QRadioButton("No Filtering");
+        radioButton4->setChecked(true);
+        radioButton5=new QRadioButton("Bilinear Filtering");
+        buttonGroup2->addButton(radioButton4,0);
+        buttonGroup2->addButton(radioButton5,1);
+        hBoxLayout3->addWidget(radioButton4);
+        hBoxLayout3->addWidget(radioButton5);
+        hBoxLayout3->insertStretch(2);
+
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addLayout(hBoxLayout1);
+        vBoxLayout1->addLayout(hBoxLayout2);
+        vBoxLayout1->addLayout(hBoxLayout3);
+        vBoxLayout1->insertStretch(3);
+        setLayout(vBoxLayout1);
+    }
+    Qt::AspectRatioMode aspectRatioMode(){
+        if(buttonGroup1->checkedId()==0) return Qt::IgnoreAspectRatio;
+        else if(buttonGroup1->checkedId()==1) return Qt::KeepAspectRatio;
+        return Qt::KeepAspectRatioByExpanding;
+    }
+    Qt::TransformationMode filteringMode(){
+        if(buttonGroup2->checkedId()==0) return Qt::FastTransformation;
+        return Qt::SmoothTransformation;
+    }
+    QString width(){
+        return lineEdit1->text();
+    }
+    QString height(){
+        return lineEdit2->text();
     }
 };
 
@@ -831,6 +906,27 @@ public:
         if(id==0) rotateClockwise90(image);
         else if(id==1) rotateAntiClockwise90(image);
         else if(id==2) rotate180(image);
+        return true;
+    };
+    static int lastIndex;
+};
+
+class scaleNode:public node{
+private:
+    ScaleNodePropertiesWindow*win;
+public:
+    scaleNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="scaleNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        win=new ScaleNodePropertiesWindow(getName());
+        propW=win;
+    }
+    bool imageCalculate(QImage &image){
+        if(getInput()==NULL) return false;
+        bool ans=getInput()->imageCalculate(image);
+        if(!ans) return false;
+        int width=win->width().toInt();
+        int height=win->height().toInt();
+        if(width==0 || height==0) return true;
+        image=image.scaled(width,height,win->aspectRatioMode(),win->filteringMode());
         return true;
     };
     static int lastIndex;
