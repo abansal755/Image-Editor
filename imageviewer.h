@@ -17,6 +17,7 @@ private:
         QMenu menu;
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
+        QAction*toggleOverlay=menu.addAction("Toggle Overlay");
         QAction*current=menu.exec(event->globalPos());
         if(current==centerView){
             centerOn(0,0);
@@ -24,13 +25,19 @@ private:
         if(current==resetZoom){
             resetTransform();
         }
+        if(current==toggleOverlay){
+            overlay=overlay^1;
+            update();
+        }
     }
 public:
     ImageGraphicsView(QWidget*parent):QGraphicsView(parent){
-        horizontalScrollBar()->hide();
-        verticalScrollBar()->hide();
+        setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         setDragMode(QGraphicsView::ScrollHandDrag);
+        overlay=true;
     }
+    bool overlay;
 };
 
 namespace Ui {
@@ -44,7 +51,7 @@ class ImageViewer : public QMainWindow
 public:
     explicit ImageViewer(viewerNode*viewNode,QWidget *parent = nullptr);
     ~ImageViewer();
-private slots:
+public slots:
     void on_pushButton_clicked();
 private:
     Ui::ImageViewer *ui;
