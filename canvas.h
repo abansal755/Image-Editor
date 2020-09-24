@@ -73,7 +73,7 @@ private:
         }
     }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        painter->fillRect(boundingRect(),QColor(38,38,38));
+//        painter->fillRect(boundingRect(),QColor(38,38,38));
         QPen pen(QColor(52,52,52));
         painter->setPen(pen);
         for(int y=-10000;y<=10000;y+=25){

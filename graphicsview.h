@@ -19,5 +19,6 @@ public:
         setDragMode(QGraphicsView::ScrollHandDrag);
         setRenderHint(QPainter::Antialiasing);
         setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        setBackgroundBrush(QBrush(QColor(38,38,38)));
     }
 };

@@ -36,6 +36,7 @@ public:
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         setDragMode(QGraphicsView::ScrollHandDrag);
         overlay=true;
+        setBackgroundBrush(QBrush(QColor(38,38,38)));
     }
     bool overlay;
 };
