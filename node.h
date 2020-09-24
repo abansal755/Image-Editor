@@ -20,6 +20,7 @@
 #include<QButtonGroup>
 #include<QRadioButton>
 #include<QImageReader>
+#include<unordered_map>
 
 //x - font size, y - input, z- output
 #define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QPainterPath path;path.addRoundedRect(rect,15,15);QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillPath(path,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawPath(path);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
@@ -319,8 +320,9 @@ class node:public QGraphicsItem{
 protected:
     QString name;
     int width,height;
-    node*input,*output;
-    QGraphicsLineItem*inputLine,*outputLine;
+    node*input;
+    unordered_map<node*,QGraphicsLineItem*>output;
+    QGraphicsLineItem*inputLine;
     QGraphicsScene*scene;
     bool pressed;
     PropertiesWindow*propW;
@@ -337,12 +339,12 @@ protected:
                 p2.setX(p2.x()+width/2);
                 inputLine->setLine(QLineF(p1,p2));
             }
-            if(output!=NULL){
+            for(auto it=output.begin();it!=output.end();it++){
                 QPointF p1=value.toPointF();
                 p1.setX(p1.x()+width/2);
                 p1.setY(p1.y()+height);
-                QPointF p2(output->x()+output->width/2,output->y());
-                outputLine->setLine(QLineF(p1,p2));
+                QPointF p2(it->first->x()+it->first->width/2,it->first->y());
+                it->second->setLine(QLineF(p1,p2));
             }
         }
         return QGraphicsItem::itemChange(change,value);
@@ -363,14 +365,12 @@ protected:
         QMenu menu;
         QAction*connectOutput=menu.addAction("Connect Output");
         QAction*connectInput=menu.addAction("Connect Input");
-        QAction*disconnectOutput=menu.addAction("Disconnect Output");
         QAction*disconnectInput=menu.addAction("Disconnect Input");
         QAction*deleteNode=menu.addAction("Delete Node");
         QAction*properties=menu.addAction("Properties");
         QAction*current=menu.exec(event->screenPos());
         if(current==connectOutput){
             if(inputScene!=NULL && inputScene!=this){
-                if(output!=NULL) removeOutput();
                 if(inputScene->input!=NULL) inputScene->removeInput();
                 setOutput(inputScene);
                 inputScene=NULL;
@@ -380,7 +380,6 @@ protected:
         if(current==connectInput){
             if(outputScene!=NULL && outputScene!=this){
                 if(input!=NULL) removeInput();
-                if(outputScene->output!=NULL) outputScene->removeOutput();
                 setInput(outputScene);
                 outputScene=NULL;
             }
@@ -391,14 +390,11 @@ protected:
             inputScene=NULL;
             outputScene=NULL;
         }
-        if(current==disconnectOutput){
-            if(output!=NULL) removeOutput();
-            inputScene=NULL;
-            outputScene=NULL;
-        }
         if(current==deleteNode){
             if(input!=NULL) removeInput();
-            if(output!=NULL) removeOutput();
+            for(auto it=output.begin();it!=output.end();it++){
+                it->first->removeInput();
+            }
             scene->removeItem(this);
             inputScene=NULL;
             outputScene=NULL;
@@ -412,7 +408,7 @@ protected:
 public:
     node(QGraphicsScene*scene,vector<node*>&destruc,QString name="node"+QString::number(lastIndex++),int width=200,int height=75)
         :scene(scene),name(name),width(width),height(height),
-        input(NULL),output(NULL),inputLine(NULL),outputLine(NULL)
+        input(NULL),output(NULL),inputLine(NULL)
     {
         destruc.push_back(this);
         setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsScenePositionChanges);
@@ -420,12 +416,14 @@ public:
     }
     ~node(){
         if(inputLine!=NULL){
-            input->outputLine=NULL;
             delete inputLine;
+            input->output.erase(this);
         }
-        if(outputLine!=NULL){
-            output->inputLine=NULL;
-            delete outputLine;
+        for(auto it=output.begin();it!=output.end();it++){
+            delete it->second;
+            it->first->input=NULL;
+            it->first->inputLine=NULL;
+            output.erase(it);
         }
         if(propW!=NULL) delete propW;
     }
@@ -434,39 +432,29 @@ public:
     };
     void setInput(node*input){
         this->input=input;
-        input->output=this;
         QPen pen;
         pen.setWidth(2);
         pen.setColor(Qt::white);
         inputLine=scene->addLine(input->x()+input->width/2,input->y()+input->height,x()+width/2,y(),pen);
         inputLine->setZValue(-1);
-        input->outputLine=inputLine;
+        input->output.insert({this,inputLine});
     }
     void removeInput(){
         scene->removeItem(inputLine);
         delete inputLine;
         inputLine=NULL;
-        input->output=NULL;
-        input->outputLine=NULL;
+        input->output.erase(this);
         input=NULL;
     }
     void setOutput(node*output){
-        this->output=output;
         output->input=this;
         QPen pen;
         pen.setWidth(2);
         pen.setColor(Qt::white);
-        outputLine=scene->addLine(x()+width/2,+y()+height,output->x()+output->width/2,output->y(),pen);
+        QGraphicsLineItem*outputLine=scene->addLine(x()+width/2,+y()+height,output->x()+output->width/2,output->y(),pen);
         outputLine->setZValue(-1);
         output->inputLine=outputLine;
-    }
-    void removeOutput(){
-        scene->removeItem(outputLine);
-        delete outputLine;
-        outputLine=NULL;
-        output->input=NULL;
-        output->inputLine=NULL;
-        output=NULL;
+        this->output.insert({output,outputLine});
     }
     void setName(QString name){
         this->name=name;
@@ -477,8 +465,8 @@ public:
     node*getInput(){
         return input;
     }
-    node*getOutput(){
-        return output;
+    unordered_map<node*,QGraphicsLineItem*>* getOutput(){
+        return &output;
     }
     int getWidth(){
         return width;
@@ -511,31 +499,26 @@ protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
         QAction*connectOutput=menu.addAction("Connect Output");
-        QAction*disconnectOutput=menu.addAction("Disconnect Output");
         QAction*deleteNode=menu.addAction("Delete Node");
         QAction*properties=menu.addAction("Properties");
         QAction*current=menu.exec(event->screenPos());
         if(current==connectOutput){
             if(inputScene!=NULL && inputScene!=this){
-                if(output!=NULL) removeOutput();
                 if(inputScene->getInput()!=NULL) inputScene->removeInput();
                 setOutput(inputScene);
                 inputScene=NULL;
             }
             else outputScene=this;
         }
-        if(current==disconnectOutput){
-            if(output!=NULL) removeOutput();
-            inputScene=NULL;
-            outputScene=NULL;
-        }
         if(current==deleteNode){
             if(input!=NULL) removeInput();
-            if(output!=NULL) removeOutput();
+            for(auto it=output.begin();it!=output.end();it++){
+                it->first->removeInput();
+            }
             scene->removeItem(this);
             inputScene=NULL;
             outputScene=NULL;
-            propW->hide();
+            if(propW!=NULL) propW->hide();
         }
         if(current==properties){
             if(!(propW->isVisible())) propW->show();
@@ -563,9 +546,8 @@ protected:
         QAction*disconnectInput=menu.addAction("Disconnect Input");
         QAction*current=menu.exec(event->screenPos());
         if(current==connectInput){
-            if(outputScene!=NULL && outputScene!=NULL){
+            if(outputScene!=NULL && outputScene!=this){
                 if(input!=NULL) removeInput();
-                if(outputScene->getOutput()!=NULL) outputScene->removeOutput();
                 setInput(outputScene);
                 outputScene=NULL;
             }
