@@ -366,6 +366,7 @@ protected:
         QAction*connectOutput=menu.addAction("Connect Output");
         QAction*connectInput=menu.addAction("Connect Input");
         QAction*disconnectInput=menu.addAction("Disconnect Input");
+        QAction*disconnectAllOutputs=menu.addAction("Disconnect All Outputs");
         QAction*deleteNode=menu.addAction("Delete Node");
         QAction*properties=menu.addAction("Properties");
         QAction*current=menu.exec(event->screenPos());
@@ -389,6 +390,9 @@ protected:
             if(input!=NULL) removeInput();
             inputScene=NULL;
             outputScene=NULL;
+        }
+        if(current==disconnectAllOutputs){
+            for(auto it=output.begin();it!=output.end();it++) it->first->removeInput();
         }
         if(current==deleteNode){
             if(input!=NULL) removeInput();
@@ -465,9 +469,6 @@ public:
     node*getInput(){
         return input;
     }
-    unordered_map<node*,QGraphicsLineItem*>* getOutput(){
-        return &output;
-    }
     int getWidth(){
         return width;
     }
@@ -499,6 +500,7 @@ protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
         QAction*connectOutput=menu.addAction("Connect Output");
+        QAction*disconnectAllOutputs=menu.addAction("Disconnect All Outputs");
         QAction*deleteNode=menu.addAction("Delete Node");
         QAction*properties=menu.addAction("Properties");
         QAction*current=menu.exec(event->screenPos());
@@ -509,6 +511,9 @@ protected:
                 inputScene=NULL;
             }
             else outputScene=this;
+        }
+        if(current==disconnectAllOutputs){
+            for(auto it=output.begin();it!=output.end();it++) it->first->removeInput();
         }
         if(current==deleteNode){
             if(input!=NULL) removeInput();
