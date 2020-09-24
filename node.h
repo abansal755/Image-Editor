@@ -22,9 +22,11 @@
 #include<QImageReader>
 #include<unordered_map>
 #include<QLineEdit>
+#include<QGraphicsPathItem>
 
 //x - font size, y - input, z- output
 #define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QPainterPath path;path.addRoundedRect(rect,15,15);QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillPath(path,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawPath(path);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
+#define BEZIER_CURVE(path,p1,p2,d) path.moveTo(p1);path.cubicTo(p1.x(),p1.y()+d,p2.x(),p2.y()-d,p2.x(),p2.y());
 
 using namespace std;
 
@@ -396,8 +398,8 @@ protected:
     QString name;
     int width,height;
     node*input;
-    unordered_map<node*,QGraphicsLineItem*>output;
-    QGraphicsLineItem*inputLine;
+    unordered_map<node*,QGraphicsPathItem*>output;
+    QGraphicsPathItem*inputLine;
     QGraphicsScene*scene;
     bool pressed;
     PropertiesWindow*propW;
@@ -412,14 +414,19 @@ protected:
                 QPointF p1(input->x()+input->width/2,input->y()+input->height);
                 QPointF p2=value.toPointF();
                 p2.setX(p2.x()+width/2);
-                inputLine->setLine(QLineF(p1,p2));
+                QPainterPath path;
+                BEZIER_CURVE(path,p1,p2,40)
+                inputLine->setPath(path);
             }
             for(auto it=output.begin();it!=output.end();it++){
                 QPointF p1=value.toPointF();
                 p1.setX(p1.x()+width/2);
                 p1.setY(p1.y()+height);
                 QPointF p2(it->first->x()+it->first->width/2,it->first->y());
-                it->second->setLine(QLineF(p1,p2));
+                QPainterPath path;
+                path.moveTo(p1);
+                path.cubicTo(p1.x(),p1.y()+25,p2.x(),p2.y()-25,p2.x(),p2.y());
+                it->second->setPath(path);
             }
         }
         return QGraphicsItem::itemChange(change,value);
@@ -514,8 +521,15 @@ public:
         QPen pen;
         pen.setWidth(2);
         pen.setColor(Qt::white);
-        inputLine=scene->addLine(input->x()+input->width/2,input->y()+input->height,x()+width/2,y(),pen);
+        QPainterPath path;
+        QPointF p1(input->x()+input->width/2,input->y()+input->height);
+        QPointF p2(x()+width/2,y());
+        BEZIER_CURVE(path,p1,p2,40)
+        inputLine=new QGraphicsPathItem;
+        inputLine->setPath(path);
+        inputLine->setPen(pen);
         inputLine->setZValue(-1);
+        scene->addItem(inputLine);
         input->output.insert({this,inputLine});
     }
     void removeInput(){
@@ -530,9 +544,16 @@ public:
         QPen pen;
         pen.setWidth(2);
         pen.setColor(Qt::white);
-        QGraphicsLineItem*outputLine=scene->addLine(x()+width/2,+y()+height,output->x()+output->width/2,output->y(),pen);
+        QPointF p1(x()+width/2,+y()+height);
+        QPointF p2(output->x()+output->width/2,output->y());
+        QGraphicsPathItem*outputLine=new QGraphicsPathItem;
+        QPainterPath path;
+        BEZIER_CURVE(path,p1,p2,40)
+        outputLine->setPath(path);
+        outputLine->setPen(pen);
         outputLine->setZValue(-1);
         output->inputLine=outputLine;
+        scene->addItem(outputLine);
         this->output.insert({output,outputLine});
     }
     void setName(QString name){
