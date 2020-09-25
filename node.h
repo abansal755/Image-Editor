@@ -313,8 +313,8 @@ public:
         hBoxLayout2=new QHBoxLayout;
         buttonGroup1=new QButtonGroup(this);
         radioButton1=new QRadioButton("No Filtering");
-        radioButton1->setChecked(true);
         radioButton2=new QRadioButton("Bilinear Filtering");
+        radioButton2->setChecked(true);
         buttonGroup1->addButton(radioButton1,0);
         buttonGroup1->addButton(radioButton2,1);
         hBoxLayout2->addWidget(radioButton1);
@@ -381,8 +381,8 @@ public:
         hBoxLayout3=new QHBoxLayout;
         buttonGroup2=new QButtonGroup(this);
         radioButton4=new QRadioButton("No Filtering");
-        radioButton4->setChecked(true);
         radioButton5=new QRadioButton("Bilinear Filtering");
+        radioButton5->setChecked(true);
         buttonGroup2->addButton(radioButton4,0);
         buttonGroup2->addButton(radioButton5,1);
         hBoxLayout3->addWidget(radioButton4);
