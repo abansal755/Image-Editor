@@ -24,6 +24,7 @@ private:
         QAction*newMirrorNode=newNode->addAction("Mirror Node");
         QAction*newRotateNode=newNode->addAction("Rotate Node");
         QAction*newScaleNode=newNode->addAction("Scale Node");
+        QAction*newCropNode=newNode->addAction("Crop Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -77,6 +78,11 @@ private:
             scene->addItem(n);
             n->setPos(event->scenePos());
         }
+        if(current==newCropNode){
+            cropNode*n=new cropNode(scene,*destruc);
+            scene->addItem(n);
+            n->setPos(event->scenePos());
+        }
         if(current==centerView){
             gw->centerOn(0,0);
         }
@@ -85,7 +91,6 @@ private:
         }
     }
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-//        painter->fillRect(boundingRect(),QColor(38,38,38));
         QPen pen(QColor(52,52,52));
         painter->setPen(pen);
         for(int y=-10000;y<=10000;y+=25){

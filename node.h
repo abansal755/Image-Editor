@@ -440,6 +440,57 @@ public:
     }
 };
 
+class CropNodePropertiesWindow:public PropertiesWindow{
+private:
+    QVBoxLayout*vBoxLayout1;
+    QHBoxLayout*hBoxLayout1,*hBoxLayout2;
+    QLabel*label1,*label2,*label3,*label4;
+    QLineEdit*lineEdit1,*lineEdit2,*lineEdit3,*lineEdit4;
+public:
+    CropNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        vBoxLayout1=new QVBoxLayout;
+        hBoxLayout1=new QHBoxLayout;
+        hBoxLayout2=new QHBoxLayout;
+        label1=new QLabel("x(in px):");
+        label2=new QLabel("y(in px):");
+        label3=new QLabel("Width(in px):");
+        label4=new QLabel("Height(in px):");
+        lineEdit1=new QLineEdit;
+        lineEdit2=new QLineEdit;
+        lineEdit3=new QLineEdit;
+        lineEdit4=new QLineEdit;
+
+        hBoxLayout1->addWidget(label1);
+        hBoxLayout1->addWidget(lineEdit1);
+        hBoxLayout1->addWidget(label2);
+        hBoxLayout1->addWidget(lineEdit2);
+        hBoxLayout1->addStretch();
+
+        hBoxLayout2->addWidget(label3);
+        hBoxLayout2->addWidget(lineEdit3);
+        hBoxLayout2->addWidget(label4);
+        hBoxLayout2->addWidget(lineEdit4);
+        hBoxLayout2->addStretch();
+
+        vBoxLayout1->addLayout(hBoxLayout1);
+        vBoxLayout1->addLayout(hBoxLayout2);
+        vBoxLayout1->addStretch();
+        setLayout(vBoxLayout1);
+    }
+    int getX(){
+        return lineEdit1->text().toInt();
+    }
+    int getY(){
+        return lineEdit2->text().toInt();
+    }
+    int getWidth(){
+        return lineEdit3->text().toInt();
+    }
+    int getHeight(){
+        return lineEdit4->text().toInt();
+    }
+};
+
 class node:public QGraphicsItem{
 protected:
     QString name;
@@ -1027,5 +1078,24 @@ public:
         propW=win;
         connect(win->pushButton1,SIGNAL(clicked()),this,SLOT(pushButton1Clicked()));
     }
+    static int lastIndex;
+};
+
+class cropNode:public node{
+private:
+    CropNodePropertiesWindow*win;
+public:
+    cropNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="cropNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        win=new CropNodePropertiesWindow(getName());
+        propW=win;
+    }
+    bool imageCalculate(QImage &image){
+        if(getInput()==NULL) return false;
+        bool ans=getInput()->imageCalculate(image);
+        if(!ans) return false;
+        if(win->getHeight()<=0 || win->getWidth()<=0) return false;
+        image=image.copy(win->getX(),win->getY(),win->getWidth(),win->getHeight());
+        return true;
+    };
     static int lastIndex;
 };
