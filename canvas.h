@@ -15,6 +15,7 @@ private:
         QMenu menu;
         QMenu*newNode=menu.addMenu("New Node");
         QAction*newReadNode=newNode->addAction("Read Node");
+        QAction*newWriteNode=newNode->addAction("Write Node");
         QAction*newGradeNode=newNode->addAction("Grade Node");
         QAction*newGammaNode=newNode->addAction("Gamma Node");
         QAction*newContrastNode=newNode->addAction("Contrast Node");
@@ -68,6 +69,11 @@ private:
         }
         if(current==newScaleNode){
             scaleNode*n=new scaleNode(scene,*destruc);
+            scene->addItem(n);
+            n->setPos(event->scenePos());
+        }
+        if(current==newWriteNode){
+            writeNode*n=new writeNode(scene,*destruc);
             scene->addItem(n);
             n->setPos(event->scenePos());
         }

@@ -413,6 +413,33 @@ public:
     }
 };
 
+class WriteNodePropertiesWindow:public PropertiesWindow{
+private:
+    QVBoxLayout*vBoxLayout1;
+    QHBoxLayout*hBoxLayout1;
+    sliderInt*slider1;
+public:
+    QPushButton*pushButton1;
+    WriteNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        pushButton1=new QPushButton("Save Image File",this);
+        vBoxLayout1=new QVBoxLayout;
+        slider1=new sliderInt;
+        slider1->setText("Quality Factor:");
+        slider1->setRange(0,100);
+        slider1->setDefaultValue(100);
+        hBoxLayout1=new QHBoxLayout;
+        hBoxLayout1->addStretch();
+        hBoxLayout1->addWidget(pushButton1);
+        vBoxLayout1->addWidget(slider1);
+        vBoxLayout1->addLayout(hBoxLayout1);
+        vBoxLayout1->addStretch();
+        setLayout(vBoxLayout1);
+    }
+    int getFactor(){
+        return slider1->getValue();
+    }
+};
+
 class node:public QGraphicsItem{
 protected:
     QString name;
@@ -939,5 +966,66 @@ public:
         image=image.scaled(width,height,win->aspectRatioMode(),win->filteringMode());
         return true;
     };
+    static int lastIndex;
+};
+
+class writeNode:public QObject,public node{
+private:
+    Q_OBJECT
+    WriteNodePropertiesWindow*win;
+    QImage image;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+        PAINT_NODE(30,true,false);
+    };
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
+        QMenu menu;
+        QAction*connectInput=menu.addAction("Connect Input");
+        QAction*disconnectInput=menu.addAction("Disconnect Input");
+        QAction*deleteNode=menu.addAction("Delete Node");
+        QAction*properties=menu.addAction("Properties");
+        QAction*current=menu.exec(event->screenPos());
+        if(current==connectInput){
+            if(outputScene!=NULL && outputScene!=this){
+                if(input!=NULL) removeInput();
+                setInput(outputScene);
+                outputScene=NULL;
+            }
+            else inputScene=this;
+        }
+        if(current==disconnectInput){
+            if(input!=NULL) removeInput();
+            inputScene=NULL;
+            outputScene=NULL;
+        }
+        if(current==properties){
+            if(!(propW->isVisible())) propW->show();
+            else propW->activateWindow();
+        }
+        if(current==deleteNode){
+            if(input!=NULL) removeInput();
+            for(auto it=output.begin();it!=output.end();it++){
+                it->first->removeInput();
+            }
+            scene->removeItem(this);
+            inputScene=NULL;
+            outputScene=NULL;
+            if(propW!=NULL) propW->hide();
+        }
+    };
+private slots:
+    void pushButton1Clicked(){
+        if(getInput()==NULL) return;
+        bool ans=getInput()->imageCalculate(image);
+        if(!ans) return;
+        QString fileName=QFileDialog::getSaveFileName(win,"Save Image File","","Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.xbm *.xpm)");
+        QFileInfo info(fileName);
+        if(info.suffix()!="") image.save(fileName,NULL,win->getFactor());
+    }
+public:
+    writeNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="writeNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        win=new WriteNodePropertiesWindow(getName());
+        propW=win;
+        connect(win->pushButton1,SIGNAL(clicked()),this,SLOT(pushButton1Clicked()));
+    }
     static int lastIndex;
 };
