@@ -54,6 +54,9 @@ public:
     ~ImageViewer();
 public slots:
     void on_pushButton_clicked();
+private slots:
+    void on_pushButton_2_clicked();
+
 private:
     Ui::ImageViewer *ui;
     QGraphicsScene*scene;

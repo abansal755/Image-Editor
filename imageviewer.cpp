@@ -1,6 +1,8 @@
 #include "imageviewer.h"
 #include "ui_imageviewer.h"
 #include <algorithm>
+#include <QFileDialog>
+#include "qualityfactordialog.h"
 
 ImageViewer::ImageViewer(viewerNode*viewNode,QWidget *parent) :QMainWindow(parent),ui(new Ui::ImageViewer),viewNode(viewNode)
 {
@@ -36,5 +38,19 @@ void ImageViewer::on_pushButton_clicked()
             text->setPos((float)image.width()/2,(float)image.height()/2);
         }
         ui->graphicsView->centerOn(0,0);
+    }
+}
+
+void ImageViewer::on_pushButton_2_clicked()
+{
+    //Save Image Button
+    QString fileName=QFileDialog::getSaveFileName(this,"Save Image File","","Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.xbm *.xpm)");
+    QFileInfo info(fileName);
+    if(info.suffix()=="") QMessageBox::critical(this,"Error","Unable to save image file");
+    else{
+        qualityFactorDialog d;
+        bool ans=d.exec();
+        if(!ans) QMessageBox::critical(this,"Error","Unable to save image file");
+        else image.save(fileName,NULL,d.getFactor());
     }
 }

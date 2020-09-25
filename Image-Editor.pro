@@ -20,6 +20,7 @@ SOURCES += \
     imageviewer.cpp \
     main.cpp \
     mainwindow.cpp \
+    qualityfactordialog.cpp \
     sliderint.cpp \
     sliderfloat.cpp
 
@@ -30,6 +31,7 @@ HEADERS += \
     imageviewer.h \
     mainwindow.h \
     node.h \
+    qualityfactordialog.h \
     sliderint.h \
     sliderfloat.h
 
@@ -37,6 +39,7 @@ FORMS += \
     aboutdialog.ui \
     imageviewer.ui \
     mainwindow.ui \
+    qualityfactordialog.ui \
     sliderint.ui \
     sliderfloat.ui
 
