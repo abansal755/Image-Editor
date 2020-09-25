@@ -33,7 +33,6 @@
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="actionViewer"/>
     <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuFile">
@@ -45,11 +44,6 @@
    <addaction name="menuFile"/>
    <addaction name="menuWindow"/>
   </widget>
-  <action name="actionViewer">
-   <property name="text">
-    <string>Viewer</string>
-   </property>
-  </action>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>

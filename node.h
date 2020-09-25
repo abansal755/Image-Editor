@@ -24,6 +24,7 @@
 #include<QLineEdit>
 #include<QGraphicsPathItem>
 #include<QSpinBox>
+#include"graphicsview.h"
 
 //x - font size, y - input, z- output
 #define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QPainterPath path;path.addRoundedRect(rect,15,15);QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillPath(path,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawPath(path);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
@@ -139,6 +140,31 @@ private slots:
             textEdit4->setText(QString::number(size.width()));
             textEdit5->setText(QString::number(size.height()));
         }
+    }
+};
+
+class ViewerNodePropertiesWindow:public PropertiesWindow{
+private:
+    QVBoxLayout*vBoxLayout1;
+    QHBoxLayout*hBoxLayout1;
+public:
+    QPushButton*pushButton1;
+    QGraphicsScene*scene;
+    ImageGraphicsView*imageGraphicsView;
+    ViewerNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
+        vBoxLayout1=new QVBoxLayout;
+        hBoxLayout1=new QHBoxLayout;
+        imageGraphicsView=new ImageGraphicsView;
+        pushButton1=new QPushButton("Refresh");
+
+        hBoxLayout1->addStretch();
+        hBoxLayout1->addWidget(pushButton1);
+        vBoxLayout1->addWidget(imageGraphicsView);
+        vBoxLayout1->addLayout(hBoxLayout1);
+        setLayout(vBoxLayout1);
+
+        scene=new QGraphicsScene(this);
+        imageGraphicsView->setScene(scene);
     }
 };
 
@@ -734,8 +760,9 @@ public:
     static int lastIndex;
 };
 
-class viewerNode:public node{
-protected:
+class viewerNode:public QObject,public node{
+private:
+    Q_OBJECT
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
         PAINT_NODE(30,true,false);
     };
@@ -743,6 +770,8 @@ protected:
         QMenu menu;
         QAction*connectInput=menu.addAction("Connect Input");
         QAction*disconnectInput=menu.addAction("Disconnect Input");
+        QAction*viewer=menu.addAction("Viewer");
+        QAction*deleteNode=menu.addAction("Delete Node");
         QAction*current=menu.exec(event->screenPos());
         if(current==connectInput){
             if(outputScene!=NULL && outputScene!=this){
@@ -757,11 +786,52 @@ protected:
             inputScene=NULL;
             outputScene=NULL;
         }
+        if(current==viewer){
+            if(!(propW->isVisible())) propW->show();
+            else propW->activateWindow();
+        }
+        if(current==deleteNode){
+            if(input!=NULL) removeInput();
+            for(auto it=output.begin();it!=output.end();it++){
+                it->first->removeInput();
+            }
+            scene->removeItem(this);
+            inputScene=NULL;
+            outputScene=NULL;
+            if(propW!=NULL) propW->hide();
+        }
     };
-public:
-    viewerNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="viewerNode"):node(scene,destruc,name){
-        propW=NULL;
+    ViewerNodePropertiesWindow*win;
+    QImage image;
+private slots:
+    void pushButton1Clicked(){
+        win->scene->clear();
+        if(getInput()==NULL) return;
+        if(!(getInput()->imageCalculate(image))) return;
+        QGraphicsPixmapItem*pix=win->scene->addPixmap(QPixmap::fromImage(image));
+        pix->setPos(-(float)image.width()/2,-(float)image.height()/2);
+        if(win->imageGraphicsView->overlay){
+            QPen pen;
+            pen.setColor(Qt::red);
+            win->scene->addLine(-(float)image.width()/2,(float)image.height()/2,(float)image.width()/2,(float)image.height()/2,pen);
+            win->scene->addLine(-(float)image.width()/2,-(float)image.height()/2,(float)image.width()/2,-(float)image.height()/2,pen);
+            win->scene->addLine(-(float)image.width()/2,(float)image.height()/2,-(float)image.width()/2,-(float)image.height()/2,pen);
+            win->scene->addLine((float)image.width()/2,(float)image.height()/2,(float)image.width()/2,-(float)image.height()/2,pen);
+            QFont font;
+            font.setPixelSize(max(image.width(),image.height())/40);
+            QGraphicsTextItem*text=win->scene->addText(QString::number(image.width())+"x"+QString::number(image.height()),font);
+            text->setDefaultTextColor(Qt::red);
+            text->setPos((float)image.width()/2,(float)image.height()/2);
+        }
+        win->imageGraphicsView->centerOn(0,0);
     }
+public:
+    viewerNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="viewerNode"+QString::number(lastIndex++)):node(scene,destruc,name){
+        win=new ViewerNodePropertiesWindow(getName());
+        propW=win;
+        connect(win->pushButton1,SIGNAL(clicked()),this,SLOT(pushButton1Clicked()));
+    }
+    static int lastIndex;
 };
 
 class blurNode:public node{

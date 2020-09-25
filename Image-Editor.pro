@@ -17,7 +17,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     aboutdialog.cpp \
-    imageviewer.cpp \
     main.cpp \
     mainwindow.cpp \
     sliderint.cpp \
@@ -27,7 +26,6 @@ HEADERS += \
     aboutdialog.h \
     canvas.h \
     graphicsview.h \
-    imageviewer.h \
     mainwindow.h \
     node.h \
     sliderint.h \
@@ -35,7 +33,6 @@ HEADERS += \
 
 FORMS += \
     aboutdialog.ui \
-    imageviewer.ui \
     mainwindow.ui \
     sliderint.ui \
     sliderfloat.ui

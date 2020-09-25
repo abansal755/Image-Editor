@@ -16,6 +16,7 @@ private:
         QMenu*newNode=menu.addMenu("New Node");
         QAction*newReadNode=newNode->addAction("Read Node");
         QAction*newWriteNode=newNode->addAction("Write Node");
+        QAction*newViewerNode=newNode->addAction("Viewer Node");
         QAction*newGradeNode=newNode->addAction("Grade Node");
         QAction*newGammaNode=newNode->addAction("Gamma Node");
         QAction*newContrastNode=newNode->addAction("Contrast Node");
@@ -80,6 +81,11 @@ private:
         }
         if(current==newCropNode){
             cropNode*n=new cropNode(scene,*destruc);
+            scene->addItem(n);
+            n->setPos(event->scenePos());
+        }
+        if(current==newViewerNode){
+            viewerNode*n=new viewerNode(scene,*destruc);
             scene->addItem(n);
             n->setPos(event->scenePos());
         }
