@@ -549,8 +549,7 @@ protected:
                 p1.setY(p1.y()+height);
                 QPointF p2(it->first->x()+it->first->width/2,it->first->y());
                 QPainterPath path;
-                path.moveTo(p1);
-                path.cubicTo(p1.x(),p1.y()+25,p2.x(),p2.y()-25,p2.x(),p2.y());
+                BEZIER_CURVE(path,p1,p2,25)
                 it->second->setPath(path);
             }
         }
