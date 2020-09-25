@@ -165,6 +165,7 @@ public:
 
         scene=new QGraphicsScene(this);
         imageGraphicsView->setScene(scene);
+        resize(800,600);
     }
 };
 
