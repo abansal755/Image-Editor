@@ -540,7 +540,7 @@ protected:
                 QPointF p2=value.toPointF();
                 p2.setX(p2.x()+width/2);
                 QPainterPath path;
-                BEZIER_CURVE(path,p1,p2,40)
+                BEZIER_CURVE(path,p1,p2,25)
                 inputLine->setPath(path);
             }
             for(auto it=output.begin();it!=output.end();it++){
@@ -649,7 +649,7 @@ public:
         QPainterPath path;
         QPointF p1(input->x()+input->width/2,input->y()+input->height);
         QPointF p2(x()+width/2,y());
-        BEZIER_CURVE(path,p1,p2,40)
+        BEZIER_CURVE(path,p1,p2,25)
         inputLine=new QGraphicsPathItem;
         inputLine->setPath(path);
         inputLine->setPen(pen);
@@ -673,7 +673,7 @@ public:
         QPointF p2(output->x()+output->width/2,output->y());
         QGraphicsPathItem*outputLine=new QGraphicsPathItem;
         QPainterPath path;
-        BEZIER_CURVE(path,p1,p2,40)
+        BEZIER_CURVE(path,p1,p2,25)
         outputLine->setPath(path);
         outputLine->setPen(pen);
         outputLine->setZValue(-1);
