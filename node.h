@@ -729,7 +729,26 @@ public:
 class readNode:public node{
 protected:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-            PAINT_NODE(30,false,true)
+        QRectF rect=boundingRect();
+        QPainterPath path;
+        path.addRoundedRect(rect,15,15);
+        QLinearGradient grad(0,0,0,height);
+        grad.setColorAt(0,QColor(220,220,220));
+        grad.setColorAt(0.5,QColor(170,170,170));
+        grad.setColorAt(1,QColor(220,220,220));
+        painter->fillPath(path,grad);
+        QPen pen;pen.setWidth(2);
+        painter->setPen(pen);
+        painter->drawPath(path);
+        QFont font;font.setPixelSize(30);
+        painter->setFont(font);
+        if(!pressed) pen.setColor(Qt::black);
+        else pen.setColor(QColor(140,140,140));
+        painter->setPen(pen);
+        painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
+        font.setPixelSize(10);
+        painter->setFont(font);
+        painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
     };
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
@@ -778,7 +797,26 @@ class viewerNode:public QObject,public node{
 private:
     Q_OBJECT
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        PAINT_NODE(30,true,false);
+        QRectF rect=boundingRect();
+        QPainterPath path;
+        path.addRoundedRect(rect,15,15);
+        QLinearGradient grad(0,0,0,height);
+        grad.setColorAt(0,QColor(220,220,220));
+        grad.setColorAt(0.5,QColor(170,170,170));
+        grad.setColorAt(1,QColor(220,220,220));
+        painter->fillPath(path,grad);
+        QPen pen;pen.setWidth(2);
+        painter->setPen(pen);
+        painter->drawPath(path);
+        QFont font;font.setPixelSize(30);
+        painter->setFont(font);
+        if(!pressed) pen.setColor(Qt::black);
+        else pen.setColor(QColor(140,140,140));
+        painter->setPen(pen);
+        painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
+        font.setPixelSize(10);
+        painter->setFont(font);
+        painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");
     };
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
@@ -1126,7 +1164,26 @@ private:
     WriteNodePropertiesWindow*win;
     QImage image;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
-        PAINT_NODE(30,true,false);
+        QRectF rect=boundingRect();
+        QPainterPath path;
+        path.addRoundedRect(rect,15,15);
+        QLinearGradient grad(0,0,0,height);
+        grad.setColorAt(0,QColor(220,220,220));
+        grad.setColorAt(0.5,QColor(170,170,170));
+        grad.setColorAt(1,QColor(220,220,220));
+        painter->fillPath(path,grad);
+        QPen pen;pen.setWidth(2);
+        painter->setPen(pen);
+        painter->drawPath(path);
+        QFont font;font.setPixelSize(30);
+        painter->setFont(font);
+        if(!pressed) pen.setColor(Qt::black);
+        else pen.setColor(QColor(140,140,140));
+        painter->setPen(pen);
+        painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);
+        font.setPixelSize(10);
+        painter->setFont(font);
+        painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");
     };
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
         QMenu menu;
