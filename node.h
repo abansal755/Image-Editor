@@ -25,6 +25,7 @@
 #include<QGraphicsPathItem>
 #include<QSpinBox>
 #include"graphicsview.h"
+#include<QTimer>
 
 //x - font size, y - input, z- output
 #define PAINT_NODE(x,y,z) QRectF rect=boundingRect();QPainterPath path;path.addRoundedRect(rect,15,15);QLinearGradient grad(0,0,0,height);grad.setColorAt(0,QColor(184,15,10));grad.setColorAt(0.5,QColor(225,36,0));grad.setColorAt(1,QColor(184,15,10));painter->fillPath(path,grad);QPen pen;pen.setWidth(2);painter->setPen(pen);painter->drawPath(path);QFont font;font.setPixelSize(x);painter->setFont(font);if(!pressed) pen.setColor(Qt::black);else pen.setColor(QColor(246,228,134));painter->setPen(pen);painter->drawText(rect,Qt::AlignCenter|Qt::AlignVCenter,name);font.setPixelSize(10);painter->setFont(font);if(y) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignTop,"input");if(z) painter->drawText(rect,Qt::AlignHCenter|Qt::AlignBottom,"output");
@@ -147,8 +148,11 @@ class ViewerNodePropertiesWindow:public PropertiesWindow{
 private:
     QVBoxLayout*vBoxLayout1;
     QHBoxLayout*hBoxLayout1;
+    QLabel*label1;
 public:
     QPushButton*pushButton1;
+    QCheckBox*checkBox1;
+    QSpinBox*spinBox1;
     QGraphicsScene*scene;
     ImageGraphicsView*imageGraphicsView;
     ViewerNodePropertiesWindow(QString title,QWidget*parent=NULL):PropertiesWindow(title,parent){
@@ -156,7 +160,17 @@ public:
         hBoxLayout1=new QHBoxLayout;
         imageGraphicsView=new ImageGraphicsView;
         pushButton1=new QPushButton("Refresh");
+        checkBox1=new QCheckBox("Automatic refresh");
+        label1=new QLabel("Time Interval(in ms):");
+        spinBox1=new QSpinBox;
+        spinBox1->setRange(500,10000);
+        spinBox1->setValue(1000);
+        spinBox1->setMaximumWidth(60);
+        spinBox1->setDisabled(true);
 
+        hBoxLayout1->addWidget(checkBox1);
+        hBoxLayout1->addWidget(label1);
+        hBoxLayout1->addWidget(spinBox1);
         hBoxLayout1->addStretch();
         hBoxLayout1->addWidget(pushButton1);
         vBoxLayout1->addWidget(imageGraphicsView);
@@ -803,6 +817,7 @@ private:
     };
     ViewerNodePropertiesWindow*win;
     QImage image;
+    QTimer*timer;
 private slots:
     void pushButton1Clicked(){
         win->scene->clear();
@@ -825,11 +840,26 @@ private slots:
         }
         win->imageGraphicsView->centerOn(0,0);
     }
+    void checkBox1Clicked(int state){
+        if(state==Qt::Checked){
+            win->pushButton1->setDisabled(true);
+            win->spinBox1->setEnabled(true);
+            timer->start(1000);
+        }
+        else{
+            win->pushButton1->setEnabled(true);
+            win->spinBox1->setDisabled(true);
+            timer->stop();
+        }
+    }
 public:
     viewerNode(QGraphicsScene*scene,vector<node*>&destruc,QString name="viewerNode"+QString::number(lastIndex++)):node(scene,destruc,name){
         win=new ViewerNodePropertiesWindow(getName());
         propW=win;
+        timer=new QTimer(this);
         connect(win->pushButton1,SIGNAL(clicked()),this,SLOT(pushButton1Clicked()));
+        connect(win->checkBox1,SIGNAL(stateChanged(int)),this,SLOT(checkBox1Clicked(int)));
+        connect(timer,SIGNAL(timeout()),this,SLOT(pushButton1Clicked()));
     }
     static int lastIndex;
 };
