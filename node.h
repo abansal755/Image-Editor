@@ -612,12 +612,16 @@ protected:
             outputScene=NULL;
         }
         if(current==disconnectAllOutputs){
-            for(auto it=output.begin();it!=output.end();it++) it->first->removeInput();
+            for(auto it=output.begin();it!=output.end();){
+                (it++)->first->removeInput();
+                //increment in for loop not occuring in linux bug
+            }
         }
         if(current==deleteNode){
             if(input!=NULL) removeInput();
-            for(auto it=output.begin();it!=output.end();it++){
-                it->first->removeInput();
+            for(auto it=output.begin();it!=output.end();){
+                (it++)->first->removeInput();
+                //increment in for loop not occuring in linux bug
             }
             scene->removeItem(this);
             inputScene=NULL;
@@ -766,12 +770,16 @@ protected:
             else outputScene=this;
         }
         if(current==disconnectAllOutputs){
-            for(auto it=output.begin();it!=output.end();it++) it->first->removeInput();
+            for(auto it=output.begin();it!=output.end();){
+                (it++)->first->removeInput();
+                //increment in for loop not occuring in linux bug
+            }
         }
         if(current==deleteNode){
             if(input!=NULL) removeInput();
-            for(auto it=output.begin();it!=output.end();it++){
-                it->first->removeInput();
+            for(auto it=output.begin();it!=output.end();){
+                (it++)->first->removeInput();
+                //increment in for loop not occuring in linux bug
             }
             scene->removeItem(this);
             inputScene=NULL;
@@ -844,9 +852,6 @@ private:
         }
         if(current==deleteNode){
             if(input!=NULL) removeInput();
-            for(auto it=output.begin();it!=output.end();it++){
-                it->first->removeInput();
-            }
             scene->removeItem(this);
             inputScene=NULL;
             outputScene=NULL;
@@ -1211,9 +1216,6 @@ private:
         }
         if(current==deleteNode){
             if(input!=NULL) removeInput();
-            for(auto it=output.begin();it!=output.end();it++){
-                it->first->removeInput();
-            }
             scene->removeItem(this);
             inputScene=NULL;
             outputScene=NULL;
