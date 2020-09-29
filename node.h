@@ -644,14 +644,11 @@ public:
     }
     ~node(){
         if(inputLine!=NULL){
-            delete inputLine;
-            input->output.erase(this);
+            removeInput();
         }
-        for(auto it=output.begin();it!=output.end();it++){
-            delete it->second;
-            it->first->input=NULL;
-            it->first->inputLine=NULL;
-            output.erase(it);
+        for(auto it=output.begin();it!=output.end();){
+            (it++)->first->removeInput();
+            //increment in for loop not occuring in linux bug
         }
         if(propW!=NULL) delete propW;
     }
