@@ -11,57 +11,12 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Node Graph</string>
+   <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
-    <item>
-     <widget class="GraphicsView" name="graphicsView"/>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuWindow">
-    <property name="title">
-     <string>Window</string>
-    </property>
-    <addaction name="actionAbout"/>
-   </widget>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <addaction name="actionExit"/>
-   </widget>
-   <addaction name="menuFile"/>
-   <addaction name="menuWindow"/>
-  </widget>
-  <action name="actionExit">
-   <property name="text">
-    <string>Exit</string>
-   </property>
-  </action>
-  <action name="actionAbout">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar"/>
+  <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>GraphicsView</class>
-   <extends>QGraphicsView</extends>
-   <header>graphicsview.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
