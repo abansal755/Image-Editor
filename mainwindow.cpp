@@ -5,6 +5,7 @@ MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindo
     ui->setupUi(this);
     scene=new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
+    canvas*canv=new canvas(scene,ui->graphicsView);
 }
 
 MainWindow::~MainWindow()
