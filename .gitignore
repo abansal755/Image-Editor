@@ -14,3 +14,4 @@ ui_sliderint.h
 ui_sliderfloat.h
 object_script.Image-Editor.Debug
 object_script.Image-Editor.Release
+Image-Editor_resource.rc
