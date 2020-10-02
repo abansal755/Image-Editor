@@ -54,6 +54,20 @@ class canvas:public QGraphicsItem{
         setZValue(-2);
     }
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){
+        node*&n=node::connection.first.first;
+        QString&type=node::connection.first.second;
+        QGraphicsPathItem*&path=node::connection.second;
+        if(n!=NULL){
+            scene->removeItem(path);
+            delete path;
+            path=NULL;
+            if(type=="ci1") n->getCI1()->setState(hoverExit);
+            else if(type=="ci2") n->getCI2()->setState(hoverExit);
+            else n->getCO()->setState(hoverExit);
+            type="";
+            n=NULL;
+        }
+
         QMenu menu;
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
@@ -81,24 +95,24 @@ class canvas:public QGraphicsItem{
                 if(type=="ci1"){
                     path.moveTo(n->x()+n->getWidth()/2,n->y()+n->getCI1()->getHeight());
                     path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getCI1()->getHeight()-25,
-                                 event->scenePos().x(),event->scenePos().y()-25,event->scenePos().x(),event->scenePos().y());
+                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
                 }
             }else if(n->getIType()==twoInput){
                 if(type=="ci1"){
                     path.moveTo(n->x()+n->getWidth()/4,n->y()+n->getCI1()->getHeight());
                     path.cubicTo(n->x()+n->getWidth()/4,n->y()+n->getCI1()->getHeight()-25,
-                                 event->scenePos().x(),event->scenePos().y()-25,event->scenePos().x(),event->scenePos().y());
+                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
                 }else if(type=="ci2"){
                     path.moveTo(n->x()+3*n->getWidth()/4,n->y()+n->getCI1()->getHeight());
                     path.cubicTo(n->x()+3*n->getWidth()/4,n->y()+n->getCI1()->getHeight()-25,
-                                 event->scenePos().x(),event->scenePos().y()-25,event->scenePos().x(),event->scenePos().y());
+                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
                 }
             }
             if(n->getOType()==oneOutput){
                 if(type=="co"){
                     path.moveTo(n->x()+n->getWidth()/2,n->y()+n->getHeight()-n->getCO()->getHeight());
                     path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getHeight()-n->getCO()->getHeight()+25,
-                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
+                                 event->scenePos().x(),event->scenePos().y()-25,event->scenePos().x(),event->scenePos().y());
                 }
             }
             gpath->setPath(path);
