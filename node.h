@@ -66,7 +66,7 @@ protected:
     outputConnection oType;
     node*input1,*input2;
     QGraphicsPathItem*inputLine1,*inputLine2;
-    unordered_map<node*,QGraphicsPathItem*>output;
+    unordered_multimap<node*,QGraphicsPathItem*>output;
     connector *ci1,*ci2,*co;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){};
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
@@ -124,13 +124,13 @@ protected:
                                  n->x()+n->width/2,n->y()+n->getCI1()->getHeight());
                     pitem->setPath(path);
                 }else if(n->iType==twoInput){
-                    if(n->input1==this){
+                    if(n->inputLine1==pitem){
                         QPainterPath path;
                         path.moveTo(x()+width/2,y()+height-co->getHeight());
                         path.cubicTo(x()+width/2,y()+height-co->getHeight()+25,n->x()+n->width/4,n->y()+n->ci1->getHeight()-25,
                                      n->x()+n->width/4,n->y()+n->getCI1()->getHeight());
                         pitem->setPath(path);
-                    }if(n->input2==this){
+                    }else{
                         QPainterPath path;
                         path.moveTo(x()+width/2,y()+height-co->getHeight());
                         path.cubicTo(x()+width/2,y()+height-co->getHeight()+25,n->x()+3*n->width/4,n->y()+n->ci1->getHeight()-25,
@@ -190,6 +190,7 @@ protected:
                     pen.setWidth(2);
                     connection.second->setPen(pen);
                     scene->addItem(connection.second);
+                    connection.second->setZValue(-1);
 
                     if(type=="ci1") ci1->setState(connected);
                     else if(type=="ci2") ci2->setState(connected);
@@ -200,7 +201,7 @@ protected:
                     QGraphicsPathItem*&pitem=connection.second;
                     if((connection.first.second=="ci1" || connection.first.second=="ci2") && type=="co" && connection.first.first!=this){
                         qDebug()<<"valid";
-                        output[n]=pitem;
+                        output.insert({n,pitem});
                         QPainterPath path;
                         path.moveTo(x()+width/2,y()+height-co->getHeight());
                         if(n->iType==oneInput){
@@ -229,7 +230,7 @@ protected:
                         qDebug()<<"valid";
                         QPainterPath path;
                         path.moveTo(n->x()+n->width/2,n->y()+n->height-n->co->getHeight());
-                        n->output[this]=pitem;
+                        n->output.insert({this,pitem});
                         if(iType==oneInput){
                             input1=n;
                             inputLine1=pitem;
@@ -269,7 +270,7 @@ protected:
         QGraphicsItem::mouseReleaseEvent(event);
     };
 public:
-    node(QGraphicsScene*scene,inputConnection iType=oneInput,outputConnection oType=oneOutput,int width=200,int height=75)
+    node(QGraphicsScene*scene,inputConnection iType=twoInput,outputConnection oType=oneOutput,int width=200,int height=75)
         :scene(scene),width(width),height(height),iType(iType),oType(oType),input1(NULL),input2(NULL),inputLine1(NULL),inputLine2(NULL)
     {
         scene->addItem(this);
