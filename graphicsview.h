@@ -63,7 +63,7 @@ class canvas:public QGraphicsItem{
             path=NULL;
             if(type=="ci1") n->getCI1()->setState(hoverExit);
             else if(type=="ci2") n->getCI2()->setState(hoverExit);
-            else n->getCO()->setState(hoverExit);
+            else if(n->getOutput()->empty()) n->getCO()->setState(hoverExit);
             type="";
             n=NULL;
         }

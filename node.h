@@ -184,17 +184,35 @@ protected:
             }
             if(clicked){
                 if(connection.first.first==NULL){
-                    connection.first={this,type};
-                    connection.second=new QGraphicsPathItem;
-                    QPen pen(Qt::white);
-                    pen.setWidth(2);
-                    connection.second->setPen(pen);
-                    scene->addItem(connection.second);
-                    connection.second->setZValue(-1);
+                    if(type=="ci1" && input1!=NULL){
+                        scene->removeItem(inputLine1);
+                        delete inputLine1;
+                        inputLine1=NULL;
+                        input1->output.erase(this);
+                        if(input1->output.empty()) input1->co->setState(hoverExit);
+                        input1=NULL;
+                        ci1->setState(hoverExit);
+                    }else if(type=="ci2" && input2!=NULL){
+                        scene->removeItem(inputLine2);
+                        delete inputLine2;
+                        inputLine2=NULL;
+                        input2->output.erase(this);
+                        if(input2->output.empty()) input2->co->setState(hoverExit);
+                        input2=NULL;
+                        ci2->setState(hoverExit);
+                    }else{
+                        connection.first={this,type};
+                        connection.second=new QGraphicsPathItem;
+                        QPen pen(Qt::white);
+                        pen.setWidth(2);
+                        connection.second->setPen(pen);
+                        scene->addItem(connection.second);
+                        connection.second->setZValue(-1);
 
-                    if(type=="ci1") ci1->setState(connected);
-                    else if(type=="ci2") ci2->setState(connected);
-                    else co->setState(connected);
+                        if(type=="ci1") ci1->setState(connected);
+                        else if(type=="ci2") ci2->setState(connected);
+                        else co->setState(connected);
+                    }
                 }else{
                     node*&n=connection.first.first;
                     QString&ctype=connection.first.second;
@@ -270,7 +288,7 @@ protected:
         QGraphicsItem::mouseReleaseEvent(event);
     };
 public:
-    node(QGraphicsScene*scene,inputConnection iType=twoInput,outputConnection oType=oneOutput,int width=200,int height=75)
+    node(QGraphicsScene*scene,inputConnection iType=oneInput,outputConnection oType=oneOutput,int width=200,int height=75)
         :scene(scene),width(width),height(height),iType(iType),oType(oType),input1(NULL),input2(NULL),inputLine1(NULL),inputLine2(NULL)
     {
         scene->addItem(this);
@@ -313,6 +331,9 @@ public:
     }
     connector* getCO(){
         return co;
+    }
+    unordered_multimap<node*,QGraphicsPathItem*>* getOutput(){
+        return &output;
     }
     static pair<pair<node*,QString>,QGraphicsPathItem*> connection;
 };
