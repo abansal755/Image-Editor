@@ -54,6 +54,7 @@ public:
     }
     void setState(connectorState state){
         this->state=state;
+        update();
     }
 };
 
@@ -81,25 +82,35 @@ protected:
         painter->setPen(pen);
         painter->drawPath(path);
     };
-    void mousePressEvent(QGraphicsSceneMouseEvent *event){
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
         QPointF rel=event->scenePos();
         rel.setX(rel.x()-x());
         rel.setY(rel.y()-y());
         if(event->button()==Qt::RightButton){
+            QString type;
+            bool clicked=false;
             if(iType==oneInput){
                 if(rel.x()>=(width-ci1->getWidth())/2 && rel.x()<=(width+ci1->getWidth())/2
                         && rel.y()>=ci1->getHeight()/2 && rel.y()<=3*ci1->getHeight()/2)
                 {
                     qDebug()<<"ci1";
+                    type="ci1";
+                    clicked=true;
                 }
             }else if(iType==twoInput){
                 if(rel.x()>=(width-2*ci1->getWidth())/4 && rel.x()<=(width+2*ci1->getWidth())/4
-                        && rel.y()>=ci1->getHeight()/2 && rel.y()<=3*ci1->getHeight()/2){
+                        && rel.y()>=ci1->getHeight()/2 && rel.y()<=3*ci1->getHeight()/2)
+                {
                     qDebug()<<"ci1";
-                }else if(rel.x()>=(3*width-2*ci1->getWidth())/4 && rel.x()<=(3*width+2*ci1->getWidth())/4
+                    type="ci1";
+                    clicked=true;
+                }
+                else if(rel.x()>=(3*width-2*ci1->getWidth())/4 && rel.x()<=(3*width+2*ci1->getWidth())/4
                          && rel.y()>=ci1->getHeight()/2 && rel.y()<=3*ci1->getHeight()/2)
                 {
                     qDebug()<<"ci2";
+                    type="ci2";
+                    clicked=true;
                 }
             }
             if(oType==oneOutput){
@@ -107,12 +118,27 @@ protected:
                         && rel.y()<=height-(co->getHeight()/2) && rel.y()>=height-(3*co->getHeight()/2))
                 {
                     qDebug()<<"co";
+                    type="co";
+                    clicked=true;
+                }
+            }
+            if(clicked){
+                if(connection.first.first==NULL){
+                    connection.first={this,type};
+                    connection.second=new QGraphicsPathItem;
+                    QPen pen(Qt::white);
+                    pen.setWidth(2);
+                    connection.second->setPen(pen);
+                    scene->addItem(connection.second);
+
+                    if(type=="ci1") ci1->setState(connected);
+                    else if(type=="ci2") ci2->setState(connected);
+                    else co->setState(connected);
+                }else{
+
                 }
             }
         }
-        QGraphicsItem::mousePressEvent(event);
-    };
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event){
         QGraphicsItem::mouseReleaseEvent(event);
     };
 public:
@@ -145,7 +171,22 @@ public:
     int getHeight(){
         return height;
     }
-    static pair<node*,QGraphicsPathItem*> connect;
+    inputConnection getIType(){
+        return iType;
+    }
+    outputConnection getOType(){
+        return oType;
+    }
+    connector* getCI1(){
+        return ci1;
+    }
+    connector* getCI2(){
+        return ci2;
+    }
+    connector* getCO(){
+        return co;
+    }
+    static pair<pair<node*,QString>,QGraphicsPathItem*> connection;
 };
 
-pair<node*,QGraphicsPathItem*> node::connect={NULL,NULL};
+pair<pair<node*,QString>,QGraphicsPathItem*> node::connection={{NULL,""},NULL};

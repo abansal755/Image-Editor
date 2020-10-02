@@ -70,10 +70,46 @@ class canvas:public QGraphicsItem{
             n->setPos(event->scenePos());
         }
     };
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event){
+        pair<node*,QString>&p=node::connection.first;
+        node*&n=p.first;
+        QString&type=p.second;
+        QGraphicsPathItem*&gpath=node::connection.second;
+        if(n!=NULL){
+            QPainterPath path;
+            if(n->getIType()==oneInput){
+                if(type=="ci1"){
+                    path.moveTo(n->x()+n->getWidth()/2,n->y()+n->getCI1()->getHeight());
+                    path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getCI1()->getHeight()-25,
+                                 event->scenePos().x(),event->scenePos().y()-25,event->scenePos().x(),event->scenePos().y());
+                }
+            }else if(n->getIType()==twoInput){
+                if(type=="ci1"){
+                    path.moveTo(n->x()+n->getWidth()/4,n->y()+n->getCI1()->getHeight());
+                    path.cubicTo(n->x()+n->getWidth()/4,n->y()+n->getCI1()->getHeight()-25,
+                                 event->scenePos().x(),event->scenePos().y()-25,event->scenePos().x(),event->scenePos().y());
+                }else if(type=="ci2"){
+                    path.moveTo(n->x()+3*n->getWidth()/4,n->y()+n->getCI1()->getHeight());
+                    path.cubicTo(n->x()+3*n->getWidth()/4,n->y()+n->getCI1()->getHeight()-25,
+                                 event->scenePos().x(),event->scenePos().y()-25,event->scenePos().x(),event->scenePos().y());
+                }
+            }
+            if(n->getOType()==oneOutput){
+                if(type=="co"){
+                    path.moveTo(n->x()+n->getWidth()/2,n->y()+n->getHeight()-n->getCO()->getHeight());
+                    path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getHeight()-n->getCO()->getHeight()+25,
+                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
+                }
+            }
+            gpath->setPath(path);
+        }
+        QGraphicsItem::hoverMoveEvent(event);
+    };
 public:
     canvas(QGraphicsScene*scene,GraphicsView*gw):scene(scene),gw(gw){
         setCursor(Qt::ArrowCursor);
         scene->addItem(this);
+        setAcceptHoverEvents(true);
     }
     QRectF boundingRect() const{
         return QRectF(-10000,-10000,20000,20000);
