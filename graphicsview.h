@@ -61,9 +61,9 @@ class canvas:public QGraphicsItem{
             scene->removeItem(path);
             delete path;
             path=NULL;
-            if(type=="ci1") n->getCI1()->setState(hoverExit);
-            else if(type=="ci2") n->getCI2()->setState(hoverExit);
-            else if(n->getOutput()->empty()) n->getCO()->setState(hoverExit);
+            if(type=="ci1" && n->getInput1()==NULL) n->getCI1()->setState(hoverExit);
+            else if(type=="ci2" && n->getInput2()==NULL) n->getCI2()->setState(hoverExit);
+            else if(type=="co" && n->getOutput()->empty()) n->getCO()->setState(hoverExit);
             type="";
             n=NULL;
         }
