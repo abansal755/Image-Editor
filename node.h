@@ -84,7 +84,61 @@ protected:
     };
     QVariant itemChange(GraphicsItemChange change, const QVariant &value){
         if(change==ItemPositionChange){
-
+            QPointF p=value.toPointF();
+            //inputLine
+            if(iType==oneInput){
+                if(input1!=NULL){
+                    QPainterPath path;
+                    path.moveTo(input1->x()+input1->getWidth()/2,input1->y()+input1->getHeight()-input1->getCO()->getHeight());
+                    path.cubicTo(input1->x()+input1->getWidth()/2,input1->y()+input1->getHeight()-input1->getCO()->getHeight()+25,
+                                 p.x()+width/2,p.y()-25,p.x()+width/2,p.y());
+                    inputLine1->setPath(path);
+                }
+            }
+            else if(iType==twoInput){
+                if(input1!=NULL){
+                    QPainterPath path;
+                    path.moveTo(input1->x()+input1->getWidth()/2,input1->y()+input1->getHeight()-input1->getCO()->getHeight());
+                    path.cubicTo(input1->x()+input1->getWidth()/2,input1->y()+input1->getHeight()-input1->getCO()->getHeight()+25,
+                                 p.x()+width/4,p.y()-25,p.x()+width/4,p.y());
+                    inputLine1->setPath(path);
+                }
+                if(input2!=NULL){
+                    qDebug()<<"1";
+                    QPainterPath path;
+                    path.moveTo(input2->x()+input2->getWidth()/2,input2->y()+input2->getHeight()-input2->getCO()->getHeight());
+                    path.cubicTo(input2->x()+input2->getWidth()/2,input2->y()+input2->getHeight()-input2->getCO()->getHeight()+25,
+                                 p.x()+3*width/4,p.y()-25,p.x()+3*width/4,p.y());
+                    inputLine2->setPath(path);
+                    qDebug()<<"2";
+                }
+            }
+            //outputLine
+            for(auto it=output.begin();it!=output.end();it++){
+                node*n=it->first;
+                QGraphicsPathItem*pitem=it->second;
+                if(n->iType==oneInput){
+                    QPainterPath path;
+                    path.moveTo(x()+width/2,y()+height-co->getHeight());
+                    path.cubicTo(x()+width/2,y()+height-co->getHeight()+25,n->x()+n->width/2,n->y()+n->ci1->getHeight()-25,
+                                 n->x()+n->width/2,n->y()+n->getCI1()->getHeight());
+                    pitem->setPath(path);
+                }else if(n->iType==twoInput){
+                    if(n->input1==this){
+                        QPainterPath path;
+                        path.moveTo(x()+width/2,y()+height-co->getHeight());
+                        path.cubicTo(x()+width/2,y()+height-co->getHeight()+25,n->x()+n->width/4,n->y()+n->ci1->getHeight()-25,
+                                     n->x()+n->width/4,n->y()+n->getCI1()->getHeight());
+                        pitem->setPath(path);
+                    }if(n->input2==this){
+                        QPainterPath path;
+                        path.moveTo(x()+width/2,y()+height-co->getHeight());
+                        path.cubicTo(x()+width/2,y()+height-co->getHeight()+25,n->x()+3*n->width/4,n->y()+n->ci1->getHeight()-25,
+                                     n->x()+3*n->width/4,n->y()+n->getCI1()->getHeight());
+                        pitem->setPath(path);
+                    }
+                }
+            }
         }
         return QGraphicsItem::itemChange(change,value);
     };
@@ -181,19 +235,25 @@ protected:
                             inputLine1=pitem;
                             path.cubicTo(n->x()+n->width/2,n->y()+n->height-n->co->getHeight()+25,x()+width/2,
                                          y()-ci1->getHeight()-25,x()+width/2,y()-ci1->getHeight()-25);
+                            ci1->setState(connected);
                         }else if(iType==twoInput){
                             if(type=="ci1"){
                                 input1=n;
                                 inputLine1=pitem;
                                 path.cubicTo(n->x()+n->width/2,n->y()+n->height-n->co->getHeight()+25,x()+width/4,
                                              y()-ci1->getHeight()-25,x()+width/4,y()-ci1->getHeight()-25);
+                                ci1->setState(connected);
                             }else if(type=="ci2"){
                                 input2=n;
                                 inputLine2=pitem;
                                 path.cubicTo(n->x()+n->width/2,n->y()+n->height-n->co->getHeight()+25,x()+3*width/4,
                                              y()-ci1->getHeight()-25,x()+3*width/4,y()-ci1->getHeight()-25);
+                                ci2->setState(connected);
                             }
                         }
+                        n=NULL;
+                        pitem=NULL;
+                        ctype="";
                     }else{
                         qDebug()<<"invalid";
                         if(ctype=="ci1") n->getCI1()->setState(hoverExit);
@@ -209,7 +269,7 @@ protected:
         QGraphicsItem::mouseReleaseEvent(event);
     };
 public:
-    node(QGraphicsScene*scene,inputConnection iType=twoInput,outputConnection oType=oneOutput,int width=200,int height=75)
+    node(QGraphicsScene*scene,inputConnection iType=oneInput,outputConnection oType=oneOutput,int width=200,int height=75)
         :scene(scene),width(width),height(height),iType(iType),oType(oType),input1(NULL),input2(NULL),inputLine1(NULL),inputLine2(NULL)
     {
         scene->addItem(this);
