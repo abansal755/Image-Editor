@@ -75,7 +75,7 @@ protected:
         path.addRoundedRect(rect,15,15);
         QLinearGradient grad(0,0,0,height);
         grad.setColorAt(0,QColor(184,15,10));
-        grad.setColorAt(0.5,QColor(225,36,0));
+        grad.setColorAt(0.5,QColor(240,36,0));
         grad.setColorAt(1,QColor(184,15,10));
         painter->fillPath(path,grad);
         QPen pen;pen.setWidth(2);
@@ -90,8 +90,8 @@ protected:
                 if(input1!=NULL){
                     QPainterPath path;
                     path.moveTo(input1->x()+input1->getWidth()/2,input1->y()+input1->getHeight()-input1->getCO()->getHeight());
-                    path.cubicTo(input1->x()+input1->getWidth()/2,input1->y()+input1->getHeight()-input1->getCO()->getHeight()+25,
-                                 p.x()+width/2,p.y()-25,p.x()+width/2,p.y());
+                    path.cubicTo(input1->x()+input1->getWidth()/2,input1->y()+input1->getHeight()-input1->getCO()->getHeight()+40,
+                                 p.x()+width/2,p.y()+ci1->getHeight()-40,p.x()+width/2,p.y()+ci1->getHeight());
                     inputLine1->setPath(path);
                 }
             }
@@ -99,18 +99,16 @@ protected:
                 if(input1!=NULL){
                     QPainterPath path;
                     path.moveTo(input1->x()+input1->getWidth()/2,input1->y()+input1->getHeight()-input1->getCO()->getHeight());
-                    path.cubicTo(input1->x()+input1->getWidth()/2,input1->y()+input1->getHeight()-input1->getCO()->getHeight()+25,
-                                 p.x()+width/4,p.y()-25,p.x()+width/4,p.y());
+                    path.cubicTo(input1->x()+input1->getWidth()/2,input1->y()+input1->getHeight()-input1->getCO()->getHeight()+40,
+                                 p.x()+width/4,p.y()+ci1->getHeight()-40,p.x()+width/4,p.y()+ci1->getHeight());
                     inputLine1->setPath(path);
                 }
                 if(input2!=NULL){
-                    qDebug()<<"1";
                     QPainterPath path;
                     path.moveTo(input2->x()+input2->getWidth()/2,input2->y()+input2->getHeight()-input2->getCO()->getHeight());
-                    path.cubicTo(input2->x()+input2->getWidth()/2,input2->y()+input2->getHeight()-input2->getCO()->getHeight()+25,
-                                 p.x()+3*width/4,p.y()-25,p.x()+3*width/4,p.y());
+                    path.cubicTo(input2->x()+input2->getWidth()/2,input2->y()+input2->getHeight()-input2->getCO()->getHeight()+40,
+                                 p.x()+3*width/4,p.y()+ci2->getHeight()-40,p.x()+3*width/4,p.y()+ci2->getHeight());
                     inputLine2->setPath(path);
-                    qDebug()<<"2";
                 }
             }
             //outputLine
@@ -120,20 +118,20 @@ protected:
                 if(n->iType==oneInput){
                     QPainterPath path;
                     path.moveTo(x()+width/2,y()+height-co->getHeight());
-                    path.cubicTo(x()+width/2,y()+height-co->getHeight()+25,n->x()+n->width/2,n->y()+n->ci1->getHeight()-25,
+                    path.cubicTo(x()+width/2,y()+height-co->getHeight()+40,n->x()+n->width/2,n->y()+n->ci1->getHeight()-40,
                                  n->x()+n->width/2,n->y()+n->getCI1()->getHeight());
                     pitem->setPath(path);
                 }else if(n->iType==twoInput){
                     if(n->inputLine1==pitem){
                         QPainterPath path;
                         path.moveTo(x()+width/2,y()+height-co->getHeight());
-                        path.cubicTo(x()+width/2,y()+height-co->getHeight()+25,n->x()+n->width/4,n->y()+n->ci1->getHeight()-25,
+                        path.cubicTo(x()+width/2,y()+height-co->getHeight()+40,n->x()+n->width/4,n->y()+n->ci1->getHeight()-40,
                                      n->x()+n->width/4,n->y()+n->getCI1()->getHeight());
                         pitem->setPath(path);
                     }else{
                         QPainterPath path;
                         path.moveTo(x()+width/2,y()+height-co->getHeight());
-                        path.cubicTo(x()+width/2,y()+height-co->getHeight()+25,n->x()+3*n->width/4,n->y()+n->ci1->getHeight()-25,
+                        path.cubicTo(x()+width/2,y()+height-co->getHeight()+40,n->x()+3*n->width/4,n->y()+n->ci1->getHeight()-40,
                                      n->x()+3*n->width/4,n->y()+n->getCI1()->getHeight());
                         pitem->setPath(path);
                     }
@@ -212,15 +210,18 @@ protected:
                         if(n->input1!=NULL) n->removeInput1();
                         n->input1=this;
                         n->inputLine1=pitem;
+                        n->getCI1()->setState(connected);
                     }else if(n->iType==twoInput){
                         if(ctype=="ci1"){
                             if(n->input1!=NULL) n->removeInput1();
                             n->input1=this;
                             n->inputLine1=pitem;
+                            n->getCI1()->setState(connected);
                         }else{
                             if(n->input2!=NULL) n->removeInput2();
                             n->input2=this;
                             n->inputLine2=pitem;
+                            n->getCI2()->setState(connected);
                         }
                     }
                     co->setState(connected);
@@ -274,25 +275,25 @@ protected:
             if(n->getIType()==oneInput){
                 if(type=="ci1"){
                     path.moveTo(n->x()+n->getWidth()/2,n->y()+n->getCI1()->getHeight());
-                    path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getCI1()->getHeight()-25,
-                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
+                    path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getCI1()->getHeight()-40,
+                                 event->scenePos().x(),event->scenePos().y()+40,event->scenePos().x(),event->scenePos().y());
                 }
             }else if(n->getIType()==twoInput){
                 if(type=="ci1"){
                     path.moveTo(n->x()+n->getWidth()/4,n->y()+n->getCI1()->getHeight());
-                    path.cubicTo(n->x()+n->getWidth()/4,n->y()+n->getCI1()->getHeight()-25,
-                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
+                    path.cubicTo(n->x()+n->getWidth()/4,n->y()+n->getCI1()->getHeight()-40,
+                                 event->scenePos().x(),event->scenePos().y()+40,event->scenePos().x(),event->scenePos().y());
                 }else if(type=="ci2"){
                     path.moveTo(n->x()+3*n->getWidth()/4,n->y()+n->getCI1()->getHeight());
-                    path.cubicTo(n->x()+3*n->getWidth()/4,n->y()+n->getCI1()->getHeight()-25,
-                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
+                    path.cubicTo(n->x()+3*n->getWidth()/4,n->y()+n->getCI1()->getHeight()-40,
+                                 event->scenePos().x(),event->scenePos().y()+40,event->scenePos().x(),event->scenePos().y());
                 }
             }
             if(n->getOType()==oneOutput){
                 if(type=="co"){
                     path.moveTo(n->x()+n->getWidth()/2,n->y()+n->getHeight()-n->getCO()->getHeight());
-                    path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getHeight()-n->getCO()->getHeight()+25,
-                                 event->scenePos().x(),event->scenePos().y()-25,event->scenePos().x(),event->scenePos().y());
+                    path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getHeight()-n->getCO()->getHeight()+40,
+                                 event->scenePos().x(),event->scenePos().y()-40,event->scenePos().x(),event->scenePos().y());
                 }
             }
             gpath->setPath(path);

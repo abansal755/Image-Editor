@@ -29,7 +29,7 @@ class canvas:public QGraphicsItem{
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
         QPen pen(QColor(52,52,52));
         painter->setPen(pen);
-        for(int y=-10000;y<=10000;y+=25){
+        for(int y=-10000;y<=10000;y+=40){
             if(y%200==0){
                 pen.setColor(QColor(22,22,22));
                 painter->setPen(pen);
@@ -40,7 +40,7 @@ class canvas:public QGraphicsItem{
                 painter->setPen(pen);
             }
         }
-        for(int x=-10000;x<=10000;x+=25){
+        for(int x=-10000;x<=10000;x+=40){
             if(x%200==0){
                 pen.setColor(QColor(22,22,22));
                 painter->setPen(pen);
@@ -94,25 +94,25 @@ class canvas:public QGraphicsItem{
             if(n->getIType()==oneInput){
                 if(type=="ci1"){
                     path.moveTo(n->x()+n->getWidth()/2,n->y()+n->getCI1()->getHeight());
-                    path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getCI1()->getHeight()-25,
-                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
+                    path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getCI1()->getHeight()-40,
+                                 event->scenePos().x(),event->scenePos().y()+40,event->scenePos().x(),event->scenePos().y());
                 }
             }else if(n->getIType()==twoInput){
                 if(type=="ci1"){
                     path.moveTo(n->x()+n->getWidth()/4,n->y()+n->getCI1()->getHeight());
-                    path.cubicTo(n->x()+n->getWidth()/4,n->y()+n->getCI1()->getHeight()-25,
-                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
+                    path.cubicTo(n->x()+n->getWidth()/4,n->y()+n->getCI1()->getHeight()-40,
+                                 event->scenePos().x(),event->scenePos().y()+40,event->scenePos().x(),event->scenePos().y());
                 }else if(type=="ci2"){
                     path.moveTo(n->x()+3*n->getWidth()/4,n->y()+n->getCI1()->getHeight());
-                    path.cubicTo(n->x()+3*n->getWidth()/4,n->y()+n->getCI1()->getHeight()-25,
-                                 event->scenePos().x(),event->scenePos().y()+25,event->scenePos().x(),event->scenePos().y());
+                    path.cubicTo(n->x()+3*n->getWidth()/4,n->y()+n->getCI1()->getHeight()-40,
+                                 event->scenePos().x(),event->scenePos().y()+40,event->scenePos().x(),event->scenePos().y());
                 }
             }
             if(n->getOType()==oneOutput){
                 if(type=="co"){
                     path.moveTo(n->x()+n->getWidth()/2,n->y()+n->getHeight()-n->getCO()->getHeight());
-                    path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getHeight()-n->getCO()->getHeight()+25,
-                                 event->scenePos().x(),event->scenePos().y()-25,event->scenePos().x(),event->scenePos().y());
+                    path.cubicTo(n->x()+n->getWidth()/2,n->y()+n->getHeight()-n->getCO()->getHeight()+40,
+                                 event->scenePos().x(),event->scenePos().y()-40,event->scenePos().x(),event->scenePos().y());
                 }
             }
             gpath->setPath(path);
