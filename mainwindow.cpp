@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "aboutdialog.h"
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow){
     ui->setupUi(this);
@@ -13,3 +14,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_actionExit_triggered()
+{
+    //Exit Menu Button
+    QApplication::quit();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    //About Menu Button
+    AboutDialog dialog;
+    dialog.exec();
+}

@@ -66,6 +66,7 @@ class canvas:public QGraphicsItem{
             else if(type=="co" && n->getOutput()->empty()) n->getCO()->setState(hoverExit);
             type="";
             n=NULL;
+            return;
         }
 
         QMenu menu;

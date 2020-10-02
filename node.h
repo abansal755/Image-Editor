@@ -301,7 +301,7 @@ protected:
         QGraphicsItem::hoverMoveEvent(event);
     };
 public:
-    node(QGraphicsScene*scene,inputConnection iType=twoInput,outputConnection oType=oneOutput,int width=200,int height=75)
+    node(QGraphicsScene*scene,inputConnection iType=oneInput,outputConnection oType=oneOutput,int width=200,int height=75)
         :scene(scene),width(width),height(height),iType(iType),oType(oType),input1(NULL),input2(NULL),inputLine1(NULL),inputLine2(NULL)
     {
         scene->addItem(this);

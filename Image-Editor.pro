@@ -17,15 +17,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    aboutdialog.cpp
 
 HEADERS += \
     graphicsview.h \
     mainwindow.h \
-    node.h
+    node.h \
+    aboutdialog.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    aboutdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
