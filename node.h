@@ -10,6 +10,7 @@
 #include<QFileDialog>
 #include"imagegraphicsview.h"
 #include<QVBoxLayout>
+#include<unordered_set>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ public:
         setLayout(v1);
         scene=new QGraphicsScene(this);
         gw->setScene(scene);
-        resize(600,400);
+        resize(800,600);
     }
 };
 
@@ -260,9 +261,20 @@ protected:
         }
         else if(clicked && event->button()==Qt::MiddleButton){
             if(connection.first.first==NULL){
-                if(type=="ci1" && input1!=NULL) removeInput1();
-                else if(type=="ci2" && input2!=NULL) removeInput2();
-                else removeAllOutputs();
+                if(type=="ci1" && input1!=NULL){
+                    removeInput1();
+                    refresh();
+                }
+                else if(type=="ci2" && input2!=NULL){
+                    removeInput2();
+                    refresh();
+                }
+                else if(type=="co"){
+                    unordered_set<node*> set;
+                    for(auto it=output.begin();it!=output.end();it++) set.insert(it->first);
+                    removeAllOutputs();
+                    for(auto it=set.begin();it!=set.end();it++) (*it)->refresh();
+                }
             }
         }
         else if(clicked && event->button()==Qt::RightButton){
@@ -303,6 +315,7 @@ protected:
                             n->getCI2()->setState(connected);
                         }
                     }
+                    n->refresh();
                     co->setState(connected);
                     n=NULL;
                     pitem=NULL;
@@ -328,6 +341,7 @@ protected:
                             ci2->setState(connected);
                         }
                     }
+                    refresh();
                     n=NULL;
                     pitem=NULL;
                     ctype="";
@@ -409,11 +423,12 @@ public:
     };
     void removeInput1(){
         auto p=input1->output.equal_range(this);
-        for(auto it=p.first;it!=p.second;it++){
+        for(auto it=p.first;it!=p.second;){
             if(it->second==inputLine1){
                 input1->output.erase(it);
                 break;
             }
+            it++;
         }
         if(input1->output.empty()) input1->getCO()->setState(hoverExit);
         input1=NULL;
@@ -424,11 +439,12 @@ public:
     }
     void removeInput2(){
         auto p=input2->output.equal_range(this);
-        for(auto it=p.first;it!=p.second;it++){
+        for(auto it=p.first;it!=p.second;){
             if(it->second==inputLine2){
                 input2->output.erase(it);
                 break;
             }
+            it++;
         }
         if(input2->output.empty()) input2->getCO()->setState(hoverExit);
         input2=NULL;
@@ -438,11 +454,11 @@ public:
         ci2->setState(hoverExit);
     }
     void removeAllOutputs(){
-        for(auto it=output.begin();it!=output.end();it++){
+        for(auto it=output.begin();it!=output.end();){
             if(it->second==it->first->inputLine1) it->first->removeInput1();
             else it->first->removeInput2();
+            it++;
         }
-        co->setState(hoverExit);
     }
     int getWidth(){
         return width;
@@ -526,7 +542,19 @@ public:
         if(!ans) return false;
         QGraphicsPixmapItem*pix=win->scene->addPixmap(QPixmap::fromImage(image));
         pix->setPos(-(float)image.width()/2,-(float)image.height()/2);
+        QPen pen;
+        pen.setColor(Qt::red);
+        win->scene->addLine(-(float)image.width()/2,(float)image.height()/2,(float)image.width()/2,(float)image.height()/2,pen);
+        win->scene->addLine(-(float)image.width()/2,-(float)image.height()/2,(float)image.width()/2,-(float)image.height()/2,pen);
+        win->scene->addLine(-(float)image.width()/2,(float)image.height()/2,-(float)image.width()/2,-(float)image.height()/2,pen);
+        win->scene->addLine((float)image.width()/2,(float)image.height()/2,(float)image.width()/2,-(float)image.height()/2,pen);
+        QFont font;
+        font.setPixelSize(max(image.width(),image.height())/40);
+        QGraphicsTextItem*text=win->scene->addText(QString::number(image.width())+"x"+QString::number(image.height()),font);
+        text->setDefaultTextColor(Qt::red);
+        text->setPos((float)image.width()/2,(float)image.height()/2);
         win->gw->centerOn(0,0);
+        return true;
     };
     static int lastIndex;
 };

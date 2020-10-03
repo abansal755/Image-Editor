@@ -15,7 +15,6 @@ private:
         QMenu menu;
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
-        QAction*toggleOverlay=menu.addAction("Toggle Overlay");
         QAction*current=menu.exec(event->globalPos());
         if(current==centerView){
             centerOn(0,0);
@@ -23,18 +22,12 @@ private:
         if(current==resetZoom){
             resetTransform();
         }
-        if(current==toggleOverlay){
-            overlay=overlay^1;
-            update();
-        }
     }
 public:
     ImageGraphicsView(QWidget*parent=NULL):QGraphicsView(parent){
         setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         setDragMode(QGraphicsView::ScrollHandDrag);
-        overlay=true;
         setBackgroundBrush(QBrush(QColor(38,38,38)));
     }
-    bool overlay;
 };
