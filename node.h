@@ -252,7 +252,12 @@ protected:
             if(current==deleteNode){
                 if(input1!=NULL) removeInput1();
                 if(input2!=NULL) removeInput2();
-                if(oType!=noOutput) removeAllOutputs();
+                if(oType==oneOutput){
+                    unordered_set<node*> set;
+                    for(auto it=output.begin();it!=output.end();it++) set.insert(it->first);
+                    removeAllOutputs();
+                    for(auto it=set.begin();it!=set.end();it++) (*it)->refresh();
+                }
                 delete this;
             }
             if(current==properties){
