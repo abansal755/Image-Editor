@@ -1,4 +1,3 @@
-#pragma once
 #include"node.h"
 #include<QPushButton>
 #include<QFileDialog>

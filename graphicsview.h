@@ -1,5 +1,4 @@
-#pragma once
-#include"node.h"
+#include"derived_nodes.h"
 #include<QGraphicsView>
 #include<QWheelEvent>
 #include<QGraphicsSceneContextMenuEvent>

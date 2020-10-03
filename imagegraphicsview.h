@@ -1,4 +1,3 @@
-#pragma once
 #include<QGraphicsView>
 #include<QWheelEvent>
 #include<QMenu>

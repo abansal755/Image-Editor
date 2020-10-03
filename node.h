@@ -1,4 +1,3 @@
-#pragma once
 #include<QGraphicsItem>
 #include<QGraphicsScene>
 #include<QPainter>
@@ -488,5 +487,3 @@ protected slots:
         for(auto it=output.begin();it!=output.end();it++)it->first->refresh();
     }
 };
-
-#include"derived_nodes.h"
