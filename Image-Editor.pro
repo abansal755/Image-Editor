@@ -18,7 +18,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    aboutdialog.cpp
+    aboutdialog.cpp \
+    sliderfloat.cpp \
+    sliderint.cpp
 
 HEADERS += \
     derived_nodes.h \
@@ -26,11 +28,15 @@ HEADERS += \
     imagegraphicsview.h \
     mainwindow.h \
     node.h \
-    aboutdialog.h
+    aboutdialog.h \
+    sliderfloat.h \
+    sliderint.h
 
 FORMS += \
     mainwindow.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    sliderfloat.ui \
+    sliderint.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

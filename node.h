@@ -231,7 +231,8 @@ protected:
                 delete this;
             }
             if(current==properties){
-                propW->show();
+                if(!(propW->isVisible())) propW->show();
+                else propW->activateWindow();
             }
         }
         else if(clicked && event->button()==Qt::MiddleButton){

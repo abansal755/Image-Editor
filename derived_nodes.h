@@ -95,7 +95,6 @@ public:
     }
 };
 
-
 class viewerNode:public node{
     Q_OBJECT
     ViewerNodePropertiesWindow*win;
