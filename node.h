@@ -68,6 +68,7 @@ protected:
     QGraphicsPathItem*inputLine1,*inputLine2;
     unordered_multimap<node*,QGraphicsPathItem*>output;
     connector *ci1,*ci2,*co;
+    QString name;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){};
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
         QRectF rect=boundingRect();
@@ -78,9 +79,29 @@ protected:
         grad.setColorAt(0.5,QColor(240,36,0));
         grad.setColorAt(1,QColor(184,15,10));
         painter->fillPath(path,grad);
-        QPen pen;pen.setWidth(2);
+        QPen pen;
+        pen.setWidth(2);
         painter->setPen(pen);
         painter->drawPath(path);
+        QFont font;
+        font.setPixelSize(20);
+        painter->setFont(font);
+        painter->drawText(rect,Qt::AlignCenter,name);
+        font.setPixelSize(10);
+        painter->setFont(font);
+        if(iType==oneInput){
+            QRectF rect1(0,ci1->getHeight()/2-1,width/2-ci1->getWidth()/2-5,15);
+            painter->drawText(rect1,Qt::AlignRight,"input");
+        }else if(iType==twoInput){
+            QRectF rect1(0,ci1->getHeight()/2-1,width/4-ci1->getWidth()/2-2,15);
+            painter->drawText(rect1,Qt::AlignRight,"A");
+            rect1.setWidth(3*width/4-ci1->getWidth()/2-2);
+            painter->drawText(rect1,Qt::AlignRight,"B");
+        }
+        if(oType==oneOutput){
+            QRectF rect1(0,0,width/2-ci1->getWidth()/2-5,height-co->getHeight()/2+2);
+            painter->drawText(rect1,Qt::AlignRight|Qt::AlignBottom,"output");
+        }
     };
     QVariant itemChange(GraphicsItemChange change, const QVariant &value){
         if(change==ItemPositionChange){
@@ -301,8 +322,8 @@ protected:
         QGraphicsItem::hoverMoveEvent(event);
     };
 public:
-    node(QGraphicsScene*scene,inputConnection iType=oneInput,outputConnection oType=oneOutput,int width=200,int height=75)
-        :scene(scene),width(width),height(height),iType(iType),oType(oType),input1(NULL),input2(NULL),inputLine1(NULL),inputLine2(NULL)
+    node(QGraphicsScene*scene,inputConnection iType=twoInput,outputConnection oType=oneOutput,int width=200,int height=75,QString name="node"+QString::number(lastIndex++))
+        :scene(scene),width(width),height(height),iType(iType),oType(oType),input1(NULL),input2(NULL),inputLine1(NULL),inputLine2(NULL),name(name)
     {
         scene->addItem(this);
         setFlags(QGraphicsItem::ItemIsMovable|QGraphicsItem::ItemSendsScenePositionChanges);
@@ -392,6 +413,8 @@ public:
         return input2;
     }
     static pair<pair<node*,QString>,QGraphicsPathItem*> connection;
+    static int lastIndex;
 };
 
 pair<pair<node*,QString>,QGraphicsPathItem*> node::connection={{NULL,""},NULL};
+int node::lastIndex=0;
