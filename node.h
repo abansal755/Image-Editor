@@ -5,6 +5,7 @@
 #include<unordered_map>
 #include<QGraphicsSceneMouseEvent>
 #include<QDebug>
+#include<QMenu>
 
 using namespace std;
 
@@ -200,14 +201,25 @@ protected:
                 clicked=true;
             }
         }
-        if(clicked && event->button()==Qt::MiddleButton){
+        if(!clicked && event->button()==Qt::RightButton){
+            QMenu menu;
+            QAction*deleteNode=menu.addAction("Delete Node");
+            QAction*current=menu.exec(event->screenPos());
+            if(current==deleteNode){
+                if(input1!=NULL) removeInput1();
+                if(input2!=NULL) removeInput2();
+                removeAllOutputs();
+                delete this;
+            }
+        }
+        else if(clicked && event->button()==Qt::MiddleButton){
             if(connection.first.first==NULL){
                 if(type=="ci1" && input1!=NULL) removeInput1();
                 else if(type=="ci2" && input2!=NULL) removeInput2();
                 else removeAllOutputs();
             }
         }
-        if(clicked && event->button()==Qt::RightButton){
+        else if(clicked && event->button()==Qt::RightButton){
             if(connection.first.first==NULL){
                 connection.first={this,type};
                 connection.second=new QGraphicsPathItem;
