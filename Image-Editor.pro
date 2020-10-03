@@ -22,6 +22,7 @@ SOURCES += \
 
 HEADERS += \
     graphicsview.h \
+    imagegraphicsview.h \
     mainwindow.h \
     node.h \
     aboutdialog.h

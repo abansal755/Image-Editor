@@ -1,7 +1,7 @@
 #pragma once
+#include"node.h"
 #include<QGraphicsView>
 #include<QWheelEvent>
-#include"node.h"
 #include<QGraphicsSceneContextMenuEvent>
 #include<QMenu>
 
@@ -72,6 +72,7 @@ class canvas:public QGraphicsItem{
         QMenu menu;
         QMenu*newNode=menu.addMenu("New Node");
         QAction*newReadNode=newNode->addAction("Read Node");
+        QAction*newViewerNode=newNode->addAction("Viewer Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -83,6 +84,10 @@ class canvas:public QGraphicsItem{
         }
         if(current==newReadNode){
             readNode*n=new readNode(scene);
+            n->setPos(event->scenePos());
+        }
+        if(current==newViewerNode){
+            viewerNode*n=new viewerNode(scene);
             n->setPos(event->scenePos());
         }
         delete newNode;
