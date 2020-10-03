@@ -104,11 +104,11 @@ protected:
         }else if(iType==twoInput){
             QRectF rect1(0,ci1->getHeight()/2-1,width/4-ci1->getWidth()/2-2,15);
             painter->drawText(rect1,Qt::AlignRight,"A");
-            rect1.setWidth(3*width/4-ci1->getWidth()/2-2);
+            rect1.setWidth(3*width/4-ci2->getWidth()/2-2);
             painter->drawText(rect1,Qt::AlignRight,"B");
         }
         if(oType==oneOutput){
-            QRectF rect1(0,0,width/2-ci1->getWidth()/2-5,height-co->getHeight()/2+2);
+            QRectF rect1(0,0,width/2-co->getWidth()/2-5,height-co->getHeight()/2+2);
             painter->drawText(rect1,Qt::AlignRight|Qt::AlignBottom,"output");
         }
     };
@@ -212,7 +212,7 @@ protected:
         if(!clicked && event->button()==Qt::RightButton){
             QMenu menu;
             QAction*deleteNode=menu.addAction("Delete Node");
-            QAction*properties=NULL;
+            QAction*properties;
             if(propW!=NULL) properties=menu.addAction("Properties");
             QAction*current=menu.exec(event->screenPos());
             if(current==deleteNode){
@@ -347,7 +347,7 @@ protected:
         QGraphicsItem::hoverMoveEvent(event);
     };
 public:
-    node(QGraphicsScene*scene,inputConnection iType=oneInput,outputConnection oType=oneOutput,QString name="node"+QString::number(lastIndex++),int width=200,int height=75)
+    node(QGraphicsScene*scene,inputConnection iType=noInput,outputConnection oType=oneOutput,QString name="node"+QString::number(lastIndex++),int width=200,int height=75)
         :scene(scene),width(width),height(height),iType(iType),oType(oType),input1(NULL),input2(NULL),inputLine1(NULL),inputLine2(NULL),name(name)
     {
         scene->addItem(this);
