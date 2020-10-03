@@ -53,6 +53,7 @@ public:
     connector(QGraphicsItem*parent=NULL,int width=10,int height=10):QGraphicsItem(parent),width(width),height(height){
         setAcceptHoverEvents(true);
         state=hoverExit;
+        setToolTip("Right-click for creating edges\nMiddle-button for deleting edges");
     }
     QRectF boundingRect() const{
         return QRectF(0,0,width,height);
@@ -390,6 +391,7 @@ public:
             co->setPos((width-co->getHeight())/2,height-(3*co->getHeight()/2));
         }
         propW=NULL;
+        setToolTip("Right-click for context menu");
     }
     ~node(){
         if(propW!=NULL) delete propW;
