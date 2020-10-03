@@ -184,13 +184,61 @@ public:
         win=new BlurNodePropertiesWindow(name);
         propW=win;
         connect(win->slider1->getSlider(),SIGNAL(valueChanged(int)),this,SLOT(refresh()));
-        connect(win->slider1->getButton(),SIGNAL(clicked()),this,SLOT(refresh()));
     }
     bool imageCalculate(QImage &image){
         if(input1==NULL) return false;
         bool ans=input1->imageCalculate(image);
         if(!ans) return false;
         blur(image,win->slider1->getValue());
+        return true;
+    };
+    static int lastIndex;
+};
+
+class SaturateNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*v1;
+public:
+    sliderFloat*slider1;
+    SaturateNodePropertiesWindow(QString title):PropertiesWindow(title){
+        v1=new QVBoxLayout;
+        slider1=new sliderFloat;
+        slider1->setText("Saturation:");
+        slider1->setRange(-100,100,100);
+        v1->addWidget(slider1);
+        v1->addStretch();
+        setLayout(v1);
+    }
+};
+
+class saturateNode:public node{
+    Q_OBJECT
+    SaturateNodePropertiesWindow*win;
+    void saturate(QImage&img,float x){
+        for(int i=0;i<img.height();i++){
+            for(int j=0;j<img.width();j++){
+                QColor c=img.pixelColor(j,i);
+                float h=c.hueF();
+                float s=c.saturationF();
+                float v=c.valueF();
+                if(x>=0) s+=(1-s)*x;
+                else s*=1-abs(x);
+                c.setHsvF(h,s,v,c.alphaF());
+                img.setPixelColor(j,i,c);
+            }
+        }
+    }
+public:
+    saturateNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"saturateNode"+QString::number(lastIndex++)){
+        win=new SaturateNodePropertiesWindow(name);
+        propW=win;
+        connect(win->slider1->getSlider(),SIGNAL(valueChanged(int)),this,SLOT(refresh()));
+    }
+    bool imageCalculate(QImage &image){
+        if(input1==NULL) return false;
+        bool ans=input1->imageCalculate(image);
+        if(!ans) return false;
+        saturate(image,win->slider1->getValue());
         return true;
     };
     static int lastIndex;
