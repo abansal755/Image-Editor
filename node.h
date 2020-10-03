@@ -16,6 +16,13 @@ enum connectorState{hoverEnter,hoverExit,connected};
 //hovetExit - hover exit when not connected
 //connected - when an edge is connected
 
+class PropertiesWindow:public QWidget{
+public:
+    PropertiesWindow(QString title){
+        setWindowTitle(title);
+    }
+};
+
 class connector:public QGraphicsItem{
     int width,height;
     connectorState state;
@@ -70,6 +77,7 @@ protected:
     unordered_multimap<node*,QGraphicsPathItem*>output;
     connector *ci1,*ci2,*co;
     QString name;
+    PropertiesWindow*propW;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){};
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
         QRectF rect=boundingRect();
@@ -204,12 +212,17 @@ protected:
         if(!clicked && event->button()==Qt::RightButton){
             QMenu menu;
             QAction*deleteNode=menu.addAction("Delete Node");
+            QAction*properties=NULL;
+            if(propW!=NULL) properties=menu.addAction("Properties");
             QAction*current=menu.exec(event->screenPos());
             if(current==deleteNode){
                 if(input1!=NULL) removeInput1();
                 if(input2!=NULL) removeInput2();
                 removeAllOutputs();
                 delete this;
+            }
+            if(current==properties){
+                propW->show();
             }
         }
         else if(clicked && event->button()==Qt::MiddleButton){
@@ -334,7 +347,7 @@ protected:
         QGraphicsItem::hoverMoveEvent(event);
     };
 public:
-    node(QGraphicsScene*scene,inputConnection iType=twoInput,outputConnection oType=oneOutput,int width=200,int height=75,QString name="node"+QString::number(lastIndex++))
+    node(QGraphicsScene*scene,inputConnection iType=oneInput,outputConnection oType=oneOutput,QString name="node"+QString::number(lastIndex++),int width=200,int height=75)
         :scene(scene),width(width),height(height),iType(iType),oType(oType),input1(NULL),input2(NULL),inputLine1(NULL),inputLine2(NULL),name(name)
     {
         scene->addItem(this);
@@ -353,6 +366,10 @@ public:
             co=new connector(this);
             co->setPos((width-co->getHeight())/2,height-(3*co->getHeight()/2));
         }
+        propW=NULL;
+    }
+    ~node(){
+        if(propW!=NULL) delete propW;
     }
     QRectF boundingRect() const{
         return QRectF(0,0,width,height);
