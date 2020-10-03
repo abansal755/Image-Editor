@@ -2,6 +2,10 @@
 #include "ui_mainwindow.h"
 #include "aboutdialog.h"
 
+pair<pair<node*,QString>,QGraphicsPathItem*> node::connection={{NULL,""},NULL};
+int node::lastIndex=0;
+int readNode::lastIndex=0;
+
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow){
     ui->setupUi(this);
     scene=new QGraphicsScene(this);

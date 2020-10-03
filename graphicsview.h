@@ -70,9 +70,10 @@ class canvas:public QGraphicsItem{
         }
 
         QMenu menu;
+        QMenu*newNode=menu.addMenu("New Node");
+        QAction*newReadNode=newNode->addAction("Read Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
-        QAction*newNode=menu.addAction("New Node");
         QAction*current=menu.exec(event->screenPos());
         if(current==centerView){
             gw->centerOn(0,0);
@@ -80,10 +81,11 @@ class canvas:public QGraphicsItem{
         if(current==resetZoom){
             gw->resetTransform();
         }
-        if(current==newNode){
-            node*n=new node(scene);
+        if(current==newReadNode){
+            readNode*n=new readNode(scene);
             n->setPos(event->scenePos());
         }
+        delete newNode;
     };
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event){
         pair<node*,QString>&p=node::connection.first;

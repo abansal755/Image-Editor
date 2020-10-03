@@ -6,6 +6,8 @@
 #include<QGraphicsSceneMouseEvent>
 #include<QDebug>
 #include<QMenu>
+#include<QPushButton>
+#include<QFileDialog>
 
 using namespace std;
 
@@ -17,9 +19,20 @@ enum connectorState{hoverEnter,hoverExit,connected};
 //connected - when an edge is connected
 
 class PropertiesWindow:public QWidget{
+    Q_OBJECT
 public:
     PropertiesWindow(QString title){
         setWindowTitle(title);
+    }
+};
+
+class ReadNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+public:
+    QString fileName;
+    QPushButton*button1;
+    ReadNodePropertiesWindow(QString title):PropertiesWindow(title){
+        button1=new QPushButton("Read Image File",this);
     }
 };
 
@@ -66,7 +79,8 @@ public:
     }
 };
 
-class node:public QGraphicsItem{
+class node:public QObject,public QGraphicsItem{
+    Q_OBJECT
 protected:
     QGraphicsScene*scene;
     int width,height;
@@ -347,7 +361,7 @@ protected:
         QGraphicsItem::hoverMoveEvent(event);
     };
 public:
-    node(QGraphicsScene*scene,inputConnection iType=noInput,outputConnection oType=oneOutput,QString name="node"+QString::number(lastIndex++),int width=200,int height=75)
+    node(QGraphicsScene*scene,inputConnection iType=oneInput,outputConnection oType=oneOutput,QString name="node"+QString::number(lastIndex++),int width=200,int height=75)
         :scene(scene),width(width),height(height),iType(iType),oType(oType),input1(NULL),input2(NULL),inputLine1(NULL),inputLine2(NULL),name(name)
     {
         scene->addItem(this);
@@ -441,9 +455,30 @@ public:
     node* getInput2(){
         return input2;
     }
+    virtual bool imageCalculate(QImage&image){
+        return false;
+    }
     static pair<pair<node*,QString>,QGraphicsPathItem*> connection;
     static int lastIndex;
+protected slots:
+    virtual void refresh(){
+        for(auto it=output.begin();it!=output.end();it++)it->first->refresh();
+    }
 };
 
-pair<pair<node*,QString>,QGraphicsPathItem*> node::connection={{NULL,""},NULL};
-int node::lastIndex=0;
+class readNode:public node{
+    Q_OBJECT
+    ReadNodePropertiesWindow*win;
+private slots:
+    void button1Clicked(){
+        win->fileName=QFileDialog::getOpenFileName(win,"Read Image File","","Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.xbm *.xpm)");
+        refresh();
+    }
+public:
+    readNode(QGraphicsScene*scene):node(scene,noInput,oneOutput,"readNode"+QString::number(lastIndex++)){
+        win=new ReadNodePropertiesWindow(name);
+        propW=win;
+        connect(win->button1,SIGNAL(clicked()),this,SLOT(button1Clicked()));
+    }
+    static int lastIndex;
+};
