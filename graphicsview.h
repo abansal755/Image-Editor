@@ -75,6 +75,7 @@ class canvas:public QGraphicsItem{
         QAction*newViewerNode=newNode->addAction("Viewer Node");
         QAction*newBlurNode=newNode->addAction("Blur Node");
         QAction*newSaturateNode=newNode->addAction("Saturate Node");
+        QAction*newContrastNode=newNode->addAction("Contrast Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -98,6 +99,10 @@ class canvas:public QGraphicsItem{
         }
         if(current==newSaturateNode){
             saturateNode*n=new saturateNode(scene);
+            n->setPos(event->scenePos());
+        }
+        if(current==newContrastNode){
+            contrastNode*n=new contrastNode(scene);
             n->setPos(event->scenePos());
         }
         delete newNode;

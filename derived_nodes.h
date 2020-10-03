@@ -243,3 +243,56 @@ public:
     };
     static int lastIndex;
 };
+
+class ContrastNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*v1;
+public:
+    sliderInt*slider1;
+    ContrastNodePropertiesWindow(QString title):PropertiesWindow(title){
+        v1=new QVBoxLayout;
+        slider1=new sliderInt;
+        slider1->setText("Saturation:");
+        slider1->setRange(-255,255);
+        v1->addWidget(slider1);
+        v1->addStretch();
+        setLayout(v1);
+    }
+};
+
+class contrastNode:public node{
+    Q_OBJECT
+    ContrastNodePropertiesWindow*win;
+    void contrast(QImage&img,int c){
+        float f=(259*((float)c+255))/(255*(259-(float)c));
+        for(int y=0;y<img.height();y++){
+            for(int x=0;x<img.width();x++){
+                QColor c=img.pixelColor(x,y);
+                int r=c.red();
+                int g=c.green();
+                int b=c.blue();
+                r=clamp(f*(r-128)+128);
+                g=clamp(f*(g-128)+128);
+                b=clamp(f*(b-128)+128);
+                c.setRed(r);
+                c.setGreen(g);
+                c.setBlue(b);
+                img.setPixelColor(x,y,c);
+            }
+        }
+    }
+public:
+    contrastNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"contrastNode"+QString::number(lastIndex++)){
+        win=new ContrastNodePropertiesWindow(name);
+        propW=win;
+        connect(win->slider1->getSlider(),SIGNAL(valueChanged(int)),this,SLOT(refresh()));
+    }
+    bool imageCalculate(QImage &image){
+        if(input1==NULL) return false;
+        bool ans=input1->imageCalculate(image);
+        if(!ans) return false;
+        contrast(image,win->slider1->getValue());
+        return true;
+    };
+    static int lastIndex;
+};

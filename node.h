@@ -469,6 +469,16 @@ public:
     virtual bool imageCalculate(QImage&image){
         return false;
     }
+    float clampF(float i){
+        if(i>1) return 1;
+        else if(i<0) return 0;
+        else return i;
+    }
+    int clamp(int i){
+        if(i>255) return 255;
+        else if(i<0) return 0;
+        else return i;
+    }
     static pair<pair<node*,QString>,QGraphicsPathItem*> connection;
     static int lastIndex;
 protected slots:
