@@ -251,7 +251,7 @@ protected:
             if(current==deleteNode){
                 if(input1!=NULL) removeInput1();
                 if(input2!=NULL) removeInput2();
-                removeAllOutputs();
+                if(oType!=noOutput) removeAllOutputs();
                 delete this;
             }
             if(current==properties){
@@ -442,7 +442,7 @@ public:
             if(it->second==it->first->inputLine1) it->first->removeInput1();
             else it->first->removeInput2();
         }
-        if(co!=NULL) co->setState(hoverExit);
+        co->setState(hoverExit);
     }
     int getWidth(){
         return width;
@@ -491,7 +491,6 @@ class readNode:public node{
 private slots:
     void button1Clicked(){
         win->fileName=QFileDialog::getOpenFileName(win,"Read Image File","","Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.xbm *.xpm)");
-        qDebug()<<win->fileName;
         refresh();
     }
 public:
