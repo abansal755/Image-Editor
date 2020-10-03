@@ -6,10 +6,7 @@
 #include<QGraphicsSceneMouseEvent>
 #include<QDebug>
 #include<QMenu>
-#include<QPushButton>
-#include<QFileDialog>
 #include"imagegraphicsview.h"
-#include<QVBoxLayout>
 #include<unordered_set>
 
 using namespace std;
