@@ -73,6 +73,7 @@ class canvas:public QGraphicsItem{
         QMenu*newNode=menu.addMenu("New Node");
         QAction*newReadNode=newNode->addAction("Read Node");
         QAction*newViewerNode=newNode->addAction("Viewer Node");
+        QAction*newBlurNode=newNode->addAction("Blur Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -88,6 +89,10 @@ class canvas:public QGraphicsItem{
         }
         if(current==newViewerNode){
             viewerNode*n=new viewerNode(scene);
+            n->setPos(event->scenePos());
+        }
+        if(current==newBlurNode){
+            blurNode*n=new blurNode(scene);
             n->setPos(event->scenePos());
         }
         delete newNode;

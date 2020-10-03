@@ -6,6 +6,8 @@
 #include<QLineEdit>
 #include<QLabel>
 #include<QImageReader>
+#include"sliderint.h"
+#include"sliderfloat.h"
 
 class ReadNodePropertiesWindow:public PropertiesWindow{
     Q_OBJECT
@@ -127,6 +129,68 @@ public:
         text->setDefaultTextColor(Qt::red);
         text->setPos((float)image.width()/2,(float)image.height()/2);
         win->gw->centerOn(0,0);
+        return true;
+    };
+    static int lastIndex;
+};
+
+class BlurNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*v1;
+public:
+    sliderInt*slider1;
+    BlurNodePropertiesWindow(QString title):PropertiesWindow(title){
+        v1=new QVBoxLayout;
+        slider1=new sliderInt;
+        slider1->setText("Blur Radius(in px):");
+        slider1->setRange(0,5);
+        v1->addWidget(slider1);
+        v1->addStretch();
+        setLayout(v1);
+    }
+};
+
+class blurNode:public node{
+    Q_OBJECT
+    BlurNodePropertiesWindow*win;
+    void blur(QImage&img,int radius=1){
+        int width = img.width(), height = img.height();
+        QImage img1(width,height,img.format());
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int r = 0, g = 0, b = 0;
+                int num = 0;
+                for (int di = -radius; di <= radius; di++) {
+                    for (int dj = -radius; dj <= radius; dj++) {
+                        if (i + di < 0 || i + di >= height) continue;
+                        if (j + dj < 0 || j + dj >= width) continue;
+                        QColor c=img.pixelColor(j+dj,i+di);
+                        r += c.red();
+                        g += c.green();
+                        b += c.blue();
+                        num++;
+                    }
+                }
+                r /= num;
+                g /= num;
+                b /= num;
+                img1.setPixelColor(j,i,QColor(r,g,b,img.pixelColor(j,i).alpha()));
+            }
+        }
+        img=img1;
+    }
+public:
+    blurNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"blurNode"+QString::number(lastIndex++)){
+        win=new BlurNodePropertiesWindow(name);
+        propW=win;
+        connect(win->slider1->getSlider(),SIGNAL(valueChanged(int)),this,SLOT(refresh()));
+        connect(win->slider1->getButton(),SIGNAL(clicked()),this,SLOT(refresh()));
+    }
+    bool imageCalculate(QImage &image){
+        if(input1==NULL) return false;
+        bool ans=input1->imageCalculate(image);
+        if(!ans) return false;
+        blur(image,win->slider1->getValue());
         return true;
     };
     static int lastIndex;

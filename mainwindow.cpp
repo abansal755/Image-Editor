@@ -6,6 +6,7 @@ pair<pair<node*,QString>,QGraphicsPathItem*> node::connection={{NULL,""},NULL};
 int node::lastIndex=0;
 int readNode::lastIndex=0;
 int viewerNode::lastIndex=0;
+int blurNode::lastIndex=0;
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow){
     ui->setupUi(this);

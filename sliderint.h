@@ -2,6 +2,8 @@
 #define SLIDERINT_H
 
 #include <QWidget>
+#include <QSlider>
+#include <QPushButton>
 
 namespace Ui {
 class sliderInt;
@@ -17,6 +19,8 @@ public:
     void setRange(int min,int max);
     int getValue();
     void setDefaultValue(int value);
+    QSlider* getSlider();
+    QPushButton* getButton();
 private slots:
     void on_horizontalSlider_valueChanged(int value);
     void on_pushButton_clicked();
