@@ -21,6 +21,7 @@ SOURCES += \
     aboutdialog.cpp
 
 HEADERS += \
+    derived_nodes.h \
     graphicsview.h \
     imagegraphicsview.h \
     mainwindow.h \
