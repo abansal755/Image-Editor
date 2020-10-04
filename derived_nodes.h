@@ -542,3 +542,91 @@ public:
     };
     static int lastIndex;
 };
+
+class ScaleNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*vBoxLayout1;
+    QHBoxLayout*hBoxLayout1;
+    QHBoxLayout*hBoxLayout2;
+    QHBoxLayout*hBoxLayout3;
+    QLabel*label1,*label2;
+public:
+    QLineEdit*lineEdit1,*lineEdit2;
+    QRadioButton*radioButton1,*radioButton2,*radioButton3;
+    QRadioButton*radioButton4,*radioButton5;
+    QButtonGroup*buttonGroup1;
+    QButtonGroup*buttonGroup2;
+    ScaleNodePropertiesWindow(QString title):PropertiesWindow(title){
+        label1=new QLabel("Width(in px):");
+        label2=new QLabel("Height(in px):");
+        lineEdit1=new QLineEdit;
+        lineEdit2=new QLineEdit;
+        hBoxLayout1=new QHBoxLayout;
+        hBoxLayout1->addWidget(label1);
+        hBoxLayout1->addWidget(lineEdit1);
+        hBoxLayout1->addWidget(label2);
+        hBoxLayout1->addWidget(lineEdit2);
+        hBoxLayout1->insertStretch(4);
+
+        hBoxLayout2=new QHBoxLayout;
+        buttonGroup1=new QButtonGroup(this);
+        radioButton1=new QRadioButton("Ignore Aspect Ratio");
+        radioButton1->setChecked(true);
+        radioButton2=new QRadioButton("Keep Aspect Ratio");
+        radioButton3=new QRadioButton("Keep Aspect Ratio By Expanding");
+        buttonGroup1->addButton(radioButton1,0);
+        buttonGroup1->addButton(radioButton2,1);
+        buttonGroup1->addButton(radioButton3,2);
+        hBoxLayout2->addWidget(radioButton1);
+        hBoxLayout2->addWidget(radioButton2);
+        hBoxLayout2->addWidget(radioButton3);
+        hBoxLayout2->insertStretch(3);
+
+        hBoxLayout3=new QHBoxLayout;
+        buttonGroup2=new QButtonGroup(this);
+        radioButton4=new QRadioButton("No Filtering");
+        radioButton5=new QRadioButton("Bilinear Filtering");
+        radioButton5->setChecked(true);
+        buttonGroup2->addButton(radioButton4,0);
+        buttonGroup2->addButton(radioButton5,1);
+        hBoxLayout3->addWidget(radioButton4);
+        hBoxLayout3->addWidget(radioButton5);
+        hBoxLayout3->insertStretch(2);
+
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addLayout(hBoxLayout1);
+        vBoxLayout1->addLayout(hBoxLayout2);
+        vBoxLayout1->addLayout(hBoxLayout3);
+        vBoxLayout1->insertStretch(3);
+        setLayout(vBoxLayout1);
+    }
+};
+
+class scaleNode:public node{
+    Q_OBJECT
+    ScaleNodePropertiesWindow*win;
+public:
+    scaleNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"scaleNode"+QString::number(lastIndex++)){
+        win=new ScaleNodePropertiesWindow(name);
+        propW=win;
+        connect(win->lineEdit1,SIGNAL(textEdited(QString)),this,SLOT(refresh()));
+        connect(win->lineEdit2,SIGNAL(textEdited(QString)),this,SLOT(refresh()));
+        connect(win->radioButton1,SIGNAL(toggled(bool)),this,SLOT(refresh()));
+        connect(win->radioButton4,SIGNAL(toggled(bool)),this,SLOT(refresh()));
+    }
+    bool imageCalculate(QImage &image){
+        if(input1==NULL) return false;
+        bool ans=input1->imageCalculate(image);
+        if(!ans) return false;
+        Qt::AspectRatioMode arm;
+        if(win->buttonGroup1->checkedId()==0) arm=Qt::IgnoreAspectRatio;
+        else if(win->buttonGroup1->checkedId()) arm=Qt::KeepAspectRatio;
+        else arm=Qt::KeepAspectRatioByExpanding;
+        Qt::TransformationMode tm;
+        if(win->buttonGroup2->checkedId()==0) tm=Qt::FastTransformation;
+        else tm=Qt::SmoothTransformation;
+        image=image.scaled(win->lineEdit1->text().toInt(),win->lineEdit2->text().toInt(),arm,tm);
+        return true;
+    };
+    static int lastIndex;
+};
