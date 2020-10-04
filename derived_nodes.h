@@ -9,6 +9,9 @@
 #include"sliderfloat.h"
 #include<math.h>
 #include<QCheckBox>
+#include<QButtonGroup>
+#include<QSpinBox>
+#include<QRadioButton>
 
 class ReadNodePropertiesWindow:public PropertiesWindow{
     Q_OBJECT
@@ -468,6 +471,73 @@ public:
         if(!ans) return false;
         if(win->hbox->checkState()==Qt::Checked) mirror_imgH(image);
         if(win->vbox->checkState()==Qt::Checked) mirror_imgV(image);
+        return true;
+    };
+    static int lastIndex;
+};
+
+class RotateNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*vBoxLayout1;
+    QHBoxLayout*hBoxLayout1;
+    QHBoxLayout*hBoxLayout2;
+    QLabel*label1;
+    QRadioButton*radioButton2;
+public:
+    QSpinBox*spinBox1;
+    QButtonGroup*buttonGroup1;
+    QRadioButton*radioButton1;
+    RotateNodePropertiesWindow(QString title):PropertiesWindow(title){
+        label1=new QLabel("Clockwise angle(in deg):");
+        spinBox1=new QSpinBox;
+        spinBox1->setMinimum(-360);
+        spinBox1->setMaximum(360);
+        spinBox1->setValue(0);
+        spinBox1->setFixedWidth(50);
+        hBoxLayout1=new QHBoxLayout;
+        hBoxLayout1->addWidget(label1);
+        hBoxLayout1->addWidget(spinBox1);
+        hBoxLayout1->addStretch();
+
+        hBoxLayout2=new QHBoxLayout;
+        buttonGroup1=new QButtonGroup(this);
+        radioButton1=new QRadioButton("No Filtering");
+        radioButton2=new QRadioButton("Bilinear Filtering");
+        radioButton2->setChecked(true);
+        buttonGroup1->addButton(radioButton1,0);
+        buttonGroup1->addButton(radioButton2,1);
+        hBoxLayout2->addWidget(radioButton1);
+        hBoxLayout2->addWidget(radioButton2);
+        hBoxLayout2->addStretch();
+
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addLayout(hBoxLayout1);
+        vBoxLayout1->addLayout(hBoxLayout2);
+        vBoxLayout1->addStretch();
+        setLayout(vBoxLayout1);
+    }
+};
+
+class rotateNode:public node{
+    Q_OBJECT
+    RotateNodePropertiesWindow*win;
+public:
+    rotateNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"rotateNode"+QString::number(lastIndex++)){
+        win=new RotateNodePropertiesWindow(name);
+        propW=win;
+        connect(win->spinBox1,SIGNAL(valueChanged(int)),this,SLOT(refresh()));
+        connect(win->radioButton1,SIGNAL(toggled(bool)),this,SLOT(refresh()));
+    }
+    bool imageCalculate(QImage &image){
+        if(input1==NULL) return false;
+        bool ans=input1->imageCalculate(image);
+        if(!ans) return false;
+        Qt::TransformationMode tm;
+        if(win->buttonGroup1->checkedId()==0) tm=Qt::FastTransformation;
+        else tm=Qt::SmoothTransformation;
+        QTransform tr;
+        tr.rotate(win->spinBox1->value());
+        image=image.transformed(tr,tm);
         return true;
     };
     static int lastIndex;
