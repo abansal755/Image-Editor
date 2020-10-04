@@ -10,6 +10,7 @@ int blurNode::lastIndex=0;
 int saturateNode::lastIndex=0;
 int contrastNode::lastIndex=0;
 int gradeNode::lastIndex=0;
+int gammaNode::lastIndex=0;
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow){
     ui->setupUi(this);

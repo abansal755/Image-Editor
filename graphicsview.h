@@ -76,6 +76,7 @@ class canvas:public QGraphicsItem{
         QAction*newSaturateNode=newNode->addAction("Saturate Node");
         QAction*newContrastNode=newNode->addAction("Contrast Node");
         QAction*newGradeNode=newNode->addAction("Grade Node");
+        QAction*newGammaNode=newNode->addAction("Gamma Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -107,6 +108,10 @@ class canvas:public QGraphicsItem{
         }
         if(current==newGradeNode){
             gradeNode*n=new gradeNode(scene);
+            n->setPos(event->scenePos());
+        }
+        if(current==newGammaNode){
+            gammaNode*n=new gammaNode(scene);
             n->setPos(event->scenePos());
         }
         delete newNode;

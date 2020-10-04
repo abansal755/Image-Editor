@@ -7,6 +7,7 @@
 #include<QImageReader>
 #include"sliderint.h"
 #include"sliderfloat.h"
+#include<math.h>
 
 class ReadNodePropertiesWindow:public PropertiesWindow{
     Q_OBJECT
@@ -358,6 +359,53 @@ public:
         bool ans=input1->imageCalculate(image);
         if(!ans) return false;
         grade(image,win->sliderLift->getValue(),win->sliderGain->getValue(),win->sliderOffset->getValue());
+        return true;
+    };
+    static int lastIndex;
+};
+
+class GammaNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*vBoxLayout1;
+public:
+    sliderFloat*slider1;
+    GammaNodePropertiesWindow(QString title):PropertiesWindow(title){
+        slider1=new sliderFloat;
+        slider1->setText("Gamma:");
+        slider1->setRange(0,500,100);
+        slider1->setDefaultValue(1);
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addWidget(slider1);
+        vBoxLayout1->insertStretch(1);
+        setLayout(vBoxLayout1);
+    }
+};
+
+class gammaNode:public node{
+    Q_OBJECT
+    GammaNodePropertiesWindow*win;
+    void gammaCorrect(QImage&image,float gamma){
+        for(int y=0;y<image.height();y++){
+            for(int x=0;x<image.width();x++){
+                QColor c=image.pixelColor(x,y);
+                c.setRed(255*pow((float)c.red()/255,1/gamma));
+                c.setGreen(255*pow((float)c.green()/255,1/gamma));
+                c.setBlue(255*pow((float)c.blue()/255,1/gamma));
+                image.setPixelColor(x,y,c);
+            }
+        }
+    }
+public:
+    gammaNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"gammaNode"+QString::number(lastIndex++)){
+        win=new GammaNodePropertiesWindow(name);
+        propW=win;
+        connect(win->slider1->getSlider(),SIGNAL(valueChanged(int)),this,SLOT(refresh()));
+    }
+    bool imageCalculate(QImage &image){
+        if(input1==NULL) return false;
+        bool ans=input1->imageCalculate(image);
+        if(!ans) return false;
+        gammaCorrect(image,win->slider1->getValue());
         return true;
     };
     static int lastIndex;
