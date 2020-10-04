@@ -8,6 +8,7 @@
 #include"sliderint.h"
 #include"sliderfloat.h"
 #include<math.h>
+#include<QCheckBox>
 
 class ReadNodePropertiesWindow:public PropertiesWindow{
     Q_OBJECT
@@ -406,6 +407,67 @@ public:
         bool ans=input1->imageCalculate(image);
         if(!ans) return false;
         gammaCorrect(image,win->slider1->getValue());
+        return true;
+    };
+    static int lastIndex;
+};
+
+class MirrorNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*v1;
+    QHBoxLayout*h1;
+public:
+    QCheckBox*hbox,*vbox;
+    MirrorNodePropertiesWindow(QString title):PropertiesWindow(title){
+        v1=new QVBoxLayout;
+        h1=new QHBoxLayout;
+        hbox=new QCheckBox("Mirror Horizontally");
+        vbox=new QCheckBox("Mirror Vertically");
+        h1->addWidget(hbox);
+        h1->addWidget(vbox);
+        h1->addStretch();
+        v1->addLayout(h1);
+        v1->addStretch();
+        setLayout(v1);
+    }
+};
+
+class mirrorNode:public node{
+    Q_OBJECT
+    MirrorNodePropertiesWindow*win;
+    void mirror_imgH(QImage&img) {
+        QImage temp(img.width(),img.height(),img.format());
+        for(int y = 0; y < img.height(); y++) {
+            for(int x = 0; x < img.width(); x++) {
+                QColor c = img.pixelColor(x,y);
+                temp.setPixelColor(img.width() - 1 - x, y, c);
+            }
+        }
+        img = temp;
+    }
+    void mirror_imgV(QImage&img) {
+        QImage temp(img.width(),img.height(),img.format());
+        for(int y = 0; y < img.height(); y++) {
+            for(int x = 0; x < img.width(); x++) {
+                QColor c = img.pixelColor(x,y);
+                temp.setPixelColor(x, img.height()- 1 - y, c);
+            }
+        }
+        img = temp;
+    }
+public:
+    mirrorNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"mirrorNode"+QString::number(lastIndex++)){
+        win=new MirrorNodePropertiesWindow(name);
+        propW=win;
+        connect(win->hbox,SIGNAL(stateChanged(int)),this,SLOT(refresh()));
+        connect(win->vbox,SIGNAL(stateChanged(int)),this,SLOT(refresh()));
+    }
+    bool imageCalculate(QImage &image){
+        if(input1==NULL) return false;
+        bool ans=input1->imageCalculate(image);
+        if(!ans) return false;
+        if(win->hbox->checkState()==Qt::Checked) mirror_imgH(image);
+        if(win->vbox->checkState()==Qt::Checked) mirror_imgV(image);
         return true;
     };
     static int lastIndex;
