@@ -482,11 +482,11 @@ class RotateNodePropertiesWindow:public PropertiesWindow{
     QHBoxLayout*hBoxLayout1;
     QHBoxLayout*hBoxLayout2;
     QLabel*label1;
-    QRadioButton*radioButton2;
 public:
     QSpinBox*spinBox1;
     QButtonGroup*buttonGroup1;
     QRadioButton*radioButton1;
+    QRadioButton*radioButton2;
     RotateNodePropertiesWindow(QString title):PropertiesWindow(title){
         label1=new QLabel("Clockwise angle(in deg):");
         spinBox1=new QSpinBox;
@@ -526,7 +526,8 @@ public:
         win=new RotateNodePropertiesWindow(name);
         propW=win;
         connect(win->spinBox1,SIGNAL(valueChanged(int)),this,SLOT(refresh()));
-        connect(win->radioButton1,SIGNAL(toggled(bool)),this,SLOT(refresh()));
+        connect(win->radioButton1,SIGNAL(clicked(bool)),this,SLOT(refresh()));
+        connect(win->radioButton2,SIGNAL(clicked(bool)),this,SLOT(refresh()));
     }
     bool imageCalculate(QImage &image){
         if(input1==NULL) return false;
@@ -622,8 +623,11 @@ public:
         propW=win;
         connect(win->lineEdit1,SIGNAL(textEdited(QString)),this,SLOT(refresh2()));
         connect(win->lineEdit2,SIGNAL(textEdited(QString)),this,SLOT(refresh2()));
-        connect(win->radioButton1,SIGNAL(toggled(bool)),this,SLOT(refresh2()));
-        connect(win->radioButton4,SIGNAL(toggled(bool)),this,SLOT(refresh2()));
+        connect(win->radioButton1,SIGNAL(clicked(bool)),this,SLOT(refresh2()));
+        connect(win->radioButton2,SIGNAL(clicked(bool)),this,SLOT(refresh2()));
+        connect(win->radioButton3,SIGNAL(clicked(bool)),this,SLOT(refresh2()));
+        connect(win->radioButton4,SIGNAL(clicked(bool)),this,SLOT(refresh2()));
+        connect(win->radioButton5,SIGNAL(clicked(bool)),this,SLOT(refresh2()));
     }
     bool imageCalculate(QImage &image){
         if(this->image.isNull()) return false;
