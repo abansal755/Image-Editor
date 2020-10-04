@@ -605,27 +605,36 @@ public:
 class scaleNode:public node{
     Q_OBJECT
     ScaleNodePropertiesWindow*win;
+    QImage image;
+protected slots:
+    void refresh(){
+        if(input1!=NULL && !input1->imageCalculate(image)) image=QImage();
+        win->lineEdit1->setText(QString::number(image.width()));
+        win->lineEdit2->setText(QString::number(image.height()));
+        refresh2();
+    }
+    void refresh2(){
+        for(auto it=output.begin();it!=output.end();it++) it->first->refresh();
+    }
 public:
     scaleNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"scaleNode"+QString::number(lastIndex++)){
         win=new ScaleNodePropertiesWindow(name);
         propW=win;
-        connect(win->lineEdit1,SIGNAL(textEdited(QString)),this,SLOT(refresh()));
-        connect(win->lineEdit2,SIGNAL(textEdited(QString)),this,SLOT(refresh()));
-        connect(win->radioButton1,SIGNAL(toggled(bool)),this,SLOT(refresh()));
-        connect(win->radioButton4,SIGNAL(toggled(bool)),this,SLOT(refresh()));
+        connect(win->lineEdit1,SIGNAL(textEdited(QString)),this,SLOT(refresh2()));
+        connect(win->lineEdit2,SIGNAL(textEdited(QString)),this,SLOT(refresh2()));
+        connect(win->radioButton1,SIGNAL(toggled(bool)),this,SLOT(refresh2()));
+        connect(win->radioButton4,SIGNAL(toggled(bool)),this,SLOT(refresh2()));
     }
     bool imageCalculate(QImage &image){
-        if(input1==NULL) return false;
-        bool ans=input1->imageCalculate(image);
-        if(!ans) return false;
+        if(this->image.isNull()) return false;
         Qt::AspectRatioMode arm;
         if(win->buttonGroup1->checkedId()==0) arm=Qt::IgnoreAspectRatio;
-        else if(win->buttonGroup1->checkedId()) arm=Qt::KeepAspectRatio;
+        else if(win->buttonGroup1->checkedId()==1) arm=Qt::KeepAspectRatio;
         else arm=Qt::KeepAspectRatioByExpanding;
         Qt::TransformationMode tm;
         if(win->buttonGroup2->checkedId()==0) tm=Qt::FastTransformation;
         else tm=Qt::SmoothTransformation;
-        image=image.scaled(win->lineEdit1->text().toInt(),win->lineEdit2->text().toInt(),arm,tm);
+        image=this->image.scaled(win->lineEdit1->text().toInt(),win->lineEdit2->text().toInt(),arm,tm);
         return true;
     };
     static int lastIndex;

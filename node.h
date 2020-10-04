@@ -482,7 +482,7 @@ public:
     }
     static pair<pair<node*,QString>,QGraphicsPathItem*> connection;
     static int lastIndex;
-protected slots:
+public slots:
     virtual void refresh(){
         for(auto it=output.begin();it!=output.end();it++)it->first->refresh();
     }
