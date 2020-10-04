@@ -609,7 +609,8 @@ class scaleNode:public node{
     QImage image;
 protected slots:
     void refresh(){
-        if(input1!=NULL && !input1->imageCalculate(image)) image=QImage();
+        if(input1==NULL) image=QImage();
+        else if(!input1->imageCalculate(image)) image=QImage();
         win->lineEdit1->setText(QString::number(image.width()));
         win->lineEdit2->setText(QString::number(image.height()));
         refresh2();
