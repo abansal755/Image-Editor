@@ -295,3 +295,70 @@ public:
     };
     static int lastIndex;
 };
+
+class GradeNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*vBoxLayout1;
+public:
+    sliderFloat*sliderLift;
+    sliderFloat*sliderGain;
+    sliderFloat*sliderOffset;
+    GradeNodePropertiesWindow(QString title):PropertiesWindow(title){
+        sliderLift=new sliderFloat;
+        sliderGain=new sliderFloat;
+        sliderOffset=new sliderFloat;
+
+        sliderLift->setText("Lift:");
+        sliderLift->setRange(-500,500,100);
+        sliderGain->setText("Gain:");
+        sliderGain->setRange(-500,500,100);
+        sliderGain->setDefaultValue(1);
+        sliderOffset->setText("Offset:");
+        sliderOffset->setRange(-500,500,100);
+
+        vBoxLayout1=new QVBoxLayout;
+        vBoxLayout1->addWidget(sliderLift);
+        vBoxLayout1->addWidget(sliderGain);
+        vBoxLayout1->addWidget(sliderOffset);
+        vBoxLayout1->insertStretch(3);
+        setLayout(vBoxLayout1);
+    }
+};
+
+class gradeNode:public node{
+    Q_OBJECT
+    GradeNodePropertiesWindow*win;
+    void grade(QImage&image, float lift,float gain,float offset){
+        for(int y=0;y<image.height();y++){
+            for(int x=0;x<image.width();x++){
+                QColor c=image.pixelColor(x,y);
+                float r=c.redF();
+                float g=c.greenF();
+                float b=c.blueF();
+                r=clampF((r*(gain-lift))+lift+offset);
+                g=clampF((g*(gain-lift))+lift+offset);
+                b=clampF((b*(gain-lift))+lift+offset);
+                c.setRedF(r);
+                c.setGreenF(g);
+                c.setBlueF(b);
+                image.setPixelColor(x,y,c);
+            }
+        }
+    }
+public:
+    gradeNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"gradeNode"+QString::number(lastIndex++)){
+        win=new GradeNodePropertiesWindow(name);
+        propW=win;
+        connect(win->sliderLift->getSlider(),SIGNAL(valueChanged(int)),this,SLOT(refresh()));
+        connect(win->sliderGain->getSlider(),SIGNAL(valueChanged(int)),this,SLOT(refresh()));
+        connect(win->sliderOffset->getSlider(),SIGNAL(valueChanged(int)),this,SLOT(refresh()));
+    }
+    bool imageCalculate(QImage &image){
+        if(input1==NULL) return false;
+        bool ans=input1->imageCalculate(image);
+        if(!ans) return false;
+        grade(image,win->sliderLift->getValue(),win->sliderGain->getValue(),win->sliderOffset->getValue());
+        return true;
+    };
+    static int lastIndex;
+};
