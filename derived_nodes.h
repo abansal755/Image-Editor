@@ -87,13 +87,31 @@ public:
 class ViewerNodePropertiesWindow:public PropertiesWindow{
     Q_OBJECT
     QVBoxLayout*v1;
+    QHBoxLayout*h1;
 public:
+    QRadioButton*b1,*b2,*b3,*b4,*b5;
     ImageGraphicsView*gw;
     QGraphicsScene*scene;
     ViewerNodePropertiesWindow(QString title):PropertiesWindow(title){
         v1=new QVBoxLayout;
         gw=new ImageGraphicsView;
+
+        h1=new QHBoxLayout;
+        b1=new QRadioButton("RGBA");
+        b1->setChecked(true);
+        b2=new QRadioButton("R");
+        b3=new QRadioButton("G");
+        b4=new QRadioButton("B");
+        b5=new QRadioButton("A");
+        h1->addStretch();
+        h1->addWidget(b1);
+        h1->addWidget(b2);
+        h1->addWidget(b3);
+        h1->addWidget(b4);
+        h1->addWidget(b5);
+
         v1->addWidget(gw);
+        v1->addLayout(h1);
         setLayout(v1);
         scene=new QGraphicsScene(this);
         gw->setScene(scene);
@@ -109,19 +127,52 @@ protected slots:
     void refresh(){
         imageCalculate(image);
     }
-public:
-    viewerNode(QGraphicsScene*scene):node(scene,oneInput,noOutput,"viewerNode"+QString::number(lastIndex++)){
-        win=new ViewerNodePropertiesWindow(name);
-        propW=win;
-        propertiesText="Viewer";
-        connect(win->gw,SIGNAL(toggle()),this,SLOT(refresh()));
-    }
-    bool imageCalculate(QImage &image){
-        win->scene->clear();
-        if(input1==NULL) return false;
-        bool ans=input1->imageCalculate(image);
-        if(!ans) return false;
-        QGraphicsPixmapItem*pix=win->scene->addPixmap(QPixmap::fromImage(image));
+    void updateViewer(){
+        QImage imageV=image;
+        QGraphicsPixmapItem*pix;
+        if(win->b2->isChecked()){
+            for(int y=0;y<imageV.height();y++){
+                for(int x=0;x<imageV.width();x++){
+                    QColor c=imageV.pixelColor(x,y);
+                    c.setGreen(c.red());
+                    c.setBlue(c.red());
+                    c.setAlpha(255);
+                    imageV.setPixelColor(x,y,c);
+                }
+            }
+        }else if(win->b3->isChecked()){
+            for(int y=0;y<imageV.height();y++){
+                for(int x=0;x<imageV.width();x++){
+                    QColor c=imageV.pixelColor(x,y);
+                    c.setRed(c.green());
+                    c.setBlue(c.green());
+                    c.setAlpha(255);
+                    imageV.setPixelColor(x,y,c);
+                }
+            }
+        }else if(win->b4->isChecked()){
+            for(int y=0;y<imageV.height();y++){
+                for(int x=0;x<imageV.width();x++){
+                    QColor c=imageV.pixelColor(x,y);
+                    c.setRed(c.blue());
+                    c.setGreen(c.blue());
+                    c.setAlpha(255);
+                    imageV.setPixelColor(x,y,c);
+                }
+            }
+        }else if(win->b5->isChecked()){
+            for(int y=0;y<imageV.height();y++){
+                for(int x=0;x<imageV.width();x++){
+                    QColor c=imageV.pixelColor(x,y);
+                    c.setRed(c.alpha());
+                    c.setGreen(c.alpha());
+                    c.setBlue(c.alpha());
+                    c.setAlpha(255);
+                    imageV.setPixelColor(x,y,c);
+                }
+            }
+        }
+        pix=win->scene->addPixmap(QPixmap::fromImage(imageV));
         pix->setPos(-(float)image.width()/2,-(float)image.height()/2);
         if(win->gw->overlay){
             QPen pen;
@@ -137,6 +188,25 @@ public:
             text->setPos((float)image.width()/2,(float)image.height()/2);
         }
         win->gw->centerOn(0,0);
+    }
+public:
+    viewerNode(QGraphicsScene*scene):node(scene,oneInput,noOutput,"viewerNode"+QString::number(lastIndex++)){
+        win=new ViewerNodePropertiesWindow(name);
+        propW=win;
+        propertiesText="Viewer";
+        connect(win->gw,SIGNAL(toggle()),this,SLOT(refresh()));
+        connect(win->b1,SIGNAL(toggled(bool)),this,SLOT(updateViewer()));
+        connect(win->b2,SIGNAL(toggled(bool)),this,SLOT(updateViewer()));
+        connect(win->b3,SIGNAL(toggled(bool)),this,SLOT(updateViewer()));
+        connect(win->b4,SIGNAL(toggled(bool)),this,SLOT(updateViewer()));
+        connect(win->b5,SIGNAL(toggled(bool)),this,SLOT(updateViewer()));
+    }
+    bool imageCalculate(QImage &image){
+        win->scene->clear();
+        if(input1==NULL) return false;
+        bool ans=input1->imageCalculate(image);
+        if(!ans) return false;
+        updateViewer();
         return true;
     };
     static int lastIndex;
