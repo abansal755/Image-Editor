@@ -552,22 +552,28 @@ class ScaleNodePropertiesWindow:public PropertiesWindow{
     QHBoxLayout*hBoxLayout3;
     QLabel*label1,*label2;
 public:
-    QLineEdit*lineEdit1,*lineEdit2;
+    QSpinBox*sb1,*sb2;
     QRadioButton*radioButton1,*radioButton2,*radioButton3;
     QRadioButton*radioButton4,*radioButton5;
     QButtonGroup*buttonGroup1;
     QButtonGroup*buttonGroup2;
+    QCheckBox*box1;
     ScaleNodePropertiesWindow(QString title):PropertiesWindow(title){
         label1=new QLabel("Width(in px):");
         label2=new QLabel("Height(in px):");
-        lineEdit1=new QLineEdit;
-        lineEdit2=new QLineEdit;
+        sb1=new QSpinBox;
+        sb2=new QSpinBox;
+        sb1->setRange(0,INT_MAX);
+        sb2->setRange(0,INT_MAX);
+        box1=new QCheckBox("Lock fields");
+
         hBoxLayout1=new QHBoxLayout;
         hBoxLayout1->addWidget(label1);
-        hBoxLayout1->addWidget(lineEdit1);
+        hBoxLayout1->addWidget(sb1);
         hBoxLayout1->addWidget(label2);
-        hBoxLayout1->addWidget(lineEdit2);
-        hBoxLayout1->insertStretch(4);
+        hBoxLayout1->addWidget(sb2);
+        hBoxLayout1->addWidget(box1);
+        hBoxLayout1->addStretch();
 
         hBoxLayout2=new QHBoxLayout;
         buttonGroup1=new QButtonGroup(this);
@@ -611,19 +617,31 @@ protected slots:
     void refresh(){
         if(input1==NULL) image=QImage();
         else if(!input1->imageCalculate(image)) image=QImage();
-        win->lineEdit1->setText(QString::number(image.width()));
-        win->lineEdit2->setText(QString::number(image.height()));
+        if(!win->box1->isChecked()){
+            win->sb1->setValue(image.width());
+            win->sb2->setValue(image.height());
+        }
         refresh2();
     }
     void refresh2(){
         for(auto it=output.begin();it!=output.end();it++) it->first->refresh();
     }
+    void onBox1Checked(bool checked){
+        if(checked){
+            win->sb1->setDisabled(true);
+            win->sb2->setDisabled(true);
+        }else{
+            win->sb1->setEnabled(true);
+            win->sb2->setEnabled(true);
+        }
+    }
 public:
     scaleNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"scaleNode"+QString::number(lastIndex++)){
         win=new ScaleNodePropertiesWindow(name);
         propW=win;
-        connect(win->lineEdit1,SIGNAL(textEdited(QString)),this,SLOT(refresh2()));
-        connect(win->lineEdit2,SIGNAL(textEdited(QString)),this,SLOT(refresh2()));
+        connect(win->box1,SIGNAL(toggled(bool)),this,SLOT(onBox1Checked(bool)));
+        connect(win->sb1,SIGNAL(valueChanged(int)),this,SLOT(refresh2()));
+        connect(win->sb2,SIGNAL(valueChanged(int)),this,SLOT(refresh2()));
         connect(win->radioButton1,SIGNAL(clicked(bool)),this,SLOT(refresh2()));
         connect(win->radioButton2,SIGNAL(clicked(bool)),this,SLOT(refresh2()));
         connect(win->radioButton3,SIGNAL(clicked(bool)),this,SLOT(refresh2()));
@@ -639,7 +657,8 @@ public:
         Qt::TransformationMode tm;
         if(win->buttonGroup2->checkedId()==0) tm=Qt::FastTransformation;
         else tm=Qt::SmoothTransformation;
-        image=this->image.scaled(win->lineEdit1->text().toInt(),win->lineEdit2->text().toInt(),arm,tm);
+        image=this->image.scaled(win->sb1->value(),win->sb2->value(),arm,tm);
+        if(image.isNull()) return false;
         return true;
     };
     static int lastIndex;
