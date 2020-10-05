@@ -663,3 +663,108 @@ public:
     };
     static int lastIndex;
 };
+
+class CropNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*v1;
+    QHBoxLayout*h1,*h2,*h3;
+    QLabel*l1,*l2,*l3,*l4;
+public:
+    QSpinBox*b1,*b2,*b3,*b4;
+    QCheckBox*check1;
+    CropNodePropertiesWindow(QString title):PropertiesWindow(title){
+        v1=new QVBoxLayout;
+        h1=new QHBoxLayout;
+        h2=new QHBoxLayout;
+        h3=new QHBoxLayout;
+        l1=new QLabel("x1(in px):");
+        l2=new QLabel("y1(in px):");
+        l3=new QLabel("x2(in px):");
+        l4=new QLabel("y2(in px):");
+        b1=new QSpinBox;
+        b1->setRange(INT_MIN,INT_MAX);
+        b2=new QSpinBox;
+        b2->setRange(INT_MIN,INT_MAX);
+        b3=new QSpinBox;
+        b3->setRange(INT_MIN,INT_MAX);
+        b4=new QSpinBox;
+        b4->setRange(INT_MIN,INT_MAX);
+        check1=new QCheckBox("Lock Fields");
+
+        h1->addWidget(l1);
+        h1->addWidget(b1);
+        h1->addWidget(l2);
+        h1->addWidget(b2);
+        h1->addStretch();
+
+        h2->addWidget(l3);
+        h2->addWidget(b3);
+        h2->addWidget(l4);
+        h2->addWidget(b4);
+        h2->addStretch();
+
+        h3->addWidget(check1);
+        h3->addStretch();
+
+        v1->addLayout(h1);
+        v1->addLayout(h2);
+        v1->addLayout(h3);
+        v1->addStretch();
+        setLayout(v1);
+    }
+};
+
+class cropNode:public node{
+    Q_OBJECT
+    CropNodePropertiesWindow*win;
+    QImage image;
+protected slots:
+    void refresh(){
+        if(input1==NULL) image=QImage();
+        else if(!input1->imageCalculate(image)) image=QImage();
+        if(!win->check1->isChecked()){
+            win->b1->setValue(0);
+            win->b2->setValue(0);
+            win->b3->setValue(image.width());
+            win->b4->setValue(image.height());
+        }
+        refresh2();
+    }
+    void refresh2(){
+        for(auto it=output.begin();it!=output.end();it++) it->first->refresh();
+    }
+    void onCheck1Clicked(bool checked){
+        if(checked){
+            win->b1->setDisabled(true);
+            win->b2->setDisabled(true);
+            win->b3->setDisabled(true);
+            win->b4->setDisabled(true);
+        }else{
+            win->b1->setEnabled(true);
+            win->b2->setEnabled(true);
+            win->b3->setEnabled(true);
+            win->b4->setEnabled(true);
+        }
+    }
+public:
+    cropNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"cropNode"+QString::number(lastIndex++)){
+        win=new CropNodePropertiesWindow(name);
+        propW=win;
+        connect(win->b1,SIGNAL(valueChanged(int)),this,SLOT(refresh2()));
+        connect(win->b2,SIGNAL(valueChanged(int)),this,SLOT(refresh2()));
+        connect(win->b3,SIGNAL(valueChanged(int)),this,SLOT(refresh2()));
+        connect(win->b4,SIGNAL(valueChanged(int)),this,SLOT(refresh2()));
+        connect(win->check1,SIGNAL(toggled(bool)),this,SLOT(onCheck1Clicked(bool)));
+    }
+    bool imageCalculate(QImage &image){
+        if(this->image.isNull()) return false;
+        int x1=win->b1->value();
+        int y1=win->b2->value();
+        int x2=win->b3->value();
+        int y2=win->b4->value();
+        image=this->image.copy(x1,y1,x2-x1,y2-y1);
+        if(image.isNull()) return false;
+        return true;
+    };
+    static int lastIndex;
+};

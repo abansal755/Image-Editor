@@ -80,6 +80,7 @@ class canvas:public QGraphicsItem{
         QAction*newMirrorNode=newNode->addAction("Mirror Node");
         QAction*newRotateNode=newNode->addAction("Rotate Node");
         QAction*newScaleNode=newNode->addAction("Scale Node");
+        QAction*newCropNode=newNode->addAction("Crop Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -127,6 +128,10 @@ class canvas:public QGraphicsItem{
         }
         if(current==newScaleNode){
             scaleNode*n=new scaleNode(scene);
+            n->setPos(event->scenePos());
+        }
+        if(current==newCropNode){
+            cropNode*n=new cropNode(scene);
             n->setPos(event->scenePos());
         }
         delete newNode;
