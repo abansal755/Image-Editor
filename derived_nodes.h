@@ -128,6 +128,8 @@ protected slots:
         imageCalculate(image);
     }
     void updateViewer(){
+        win->scene->clear();
+        if(image.isNull()) return;
         QImage imageV=image;
         QGraphicsPixmapItem*pix;
         if(win->b2->isChecked()){
