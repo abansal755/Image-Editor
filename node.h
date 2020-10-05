@@ -82,6 +82,7 @@ protected:
     connector *ci1,*ci2,*co;
     QString name;
     PropertiesWindow*propW;
+    QString propertiesText;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){};
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
         QRectF rect=boundingRect();
@@ -217,7 +218,7 @@ protected:
             QMenu menu;
             QAction*deleteNode=menu.addAction("Delete Node");
             QAction*properties;
-            if(propW!=NULL) properties=menu.addAction("Properties");
+            if(propW!=NULL) properties=menu.addAction(propertiesText);
             QAction*current=menu.exec(event->screenPos());
             if(current==deleteNode){
                 if(input1!=NULL) removeInput1();
@@ -391,6 +392,7 @@ public:
         }
         propW=NULL;
         setToolTip("Right-click for context menu");
+        propertiesText="Properties";
     }
     ~node(){
         if(propW!=NULL) delete propW;

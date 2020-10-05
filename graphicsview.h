@@ -72,15 +72,16 @@ class canvas:public QGraphicsItem{
         QMenu*newNode=menu.addMenu("New Node");
         QAction*newReadNode=newNode->addAction("Read Node");
         QAction*newViewerNode=newNode->addAction("Viewer Node");
-        QAction*newBlurNode=newNode->addAction("Blur Node");
-        QAction*newSaturateNode=newNode->addAction("Saturate Node");
-        QAction*newContrastNode=newNode->addAction("Contrast Node");
+        QAction*newWriteNode=newNode->addAction("Write Node");
         QAction*newGradeNode=newNode->addAction("Grade Node");
         QAction*newGammaNode=newNode->addAction("Gamma Node");
-        QAction*newMirrorNode=newNode->addAction("Mirror Node");
-        QAction*newRotateNode=newNode->addAction("Rotate Node");
-        QAction*newScaleNode=newNode->addAction("Scale Node");
+        QAction*newSaturateNode=newNode->addAction("Saturate Node");
+        QAction*newContrastNode=newNode->addAction("Contrast Node");
+        QAction*newBlurNode=newNode->addAction("Blur Node");
         QAction*newCropNode=newNode->addAction("Crop Node");
+        QAction*newScaleNode=newNode->addAction("Scale Node");
+        QAction*newRotateNode=newNode->addAction("Rotate Node");
+        QAction*newMirrorNode=newNode->addAction("Mirror Node");
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
         QAction*current=menu.exec(event->screenPos());
@@ -132,6 +133,10 @@ class canvas:public QGraphicsItem{
         }
         if(current==newCropNode){
             cropNode*n=new cropNode(scene);
+            n->setPos(event->scenePos());
+        }
+        if(current==newWriteNode){
+            writeNode*n=new writeNode(scene);
             n->setPos(event->scenePos());
         }
         delete newNode;

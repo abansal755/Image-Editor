@@ -113,6 +113,7 @@ public:
     viewerNode(QGraphicsScene*scene):node(scene,oneInput,noOutput,"viewerNode"+QString::number(lastIndex++)){
         win=new ViewerNodePropertiesWindow(name);
         propW=win;
+        propertiesText="Viewer";
     }
     bool imageCalculate(QImage &image){
         win->scene->clear();
@@ -766,5 +767,52 @@ public:
         if(image.isNull()) return false;
         return true;
     };
+    static int lastIndex;
+};
+
+class WriteNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*v1;
+    QHBoxLayout*h1,*h2;
+public:
+    sliderInt*slider1;
+    QPushButton*b1;
+    WriteNodePropertiesWindow(QString title):PropertiesWindow(title){
+        v1=new QVBoxLayout;
+        h1=new QHBoxLayout;
+        h2=new QHBoxLayout;
+        slider1=new sliderInt;
+        slider1->setRange(0,100);
+        slider1->setText("Quality Factor:");
+        slider1->setDefaultValue(100);
+        b1=new QPushButton("Save Image");
+        h1->addWidget(slider1);
+        h2->addStretch();
+        h2->addWidget(b1);
+        v1->addLayout(h1);
+        v1->addLayout(h2);
+        v1->addStretch();
+        setLayout(v1);
+    }
+};
+
+class writeNode:public node{
+    Q_OBJECT
+    WriteNodePropertiesWindow*win;
+    QImage image;
+protected slots:
+    void onB1Clicked(){
+        if(input1==NULL) return;
+        input1->imageCalculate(image);
+        if(image.isNull()) return;
+        QString fileName=QFileDialog::getSaveFileName(win,"Save Image File","","Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.xbm *.xpm)");
+        image.save(fileName,NULL,win->slider1->getValue());
+    }
+public:
+    writeNode(QGraphicsScene*scene):node(scene,oneInput,noOutput,"writeNode"+QString::number(lastIndex++)){
+        win=new WriteNodePropertiesWindow(name);
+        propW=win;
+        connect(win->b1,SIGNAL(clicked()),this,SLOT(onB1Clicked()));
+    }
     static int lastIndex;
 };

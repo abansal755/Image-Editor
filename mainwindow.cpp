@@ -15,6 +15,7 @@ int mirrorNode::lastIndex=0;
 int rotateNode::lastIndex=0;
 int scaleNode::lastIndex=0;
 int cropNode::lastIndex=0;
+int writeNode::lastIndex=0;
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow){
     ui->setupUi(this);
