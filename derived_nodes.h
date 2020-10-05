@@ -114,6 +114,7 @@ public:
         win=new ViewerNodePropertiesWindow(name);
         propW=win;
         propertiesText="Viewer";
+        connect(win->gw,SIGNAL(toggle()),this,SLOT(refresh()));
     }
     bool imageCalculate(QImage &image){
         win->scene->clear();
@@ -122,17 +123,19 @@ public:
         if(!ans) return false;
         QGraphicsPixmapItem*pix=win->scene->addPixmap(QPixmap::fromImage(image));
         pix->setPos(-(float)image.width()/2,-(float)image.height()/2);
-        QPen pen;
-        pen.setColor(Qt::red);
-        win->scene->addLine(-(float)image.width()/2,(float)image.height()/2,(float)image.width()/2,(float)image.height()/2,pen);
-        win->scene->addLine(-(float)image.width()/2,-(float)image.height()/2,(float)image.width()/2,-(float)image.height()/2,pen);
-        win->scene->addLine(-(float)image.width()/2,(float)image.height()/2,-(float)image.width()/2,-(float)image.height()/2,pen);
-        win->scene->addLine((float)image.width()/2,(float)image.height()/2,(float)image.width()/2,-(float)image.height()/2,pen);
-        QFont font;
-        font.setPixelSize(max(image.width(),image.height())/40);
-        QGraphicsTextItem*text=win->scene->addText(QString::number(image.width())+"x"+QString::number(image.height()),font);
-        text->setDefaultTextColor(Qt::red);
-        text->setPos((float)image.width()/2,(float)image.height()/2);
+        if(win->gw->overlay){
+            QPen pen;
+            pen.setColor(Qt::red);
+            win->scene->addLine(-(float)image.width()/2,(float)image.height()/2,(float)image.width()/2,(float)image.height()/2,pen);
+            win->scene->addLine(-(float)image.width()/2,-(float)image.height()/2,(float)image.width()/2,-(float)image.height()/2,pen);
+            win->scene->addLine(-(float)image.width()/2,(float)image.height()/2,-(float)image.width()/2,-(float)image.height()/2,pen);
+            win->scene->addLine((float)image.width()/2,(float)image.height()/2,(float)image.width()/2,-(float)image.height()/2,pen);
+            QFont font;
+            font.setPixelSize(max(image.width(),image.height())/40);
+            QGraphicsTextItem*text=win->scene->addText(QString::number(image.width())+"x"+QString::number(image.height()),font);
+            text->setDefaultTextColor(Qt::red);
+            text->setPos((float)image.width()/2,(float)image.height()/2);
+        }
         win->gw->centerOn(0,0);
         return true;
     };

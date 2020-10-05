@@ -3,7 +3,10 @@
 #include<QMenu>
 
 class ImageGraphicsView:public QGraphicsView{
+signals:
+    void toggle();
 private:
+    Q_OBJECT
     void wheelEvent(QWheelEvent *event){
         int delta=event->angleDelta().y();
         float factor=1.1;
@@ -14,12 +17,17 @@ private:
         QMenu menu;
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
+        QAction*toggleOverlay=menu.addAction("Toggle Overlay");
         QAction*current=menu.exec(event->globalPos());
         if(current==centerView){
             centerOn(0,0);
         }
         if(current==resetZoom){
             resetTransform();
+        }
+        if(current==toggleOverlay){
+            overlay=!overlay;
+            emit toggle();
         }
     }
 public:
@@ -28,5 +36,7 @@ public:
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         setDragMode(QGraphicsView::ScrollHandDrag);
         setBackgroundBrush(QBrush(QColor(38,38,38)));
+        overlay=true;
     }
+    bool overlay;
 };
