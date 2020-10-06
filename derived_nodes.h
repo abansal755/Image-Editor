@@ -79,6 +79,7 @@ public:
     }
     bool imageCalculate(QImage &image){
         bool ans=image.load(win->fileName);
+        image.convertTo(QImage::Format_RGBA8888);
         return ans;
     };
     static int lastIndex;
@@ -888,6 +889,127 @@ public:
         win=new WriteNodePropertiesWindow(name);
         propW=win;
         connect(win->b1,SIGNAL(clicked()),this,SLOT(onB1Clicked()));
+    }
+    static int lastIndex;
+};
+
+class ShuffleNodePropertiesWindow:public PropertiesWindow{
+    Q_OBJECT
+    QVBoxLayout*v1;
+    QHBoxLayout*hbox[4];
+    QVBoxLayout*vbox[6];
+    QButtonGroup*group[4];
+public:
+    QRadioButton* buttons[4][6];
+    ShuffleNodePropertiesWindow(QString title):PropertiesWindow(title){
+        QLabel*tempLabel;
+        v1=new QVBoxLayout;
+        for(int i=0;i<4;i++){
+            hbox[i]=new QHBoxLayout;
+            group[i]=new QButtonGroup(this);
+            for(int j=0;j<6;j++){
+                vbox[j]=new QVBoxLayout;
+                buttons[i][j]=new QRadioButton;
+            }
+        }
+        tempLabel=new QLabel("R");
+        tempLabel->setAlignment(Qt::AlignCenter);
+        vbox[0]->addWidget(tempLabel);
+        tempLabel=new QLabel("G");
+        tempLabel->setAlignment(Qt::AlignCenter);
+        vbox[1]->addWidget(tempLabel);
+        tempLabel=new QLabel("B");
+        tempLabel->setAlignment(Qt::AlignCenter);
+        vbox[2]->addWidget(tempLabel);
+        tempLabel=new QLabel("A");
+        tempLabel->setAlignment(Qt::AlignCenter);
+        vbox[3]->addWidget(tempLabel);
+        tempLabel=new QLabel("0");
+        tempLabel->setAlignment(Qt::AlignCenter);
+        vbox[4]->addWidget(tempLabel);
+        tempLabel=new QLabel("1");
+        tempLabel->setAlignment(Qt::AlignCenter);
+        vbox[5]->addWidget(tempLabel);
+
+        for(int i=0;i<6;i++){
+            vbox[i]->addWidget(buttons[0][i]);
+            hbox[0]->addLayout(vbox[i]);
+            group[0]->addButton(buttons[0][i]);
+        }
+        for(int i=1;i<4;i++){
+            for(int j=0;j<6;j++){
+                hbox[i]->addWidget(buttons[i][j]);
+                group[i]->addButton(buttons[i][j]);
+            }
+        }
+        for(int i=0;i<4;i++) v1->addLayout(hbox[i]);
+        v1->addStretch();
+        tempLabel=new QLabel("R");
+        tempLabel->setAlignment(Qt::AlignBottom);
+        hbox[0]->addWidget(tempLabel);
+        hbox[1]->addWidget(new QLabel("G"));
+        hbox[2]->addWidget(new QLabel("B"));
+        hbox[3]->addWidget(new QLabel("A"));
+        for(int i=0;i<4;i++){
+            hbox[i]->insertSpacing(4,25);
+            hbox[i]->addStretch();
+        }
+        setLayout(v1);
+        for(int i=0;i<4;i++) buttons[i][i]->setChecked(true);
+    }
+};
+
+class shuffleNode:public node{
+    Q_OBJECT
+    ShuffleNodePropertiesWindow*win;
+public:
+    shuffleNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"shuffleNode"+QString::number(lastIndex++)){
+        win=new ShuffleNodePropertiesWindow(name);
+        propW=win;
+        for(int i=0;i<4;i++){
+            for(int j=0;j<6;j++) connect(win->buttons[i][j],SIGNAL(toggled(bool)),this,SLOT(refresh()));
+        }
+    }
+    bool imageCalculate(QImage &image){
+        if(input1==NULL) return false;
+        bool ans=input1->imageCalculate(image);
+        if(!ans) return false;
+        QImage imageCopy=image;
+        for(int y=0;y<image.height();y++){
+            for(int x=0;x<image.width();x++){
+                QColor co=imageCopy.pixelColor(x,y);
+                QColor c;
+                if(win->buttons[0][0]->isChecked()) c.setRed(co.red());
+                if(win->buttons[0][1]->isChecked()) c.setRed(co.green());
+                if(win->buttons[0][2]->isChecked()) c.setRed(co.blue());
+                if(win->buttons[0][3]->isChecked()) c.setRed(co.alpha());
+                if(win->buttons[0][4]->isChecked()) c.setRed(0);
+                if(win->buttons[0][5]->isChecked()) c.setRed(255);
+
+                if(win->buttons[1][0]->isChecked()) c.setGreen(co.red());
+                if(win->buttons[1][1]->isChecked()) c.setGreen(co.green());
+                if(win->buttons[1][2]->isChecked()) c.setGreen(co.blue());
+                if(win->buttons[1][3]->isChecked()) c.setGreen(co.alpha());
+                if(win->buttons[1][4]->isChecked()) c.setGreen(0);
+                if(win->buttons[1][5]->isChecked()) c.setGreen(255);
+
+                if(win->buttons[2][0]->isChecked()) c.setBlue(co.red());
+                if(win->buttons[2][1]->isChecked()) c.setBlue(co.green());
+                if(win->buttons[2][2]->isChecked()) c.setBlue(co.blue());
+                if(win->buttons[2][3]->isChecked()) c.setBlue(co.alpha());
+                if(win->buttons[2][4]->isChecked()) c.setBlue(0);
+                if(win->buttons[2][5]->isChecked()) c.setBlue(255);
+
+                if(win->buttons[3][0]->isChecked()) c.setAlpha(co.red());
+                if(win->buttons[3][1]->isChecked()) c.setAlpha(co.green());
+                if(win->buttons[3][2]->isChecked()) c.setAlpha(co.blue());
+                if(win->buttons[3][3]->isChecked()) c.setAlpha(co.alpha());
+                if(win->buttons[3][4]->isChecked()) c.setAlpha(0);
+                if(win->buttons[3][5]->isChecked()) c.setAlpha(255);
+                image.setPixelColor(x,y,c);
+            }
+        }
+        return true;
     }
     static int lastIndex;
 };
