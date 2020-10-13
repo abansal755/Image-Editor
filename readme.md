@@ -26,7 +26,21 @@
 >* Read node - Reads the image file from your system 
 >* View node - A new QGraphicsview window pops for  for displaying the contents of a QGraphicsScene.
 >* Write node - To save the modified image with desired compression.
-#### All other nodes are image transfrormation nodes whose degree can be selected in their respective properties.  
+
+#### All other nodes are image transfrormation nodes whose degree can be selected in their respective properties. 
+
+>* Grade node - Used to change the visual tone of an image. In simpler terms, it is used to manipulate the colors of a photograph.
+>* Gamma node - Increasing Gamma makes dark areas darker and light areas lighter.
+>* Saturate node - Alter the intensity and purity of a color as displayed in an image. The higher the saturation of a color, the more vivid and intense it is. The lower a color's saturation, the closer it is to pure gray on the grayscale.
+>* Contrast node -  To alter the difference in brightness between objects or regions. High contrast photos pop out, show textures in the subject and give a feeling of edginess, high energy and strength.
+>* Blur node - Blurs the image by  creating a spectrum of colours at the edges of objects.It simply reduces the edge content and makes the transition form one color to the other very smooth.
+>* Crop node - Crops the image by removing unwanted outer areas.
+>* Scale node - Tells the image resolution in pixels and allows user to resize the image's resolutions.
+>* Rotate node - Rotates the image with desired angle(both clockwise and anti-clockwise).
+>* Mirror node - Mirrors the image with horizontal as well as vertical axis
+>* Shuffle node - Shuffle node rearranges different color channels of the image into other color channels. 
+
+
 
 # Contributing
 >We welcome pull requests from open source community and Qt developers alike! [Please follow these steps to contribute]()
