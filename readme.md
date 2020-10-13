@@ -12,3 +12,10 @@
 # Tools Used
 - **Qt Creator**
 >Qt is a free and open-source widget toolkit for creating graphical user interfaces as well as cross-platform applications that run on various software and hardware platforms such as Linux, Windows, macOS, Android or embedded systems with little or no change in the underlying codebase while still being a native application with native capabilities and speed.
+
+# Download
+>You can download the latest installable version of [ImageEditor](https://github.com/abansal755/Image-Editor/releases) for Windows, macOS and Linux.
+
+# Contributing
+>We welcome pull requests from open source community and Qt developers alike! [Please follow these steps to contribute]()
+
