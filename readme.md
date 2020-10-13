@@ -16,6 +16,13 @@
 # Download
 >You can download the latest installable version of [ImageEditor](https://github.com/abansal755/Image-Editor/releases) for Windows, macOS and Linux.
 
+# Usage
+>* Once you have downloaded a version extract the zipped file and run the Image-Editor.exe file
+>* Now right click on the canvas to select the type of node 
+>* Once the nodes are created right click on each node's connector (a small white box) to connect the input and output of various nodes sequentially as per the tooltip.
+>     > Tooltip : Right-click for creating edges, middle button for deleting edges
+>* Right-click on each node for properties of each node or deleting the node
+
 # Contributing
 >We welcome pull requests from open source community and Qt developers alike! [Please follow these steps to contribute]()
 
