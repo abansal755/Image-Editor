@@ -84,7 +84,7 @@ protected:
     PropertiesWindow*propW;
     QString propertiesText;
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event){};
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
         QRectF rect=boundingRect();
         QPainterPath path;
         path.addRoundedRect(rect,15,15);

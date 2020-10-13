@@ -55,6 +55,39 @@ public:
 class readNode:public node{
     Q_OBJECT
     ReadNodePropertiesWindow*win;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+        QRectF rect=boundingRect();
+        QPainterPath path;
+        path.addRoundedRect(rect,15,15);
+        QLinearGradient grad(0,0,0,height);
+        grad.setColorAt(0,QColor(220,220,220));
+        grad.setColorAt(0.5,QColor(170,170,170));
+        grad.setColorAt(1,QColor(220,220,220));
+        painter->fillPath(path,grad);
+        QPen pen;
+        pen.setWidth(2);
+        painter->setPen(pen);
+        painter->drawPath(path);
+        QFont font;
+        font.setPixelSize(20);
+        painter->setFont(font);
+        painter->drawText(rect,Qt::AlignCenter,name);
+        font.setPixelSize(10);
+        painter->setFont(font);
+        if(iType==oneInput){
+            QRectF rect1(0,ci1->getHeight()/2-1,width/2-ci1->getWidth()/2-5,15);
+            painter->drawText(rect1,Qt::AlignRight,"input");
+        }else if(iType==twoInput){
+            QRectF rect1(0,ci1->getHeight()/2-1,width/4-ci1->getWidth()/2-2,15);
+            painter->drawText(rect1,Qt::AlignRight,"A");
+            rect1.setWidth(3*width/4-ci2->getWidth()/2-2);
+            painter->drawText(rect1,Qt::AlignRight,"B");
+        }
+        if(oType==oneOutput){
+            QRectF rect1(0,0,width/2-co->getWidth()/2-5,height-co->getHeight()/2+2);
+            painter->drawText(rect1,Qt::AlignRight|Qt::AlignBottom,"output");
+        }
+    };
 private slots:
     void button1Clicked(){
         win->fileName=QFileDialog::getOpenFileName(win,"Read Image File","","Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.xbm *.xpm)");
@@ -124,6 +157,39 @@ class viewerNode:public node{
     Q_OBJECT
     ViewerNodePropertiesWindow*win;
     QImage image;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+        QRectF rect=boundingRect();
+        QPainterPath path;
+        path.addRoundedRect(rect,15,15);
+        QLinearGradient grad(0,0,0,height);
+        grad.setColorAt(0,QColor(220,220,220));
+        grad.setColorAt(0.5,QColor(170,170,170));
+        grad.setColorAt(1,QColor(220,220,220));
+        painter->fillPath(path,grad);
+        QPen pen;
+        pen.setWidth(2);
+        painter->setPen(pen);
+        painter->drawPath(path);
+        QFont font;
+        font.setPixelSize(20);
+        painter->setFont(font);
+        painter->drawText(rect,Qt::AlignCenter,name);
+        font.setPixelSize(10);
+        painter->setFont(font);
+        if(iType==oneInput){
+            QRectF rect1(0,ci1->getHeight()/2-1,width/2-ci1->getWidth()/2-5,15);
+            painter->drawText(rect1,Qt::AlignRight,"input");
+        }else if(iType==twoInput){
+            QRectF rect1(0,ci1->getHeight()/2-1,width/4-ci1->getWidth()/2-2,15);
+            painter->drawText(rect1,Qt::AlignRight,"A");
+            rect1.setWidth(3*width/4-ci2->getWidth()/2-2);
+            painter->drawText(rect1,Qt::AlignRight,"B");
+        }
+        if(oType==oneOutput){
+            QRectF rect1(0,0,width/2-co->getWidth()/2-5,height-co->getHeight()/2+2);
+            painter->drawText(rect1,Qt::AlignRight|Qt::AlignBottom,"output");
+        }
+    };
 protected slots:
     void refresh(){
         imageCalculate(image);
@@ -884,6 +950,39 @@ protected slots:
         QString fileName=QFileDialog::getSaveFileName(win,"Save Image File","","Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.xbm *.xpm)");
         image.save(fileName,NULL,win->slider1->getValue());
     }
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr){
+        QRectF rect=boundingRect();
+        QPainterPath path;
+        path.addRoundedRect(rect,15,15);
+        QLinearGradient grad(0,0,0,height);
+        grad.setColorAt(0,QColor(220,220,220));
+        grad.setColorAt(0.5,QColor(170,170,170));
+        grad.setColorAt(1,QColor(220,220,220));
+        painter->fillPath(path,grad);
+        QPen pen;
+        pen.setWidth(2);
+        painter->setPen(pen);
+        painter->drawPath(path);
+        QFont font;
+        font.setPixelSize(20);
+        painter->setFont(font);
+        painter->drawText(rect,Qt::AlignCenter,name);
+        font.setPixelSize(10);
+        painter->setFont(font);
+        if(iType==oneInput){
+            QRectF rect1(0,ci1->getHeight()/2-1,width/2-ci1->getWidth()/2-5,15);
+            painter->drawText(rect1,Qt::AlignRight,"input");
+        }else if(iType==twoInput){
+            QRectF rect1(0,ci1->getHeight()/2-1,width/4-ci1->getWidth()/2-2,15);
+            painter->drawText(rect1,Qt::AlignRight,"A");
+            rect1.setWidth(3*width/4-ci2->getWidth()/2-2);
+            painter->drawText(rect1,Qt::AlignRight,"B");
+        }
+        if(oType==oneOutput){
+            QRectF rect1(0,0,width/2-co->getWidth()/2-5,height-co->getHeight()/2+2);
+            painter->drawText(rect1,Qt::AlignRight|Qt::AlignBottom,"output");
+        }
+    };
 public:
     writeNode(QGraphicsScene*scene):node(scene,oneInput,noOutput,"writeNode"+QString::number(lastIndex++)){
         win=new WriteNodePropertiesWindow(name);
