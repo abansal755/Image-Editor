@@ -18,12 +18,14 @@ You can download the latest installable version of [Image-Editor](https://github
 # Usage
 * Once you have downloaded a version, extract the zip file and run Image-Editor.
 * Now right click on the empty canvas and go to 'New Node' menu to create that type of node.
-* Once the nodes are created, right click on each node's connector (a small white box) to connect the input and output of various nodes sequentially. Right-click for creating edges, middle button for deleting edges.
+    ![1](screenshots/1.png)
+* Once the nodes are created, right click on each node's connector (a small white box) to connect the input and output of various nodes sequentially. Right-click for creating edges, middle button for deleting edges. In the middle of connecting the 2nd node, press right-click on the canvas to cancel the connection.
 * Right-click on each node for properties of each node namely properties window and deleting the node.
 
 # Nodes 
 * **Read node:** Reads the image file from your system.
-* **View node:** Provides a viewer window to view the image stream.
+* **View node:** Provides a viewer window to view the image stream. The viewer windows also gives the ability to view the individual color channels.
+![2](screenshots/2.png)
 * **Write node:** To save the modified image with desired quality factor.
 
 #### All the other nodes are image transfrormation nodes. 
@@ -49,7 +51,7 @@ You can download the latest installable version of [Image-Editor](https://github
 * If no relevant issue exists, open a new issue and get it assigned to yourself on GitHub.
  Please proceed with a Pull Request only after you're assigned. It'd be sad if your Pull Request (and your hardwork) isn't accepted just because it isn't ideologically compatible.
 
- # GETTING STARTED 
+ # Getting Started 
 * [Download Qt Creator](https://www.qt.io/download)
 * Fork this repository.
 * Clone the forked repository to your PC.
@@ -65,3 +67,7 @@ You can download the latest installable version of [Image-Editor](https://github
     `git commit -m "message"`  
     `git push`
 * Create Pull Request.
+
+# Contact Us
+* [**Akshit Bansal**](https://www.linkedin.com/in/akshit-bansal-38b228191/)
+* [**Akshat Ojha**](https://www.linkedin.com/in/akshat-ojha-a1821a191/)
