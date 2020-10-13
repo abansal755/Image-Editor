@@ -16,7 +16,7 @@ If you've found a bug that is not on the board, [Continue](#GETTING STARTED)
 >* Fork the github project 
 >   > `git clone https://github.com/abansal755/Image-Editor`
 >* Create a branch specific to the issue or feature you are working on.
->   > `git branch <new-branch>`
+>   > `git branch <new-branch>`  
 >   > `git checkout <new-branch>`
 >* Push your work to that branch.
 >   > `git add .`  
