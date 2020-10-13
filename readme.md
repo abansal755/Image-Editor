@@ -26,6 +26,8 @@
 >* Read node - Reads the image file from your system 
 >* View node - A new QGraphicsview window pops for  for displaying the contents of a QGraphicsScene.
 >* Write node - To save the modified image with desired compression.
+#### All other nodes are image transfrormation nodes whose degree can be selected in their respective properties.  
+
 # Contributing
 >We welcome pull requests from open source community and Qt developers alike! [Please follow these steps to contribute]()
 
