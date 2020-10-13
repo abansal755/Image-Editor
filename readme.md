@@ -22,7 +22,10 @@
 >* Once the nodes are created right click on each node's connector (a small white box) to connect the input and output of various nodes sequentially as per the tooltip.
 >     > Tooltip : Right-click for creating edges, middle button for deleting edges
 >* Right-click on each node for properties of each node or deleting the node
-
+# Nodes 
+>* Read node - Reads the image file from your system 
+>* View node - A new QGraphicsview window pops for  for displaying the contents of a QGraphicsScene.
+>* Write node - To save the modified image with desired compression.
 # Contributing
 >We welcome pull requests from open source community and Qt developers alike! [Please follow these steps to contribute]()
 
