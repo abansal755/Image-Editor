@@ -46,5 +46,5 @@
 >* [Tutotiral](https://www.udemy.com/course/qt-c-gui-tutorial-for-complete-beginners/)
 
 # Contributing
->We welcome pull requests from open source community and Qt developers alike! [Please follow these steps to contribute]()
+>We welcome pull requests from open source community and Qt developers alike! [Please follow these steps to contribute](https://github.com/Ojhaakshat/Image-Editor/blob/readme/contributing.md)
 
