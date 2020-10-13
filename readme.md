@@ -40,7 +40,10 @@
 >* Mirror node - Mirrors the image with horizontal as well as vertical axis
 >* Shuffle node - Shuffle node rearranges different color channels of the image into other color channels. 
 
-
+# References
+>* [Qt For Beginners](https://wiki.qt.io/Qt_for_Beginners)
+>* [Complete Documentation](https://doc.qt.io/)
+>* [Tutotiral](https://www.udemy.com/course/qt-c-gui-tutorial-for-complete-beginners/)
 
 # Contributing
 >We welcome pull requests from open source community and Qt developers alike! [Please follow these steps to contribute]()
