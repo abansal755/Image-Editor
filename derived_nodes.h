@@ -112,7 +112,7 @@ public:
     }
     bool imageCalculate(QImage &image){
         bool ans=image.load(win->fileName);
-        image.convertTo(QImage::Format_RGBA8888);
+        image = image.convertToFormat(QImage::Format_RGBA8888);
         return ans;
     };
     static int lastIndex;
