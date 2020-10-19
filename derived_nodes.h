@@ -584,11 +584,11 @@ class mirrorNode:public node{
     void mirror_imgH(QImage&img) {
 
         for(int y = 0; y < img.height(); y++) {
-            for(int x = 0; x < img.width()/2; x++) {
+            for(int x = 0; x <   img.width()/2; x++) {
                 QColor c1 = img.pixelColor(x,y);
                 QColor c2 = img.pixelColor(img.width() - 1 -x,y);
-                img.setPixel(img.width() - 1 -x,y,qRgb(c1.red(),c1.green(),c1.blue()));
-                img.setPixel(x,y,qRgb(c2.red(),c2.green(),c2.blue()));
+                img.setPixel(img.width() - 1 -x,y,qRgba(c1.red(),c1.green(),c1.blue(),c1.alpha()));
+                img.setPixel(x,y,qRgba(c2.red(),c2.green(),c2.blue(),c2.alpha()));
             }
         }
 
@@ -599,8 +599,8 @@ class mirrorNode:public node{
             for(int y = 0; y < img.height()/2; y++) {
                 QColor c1 = img.pixelColor(x,y);
                 QColor c2 = img.pixelColor(x,img.height() - 1 - y);
-                img.setPixel(x,img.height() - 1 - y,qRgb(c1.red(),c1.green(),c1.blue()));
-                img.setPixel(x,y,qRgb(c2.red(),c2.green(),c2.blue()));
+                img.setPixel(x,img.height() - 1 - y,qRgba(c1.red(),c1.green(),c1.blue(),c1.alpha()));
+                img.setPixel(x,y,qRgba(c2.red(),c2.green(),c2.blue(),c2.alpha()));
             }
         }
     }
