@@ -112,7 +112,7 @@ public:
     }
     bool imageCalculate(QImage &image){
         bool ans=image.load(win->fileName);
-        image.convertTo(QImage::Format_RGBA8888);
+        image = image.convertToFormat(QImage::Format_RGBA8888);
         return ans;
     };
     static int lastIndex;
@@ -582,24 +582,27 @@ class mirrorNode:public node{
     Q_OBJECT
     MirrorNodePropertiesWindow*win;
     void mirror_imgH(QImage&img) {
-        QImage temp(img.width(),img.height(),img.format());
+
         for(int y = 0; y < img.height(); y++) {
-            for(int x = 0; x < img.width(); x++) {
-                QColor c = img.pixelColor(x,y);
-                temp.setPixelColor(img.width() - 1 - x, y, c);
+            for(int x = 0; x <   img.width()/2; x++) {
+                QColor c1 = img.pixelColor(x,y);
+                QColor c2 = img.pixelColor(img.width() - 1 -x,y);
+                img.setPixel(img.width() - 1 -x,y,qRgba(c1.red(),c1.green(),c1.blue(),c1.alpha()));
+                img.setPixel(x,y,qRgba(c2.red(),c2.green(),c2.blue(),c2.alpha()));
             }
         }
-        img = temp;
+
     }
+
     void mirror_imgV(QImage&img) {
-        QImage temp(img.width(),img.height(),img.format());
-        for(int y = 0; y < img.height(); y++) {
-            for(int x = 0; x < img.width(); x++) {
-                QColor c = img.pixelColor(x,y);
-                temp.setPixelColor(x, img.height()- 1 - y, c);
+        for(int x = 0; x < img.width(); x++) {
+            for(int y = 0; y < img.height()/2; y++) {
+                QColor c1 = img.pixelColor(x,y);
+                QColor c2 = img.pixelColor(x,img.height() - 1 - y);
+                img.setPixel(x,img.height() - 1 - y,qRgba(c1.red(),c1.green(),c1.blue(),c1.alpha()));
+                img.setPixel(x,y,qRgba(c2.red(),c2.green(),c2.blue(),c2.alpha()));
             }
         }
-        img = temp;
     }
 public:
     mirrorNode(QGraphicsScene*scene):node(scene,oneInput,oneOutput,"mirrorNode"+QString::number(lastIndex++)){
