@@ -9,3 +9,4 @@ ui_mainwindow.h
 ui_qualityfactordialog.h
 ui_graphwindow.h
 Image-Editor.pro.user
+Image-Editor_resource.rc
