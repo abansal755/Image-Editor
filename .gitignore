@@ -10,3 +10,5 @@ ui_qualityfactordialog.h
 ui_graphwindow.h
 Image-Editor.pro.user
 Image-Editor_resource.rc
+object_script.Image-Editor.Debug
+object_script.Image-Editor.Release

@@ -21,6 +21,7 @@ void MainWindow::setEnabled(){
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
     scene=new QGraphicsScene(this);
+    ui->graphicsView->setScene(scene);
     ui->graphicsView->setDragMode(QGraphicsView:: ScrollHandDrag);
 
     //push_back all objects which are to be disabled if no image is opened and enabled if an image is opened
@@ -93,9 +94,7 @@ void MainWindow::on_actionOpen_image_triggered()
     bool res=image.load(fileName);
     if(res){
         copy=image;
-        delete scene;
-        scene=new QGraphicsScene(this);
-        ui->graphicsView->setScene(scene);
+        scene->clear();
         scene->addPixmap(QPixmap::fromImage(image));
         ui->actionSave_Image->setEnabled(true);
         ui->actionGraph->setEnabled(true);
@@ -107,6 +106,7 @@ void MainWindow::on_actionOpen_image_triggered()
         ui->horizontalSlider_6->setValue(100);
         ui->horizontalSlider_7->setValue(0);
         ui->horizontalSlider_8->setValue(0);
+        ui->graphicsView->resetTransform();
     }else QMessageBox::critical(this,"Error","Unable to open image file");
 }
 
