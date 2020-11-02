@@ -10,8 +10,6 @@
 #include "aboutdialog.h"
 #include "qualityfactordialog.h"
 
-#define RESET_ZOOM ui->horizontalSlider_3->setValue(500)
-
 void MainWindow::setDisabled(){
     for(int i=0;i<statusChanging.size();i++) statusChanging[i]->setDisabled(true);
 }
@@ -48,16 +46,15 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     gw=new GraphWindow(this);
     gw->image=&image;
     gw->copy=&copy;
+
+    connect(this,SIGNAL(refreshSignal()),this,SLOT(refresh()));
 }
 
 MainWindow::~MainWindow(){
     delete ui;
 }
 
-
-void MainWindow::on_pushButton_clicked()
-{
-    //Apply
+void MainWindow::refresh(){
     int radius=ui->horizontalSlider->value();
     float saturate_v=(float)(ui->horizontalSlider_2->value())/100;
     float gamma=(float)(ui->horizontalSlider_4->value())/100;
@@ -83,6 +80,12 @@ void MainWindow::on_pushButton_clicked()
     scene->addPixmap(QPixmap::fromImage(image));
 }
 
+void MainWindow::on_pushButton_clicked()
+{
+    //Apply
+    refresh();
+}
+
 void MainWindow::on_actionOpen_image_triggered()
 {
     //Open Image
@@ -104,7 +107,6 @@ void MainWindow::on_actionOpen_image_triggered()
         ui->horizontalSlider_6->setValue(100);
         ui->horizontalSlider_7->setValue(0);
         ui->horizontalSlider_8->setValue(0);
-        RESET_ZOOM;
     }else QMessageBox::critical(this,"Error","Unable to open image file");
 }
 
@@ -137,21 +139,6 @@ void MainWindow::on_actionExit_triggered()
     QApplication::quit();
 }
 
-void MainWindow::on_horizontalSlider_3_valueChanged(int value)
-{
-    //Zoom slider
-    float scale=(float)value/500;
-    ui->graphicsView->resetMatrix();
-    ui->graphicsView->scale(scale,scale);
-    ui->doubleSpinBox_6->setValue(scale);
-}
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    //Reset zoom
-    RESET_ZOOM;
-}
-
 void MainWindow::on_pushButton_3_clicked()
 {
     //Reset
@@ -171,18 +158,21 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
     //Blur slider
     ui->spinBox->setValue(value);
+    emit refreshSignal();
 }
 
 void MainWindow::on_horizontalSlider_2_valueChanged(int value)
 {
     //Saturate slider
     ui->doubleSpinBox->setValue((float)value/100);
+    emit refreshSignal();
 }
 
 void MainWindow::on_horizontalSlider_4_valueChanged(int value)
 {
     //Gamma slider
     ui->doubleSpinBox_2->setValue((float)value/100);
+    emit refreshSignal();
 }
 
 void MainWindow::on_pushButton_4_clicked()
@@ -213,24 +203,28 @@ void MainWindow::on_horizontalSlider_5_valueChanged(int value)
 {
     //Lift slider
     ui->doubleSpinBox_3->setValue((float)value/100);
+    emit refreshSignal();
 }
 
 void MainWindow::on_horizontalSlider_6_valueChanged(int value)
 {
     //Gain slider
     ui->doubleSpinBox_4->setValue((float)value/100);
+    emit refreshSignal();
 }
 
 void MainWindow::on_horizontalSlider_7_valueChanged(int value)
 {
     //Offset slider
     ui->doubleSpinBox_5->setValue((float)value/100);
+    emit refreshSignal();
 }
 
 void MainWindow::on_horizontalSlider_8_valueChanged(int value)
 {
     //Contrast slider
     ui->spinBox_2->setValue(value);
+    emit refreshSignal();
 }
 
 void MainWindow::on_pushButton_7_clicked()

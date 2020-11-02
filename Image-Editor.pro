@@ -28,7 +28,8 @@ HEADERS += \
     graphwindow.h \
     mainwindow.h \
     image.h \
-    qualityfactordialog.h
+    qualityfactordialog.h \
+    imagegraphicsview.h
 
 FORMS += \
     aboutdialog.ui \
