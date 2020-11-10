@@ -92,6 +92,7 @@ void MainWindow::on_actionOpen_image_triggered()
     //Open Image
     QString fileName=QFileDialog::getOpenFileName(this,"Open Image","",fileExtensions);
     bool res=image.load(fileName);
+    image.convertTo(QImage::Format_RGBA8888);
     if(res){
         copy=image;
         scene->clear();

@@ -3,8 +3,6 @@
 #include<QMenu>
 
 class ImageGraphicsView:public QGraphicsView{
-signals:
-    void toggle();
 private:
     Q_OBJECT
     void wheelEvent(QWheelEvent *event){
@@ -25,18 +23,11 @@ private:
         if(current==resetZoom){
             resetTransform();
         }
-        if(current==toggleOverlay){
-            overlay=!overlay;
-            emit toggle();
-        }
     }
 public:
     ImageGraphicsView(QWidget*parent=NULL):QGraphicsView(parent){
         setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         setDragMode(QGraphicsView::ScrollHandDrag);
-        setBackgroundBrush(QBrush(QColor(38,38,38)));
-        overlay=true;
     }
-    bool overlay;
 };
