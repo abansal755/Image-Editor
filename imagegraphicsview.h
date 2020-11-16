@@ -15,7 +15,6 @@ private:
         QMenu menu;
         QAction*centerView=menu.addAction("Center View");
         QAction*resetZoom=menu.addAction("Reset Zoom");
-        QAction*toggleOverlay=menu.addAction("Toggle Overlay");
         QAction*current=menu.exec(event->globalPos());
         if(current==centerView){
             centerOn(0,0);

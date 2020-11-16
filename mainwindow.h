@@ -19,7 +19,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private slots:
-    void on_pushButton_clicked();
     void on_actionOpen_image_triggered();
     void on_actionSave_Image_triggered();
     void on_actionClose_Image_triggered();

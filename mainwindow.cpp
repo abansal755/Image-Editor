@@ -25,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->graphicsView->setDragMode(QGraphicsView:: ScrollHandDrag);
 
     //push_back all objects which are to be disabled if no image is opened and enabled if an image is opened
-    statusChanging.push_back(ui->pushButton);
     statusChanging.push_back(ui->pushButton_3);
     statusChanging.push_back(ui->pushButton_4);
     statusChanging.push_back(ui->pushButton_5);
@@ -81,15 +80,10 @@ void MainWindow::refresh(){
     scene->addPixmap(QPixmap::fromImage(image));
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-    //Apply
-    refresh();
-}
-
 void MainWindow::on_actionOpen_image_triggered()
 {
     //Open Image
+    scene->clear();
     QString fileName=QFileDialog::getOpenFileName(this,"Open Image","",fileExtensions);
     bool res=image.load(fileName);
     image.convertTo(QImage::Format_RGBA8888);
